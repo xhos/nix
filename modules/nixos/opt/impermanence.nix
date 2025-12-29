@@ -94,6 +94,7 @@ in {
           "/var/lib/sonarr"
           "/var/lib/recyclarr"
           "/var/lib/redis-immich"
+          "/var/lib/AdGuardHome"
           "/var/cache/immich"
           "/var/lib/dnsmasq"
           "/var/lib/glance"
