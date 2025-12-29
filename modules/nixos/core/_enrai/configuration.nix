@@ -47,4 +47,16 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # ZFS ARC cap at 8GB
+  boot.extraModprobeConfig = ''
+    options zfs zfs_arc_max=8589934592
+  '';
+
+  # Compressed RAM swap
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 25;
+  };
 }

@@ -152,6 +152,11 @@
                           url = "http://${serverIP}:8384";
                           icon = "sh:syncthing";
                         }
+                        {
+                          title = "immich";
+                          url = "http://photos.${localDomain}";
+                          icon = "sh:immich";
+                        }
                       ];
                     }
                     {

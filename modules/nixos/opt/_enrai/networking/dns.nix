@@ -58,4 +58,17 @@ in {
       };
     };
   };
+
+  # unset dynamic user stuff which makes it difficult to persist
+  users.users.adguardhome = {
+    isSystemUser = true;
+    group = "adguardhome";
+  };
+  users.groups.adguardhome = {};
+  systemd.services.adguardhome.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    User = "adguardhome";
+    Group = "adguardhome";
+  };
+  systemd.tmpfiles.rules = ["d /var/lib/AdGuardHome 0750 adguardhome adguardhome -"];
 }

@@ -31,7 +31,7 @@
   };
 
   systemd.services.qbittorrent = {
-    after = [ "proton.service" ];
-    requires = [ "proton.service" ];
+    after = ["proton.service"];
+    requires = ["proton.service"];
   };
 }
