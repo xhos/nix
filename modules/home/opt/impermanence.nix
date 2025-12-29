@@ -12,6 +12,10 @@ in {
   options.impermanence.enable = lib.mkEnableOption "wipe home folder on reboot, persist selected directories";
 
   config = {
+    home.activation.fixPathForImpermanence = lib.hm.dag.entryBefore ["cleanEmptyLinkTargets"] ''
+      PATH=$PATH:/run/wrappers/bin
+    '';
+
     home.persistence."/persist/home/xhos" = lib.mkIf config.impermanence.enable (lib.mkMerge [
       {
         directories = [
@@ -112,6 +116,11 @@ in {
           ".cloudflared"
           ".vscode-server"
           ".zed_server"
+          {
+            # podman stores its volumes here
+            directory = ".local/share/containers";
+            method = "symlink";
+          }
         ];
       })
     ]);
