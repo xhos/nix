@@ -30,6 +30,8 @@ lib.mkIf (config.terminal == "ghostty") {
       bold-color = "bright";
       window-padding-x = 10;
       window-padding-y = 10;
+
+      unfocused-split-opacity = 0.7;
     };
   };
 

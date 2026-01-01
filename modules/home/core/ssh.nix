@@ -6,9 +6,16 @@
     "ssh/mc".mode = "0600";
     "ssh/vyverne".mode = "0600";
     "ssh/enrai".mode = "0600";
-    "ssh/github".mode = "0600"; # this is a bit of a chicken and egg problem, but i'll come up with a solution next time i re-install
     "ssh/azure".mode = "0600";
+    "ssh/github" = {
+      # this is a bit of a chicken and egg problem, but i'll come up with a solution next time i re-install
+      path = "${config.home.homeDirectory}/.ssh/github";
+      mode = "0600";
+    };
   };
+
+  # git needs this sometimes
+  home.file."${config.home.homeDirectory}/.ssh/github.pub".text = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGgRlG4m4RWFLHarzFFG5Q4MRyZK737laibKI42aUNhF";
 
   programs.ssh = {
     enable = true;

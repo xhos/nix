@@ -5,7 +5,7 @@
       user = {
         name = "xhos";
         email = "60789741+xhos@users.noreply.github.com";
-        signingKey = "/home/xhos/.ssh/github-auth-key.pub";
+        signingKey = "/home/xhos/.ssh/github.pub";
       };
       gpg.format = "ssh";
       commit.gpgsign = true;

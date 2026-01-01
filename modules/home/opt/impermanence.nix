@@ -55,9 +55,6 @@ in {
           ".local/share/direnv"
           ".local/share/zoxide" # zoxide i lv u, plz don't hv amnesia
 
-          ".cache/huggingface" # i like my models not in ram
-          ".cache/Proton" # proton stores their login stuff in cache for some reason
-
           # should techically be only enabled when steam is but oh well
           ".config/r2modmanPlus-local"
           ".config/r2modman"
@@ -77,9 +74,12 @@ in {
           "Pictures"
           "Videos"
 
-          # big dev caches
+          # big caches
           ".cache/go-build"
           ".cache/.bun"
+          ".cache/spotify"
+          ".cache/huggingface"
+          ".cache/Proton" # proton stores their login stuff in cache for some reason
 
           ".config/zsh"
           ".local/share/zsh"

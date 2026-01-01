@@ -25,8 +25,10 @@
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
 
   services.hardware.openrgb.enable = true;
-  programs.adb.enable = true;
 
+  programs.adb.enable = true;
+  users.users.xhos.extraGroups = ["adbusers" "kvm"];
+  
   systemd.tmpfiles.rules = [
     "d /games 0755 xhos users - -"
   ];
