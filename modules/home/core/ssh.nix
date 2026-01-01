@@ -6,7 +6,6 @@
     "ssh/mc".mode = "0600";
     "ssh/vyverne".mode = "0600";
     "ssh/enrai".mode = "0600";
-    "ssh/azure".mode = "0600";
     "ssh/github" = {
       # this is a bit of a chicken and egg problem, but i'll come up with a solution next time i re-install
       path = "${config.home.homeDirectory}/.ssh/github";
@@ -26,11 +25,6 @@
         host = "github.com";
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/github".path;
-      };
-      "azure" = {
-        host = "ssh.dev.azure.com";
-        identitiesOnly = true;
-        identityFile = config.sops.secrets."ssh/azure".path;
       };
       # VPS
       "proxy-1" = {
