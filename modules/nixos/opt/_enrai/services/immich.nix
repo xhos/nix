@@ -1,5 +1,11 @@
 {config, ...}: {
   _enrai.exposedServices.photos.port = config.services.immich.port;
+  _enrai.backup.services.immich.paths = ["${config.services.immich.mediaLocation}"];
+
+  persist.dirs = [
+    "/var/lib/redis-immich"
+    "/var/cache/immich"
+  ];
 
   services.immich = {
     enable = true;
