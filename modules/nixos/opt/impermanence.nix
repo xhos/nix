@@ -14,6 +14,20 @@
 in {
   options.impermanence.enable = lib.mkEnableOption "wipe root filesystem on reboot, persist selected directories";
 
+  options.persist = {
+    dirs = lib.mkOption {
+      type = lib.types.listOf (lib.types.either lib.types.str lib.types.attrs);
+      default = [];
+      description = "dirs to persist";
+    };
+
+    files = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "files to persist";
+    };
+  };
+
   config = lib.mkIf config.impermanence.enable {
     programs.fuse.userAllowOther = true;
 
@@ -28,10 +42,10 @@ in {
           "/etc/NetworkManager/system-connections"
           "/var/lib/fprint"
           "/var/lib/fail2ban/"
-        ];
+        ] ++ config.persist.dirs;
         files = [
           "/etc/machine-id"
-        ];
+        ] ++ config.persist.files;
       }
 
       (persistIf config.bluetooth.enable {
@@ -63,7 +77,6 @@ in {
       (persistIf config.rclone.enable {
         directories = [
           "/home/xhos/onedrive"
-          "/home/xhos/protondrive"
         ];
       })
 
@@ -93,9 +106,7 @@ in {
           "/var/lib/zipline"
           "/var/lib/sonarr"
           "/var/lib/recyclarr"
-          "/var/lib/redis-immich"
           "/var/lib/AdGuardHome"
-          "/var/cache/immich"
           "/var/lib/dnsmasq"
           "/var/lib/glance"
           "/var/lib/qBittorrent"
