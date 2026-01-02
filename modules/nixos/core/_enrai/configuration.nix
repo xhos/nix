@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{inputs, lib, ...}: {
   imports = [
     inputs.disko.nixosModules.disko
     inputs.proxmox-nixos.nixosModules.proxmox-ve
@@ -29,6 +29,8 @@
   services.vscode-server.enable = true;
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./enrai.pub];
+
+  services.openssh.settings.AcceptEnv = lib.mkForce ["LANG" "LC_*"];
 
   services.cloudflared = {
     enable = true;
