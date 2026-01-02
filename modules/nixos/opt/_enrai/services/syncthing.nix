@@ -28,15 +28,11 @@
     cert = config.sops.secrets."syncthing/enrai/cert".path;
     guiAddress = "${config._enrai.config.enraiLocalIP}:8384";
 
-    # TODO: yet to be released
-    # guiPasswordFile = config.sops.secrets."syncthing/enrai/guiPassword".path;
+    guiPasswordFile = config.sops.secrets."syncthing/enrai/guiPassword".path;
 
     settings = {
       options.urAccepted = -1;
-      gui = {
-        user = "xhos";
-        password = "$2b$12$mXEJ2ZnOFfk9VvANdQKjdOvRHqeBFxT6h0BF1EavsThTGQADZAiHK";
-      };
+      gui.user = "xhos";
 
       # device id can be found in client's ui or
       # nix-shell -p syncthing --run "syncthing generate --home /tmp/st"
