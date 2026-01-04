@@ -74,12 +74,6 @@ in {
         ];
       })
 
-      (persistIf config.rclone.enable {
-        directories = [
-          "/home/xhos/onedrive"
-        ];
-      })
-
       (persistIf (config.greetd.enable && config.greeter == "tuigreet") {
         files = [
           "/var/cache/tuigreet/lastuser"

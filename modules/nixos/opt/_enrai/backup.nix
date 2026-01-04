@@ -31,14 +31,27 @@ in {
   };
 
   config = lib.mkIf (serviceBackups != {}) {
+    users.users.restic = {
+      isSystemUser = true;
+      group = "restic";
+    };
+    users.groups.restic = {};
+
     sops.secrets = {
-      "passwords/restic" = {};
-      "rclone" = {};
+      "passwords/restic" = {
+        owner = "restic"; 
+        group = "restic"; 
+      };
+      "rclone" = {
+        owner = "restic";
+        group = "restic"; 
+      };
     };
 
     services.restic.backups =
       lib.mapAttrs (name: svc: {
         inherit (svc) paths exclude;
+        user = "restic";
         repository = cfg.defaultRepository;
         passwordFile = config.sops.secrets."passwords/restic".path;
         rcloneConfigFile = config.sops.secrets."rclone".path;

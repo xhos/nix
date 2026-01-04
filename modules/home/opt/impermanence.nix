@@ -11,6 +11,20 @@ in {
 
   options.impermanence.enable = lib.mkEnableOption "wipe home folder on reboot, persist selected directories";
 
+  options.persist = {
+    dirs = lib.mkOption {
+      type = lib.types.listOf (lib.types.either lib.types.str lib.types.attrs);
+      default = [];
+      description = "dirs to persist";
+    };
+
+    files = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "files to persist";
+    };
+  };
+
   config = {
     home.activation.fixPathForImpermanence = lib.hm.dag.entryBefore ["cleanEmptyLinkTargets"] ''
       PATH=$PATH:/run/wrappers/bin
@@ -86,7 +100,9 @@ in {
 
           # misc state
           ".local/state/lazygit"
-        ];
+        ] ++ config.persist.dirs; 
+
+        files = [] ++ config.persist.files;
 
         allowOther = true;
       }
