@@ -1,22 +1,22 @@
 {
   pkgs,
   config,
-  lib,
   ...
 }: {
-  _enrai.exposedServices.jellyfin = {
-    port = 8096;
-    exposed = true;
-  };
+  _enrai.exposedServices.jellyfin.port = 8096;
+  _enrai.exposedServices.jellyseerr.port = config.services.jellyseerr.port;
 
-  persist.dirs = ["/var/lib/private/jellyseerr"];
-  _enrai.exposedServices.jellyseerr = {
-    port = config.services.jellyseerr.port;
-    exposed = true;
-  };
+  persist.dirs = [
+    "/var/lib/jellyfin"
+    "/var/cache/jellyfin"
+  ];
+
+  systemd.tmpfiles.rules = [
+    "d /storage/media/cache 0755 root root -"
+    "d /storage/media/cache/jellyfin 0755 jellyfin jellyfin -"
+  ];
 
   services.jellyseerr.enable = true;
-
 
   services.jellyfin = {
     enable = true;
@@ -24,7 +24,7 @@
   };
 
   systemd.services.jellyfin.environment.LIBVA_DRIVER_NAME = "iHD";
-  environment.sessionVariables = {LIBVA_DRIVER_NAME = "iHD";};
+  environment.sessionVariables.LIBVA_DRIVER_NAME = "iHD";
 
   hardware.graphics = {
     enable = true;
@@ -37,7 +37,10 @@
   users = {
     groups.media = {};
     users = {
-      jellyfin.extraGroups = ["video" "media"];
+      jellyfin.extraGroups = [
+        "video"
+        "media"
+      ];
       xhos.extraGroups = ["media"];
     };
   };

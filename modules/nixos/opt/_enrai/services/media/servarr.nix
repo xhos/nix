@@ -36,7 +36,5 @@
   systemd.tmpfiles.rules = [
     "d /storage/media 0775 root media -"
     "d /storage/media/anime 0775 root media -"
-    "d /storage/media/cache 0755 root root -"
-    "d /storage/media/cache/jellyfin 0755 jellyfin jellyfin -"
   ];
 }

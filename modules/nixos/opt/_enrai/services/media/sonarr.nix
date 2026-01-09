@@ -3,7 +3,6 @@
   services.sonarr.enable = true;
   _enrai.exposedServices.sonarr.port = config.services.sonarr.settings.server.port;
 
-  # Instance Definition: https://recyclarr.dev/reference/configuration/basic/
   services.recyclarr = {
     enable = true;
     schedule = "daily";
@@ -14,13 +13,11 @@
         api_key = "103b0d5df72a4624b2a9e43fbaaa894a";
 
         include = [
-          # Comment out any of the following includes to disable them
           {template = "sonarr-quality-definition-anime";}
           {template = "sonarr-v4-quality-profile-anime";}
           {template = "sonarr-v4-custom-formats-anime";}
         ];
 
-        # Custom Formats: https://recyclarr.dev/reference/configuration/custom-formats/
         custom_formats = [
           {
             trash_ids = [
@@ -29,7 +26,7 @@
             assign_scores_to = [
               {
                 name = "Remux-1080p - Anime";
-                score = 0; # Adjust scoring as desired
+                score = 0;
               }
             ];
           }
@@ -41,7 +38,7 @@
             assign_scores_to = [
               {
                 name = "Remux-1080p - Anime";
-                score = 0; # Adjust scoring as desired
+                score = 0;
               }
             ];
           }
@@ -53,7 +50,7 @@
             assign_scores_to = [
               {
                 name = "Remux-1080p - Anime";
-                score = 0; # Adjust scoring as desired
+                score = 0;
               }
             ];
           }

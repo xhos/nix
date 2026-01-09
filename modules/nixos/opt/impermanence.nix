@@ -95,7 +95,6 @@ in {
           "/var/lib/postgresql"
           "/var/lib/wireguard" # wg proxy private key
           "/var/lib/docker"
-          "/var/lib/jellyfin"
           "/var/lib/prowlarr"
           "/var/lib/acme"
           "/var/lib/caddy"
@@ -111,7 +110,6 @@ in {
           "/var/lib/hass"
           "/var/lib/wakapi"
           "/home/xhos/.local/share/syncthing"
-          "/var/cache/jellyfin"
 
           # proxmox
           "/var/lib/pve-cluster"
