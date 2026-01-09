@@ -34,18 +34,22 @@ in {
     environment.persistence."/persist" = lib.mkMerge [
       {
         hideMounts = true;
-        directories = [
-          "/etc/nixos"
-          "/etc/ssh"
-          "/var/lib/nixos"
-          "/var/lib/systemd/"
-          "/etc/NetworkManager/system-connections"
-          "/var/lib/fprint"
-          "/var/lib/fail2ban/"
-        ] ++ config.persist.dirs;
-        files = [
-          "/etc/machine-id"
-        ] ++ config.persist.files;
+        directories =
+          [
+            "/etc/nixos"
+            "/etc/ssh"
+            "/var/lib/nixos"
+            "/var/lib/systemd/"
+            "/etc/NetworkManager/system-connections"
+            "/var/lib/fprint"
+            "/var/lib/fail2ban/"
+          ]
+          ++ config.persist.dirs;
+        files =
+          [
+            "/etc/machine-id"
+          ]
+          ++ config.persist.files;
       }
 
       (persistIf config.bluetooth.enable {
@@ -98,7 +102,6 @@ in {
           "/var/lib/bazarr"
           "/var/lib/radarr"
           "/var/lib/zipline"
-          "/var/lib/sonarr"
           "/var/lib/recyclarr"
           "/var/lib/AdGuardHome"
           "/var/lib/dnsmasq"

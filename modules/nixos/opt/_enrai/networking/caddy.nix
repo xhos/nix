@@ -23,19 +23,18 @@
   config._enrai.exposedServices;
 
   # Split services into local-only and public
-  localServices = lib.filterAttrs (name: svc: !svc.exposed) exposedServices;
-  publicServices = lib.filterAttrs (name: svc: svc.exposed) exposedServices;
+  localServices = lib.filterAttrs (_: svc: !svc.exposed) exposedServices;
+  publicServices = lib.filterAttrs (_: svc: svc.exposed) exposedServices;
 
   # Generate local vhosts (*.lab.xhos.dev)
   mkLocalVhosts =
     lib.mapAttrs' (
-      name: svc:
+      _: svc:
         lib.nameValuePair "${svc.subdomain}.${localDomain}" {
           useACMEHost = localDomain;
           extraConfig = ''
             bind ${enraiIP}
             reverse_proxy ${svc.upstream}:${toString svc.port}
-
             @blocked not remote_ip 10.0.0.0/24
             respond @blocked 403
           '';
@@ -46,7 +45,7 @@
   # Generate public vhosts (*.xhos.dev via WireGuard)
   mkPublicVhosts =
     lib.mapAttrs' (
-      name: svc:
+      _: svc:
         lib.nameValuePair "${svc.subdomain}.${publicDomain}" {
           useACMEHost = publicDomain;
           listenAddresses = [config._enrai.config.tunnelIP];
@@ -58,9 +57,6 @@
     publicServices;
 
   allVhosts = mkLocalVhosts // mkPublicVhosts;
-
-  localSubdomains = lib.mapAttrsToList (name: svc: "${svc.subdomain}.${localDomain}") localServices;
-  publicSubdomains = lib.mapAttrsToList (name: svc: "${svc.subdomain}.${publicDomain}") publicServices;
 in {
   sops.secrets."api/cloudflare" = {};
 
@@ -68,23 +64,34 @@ in {
     acceptTerms = true;
     defaults.email = "lets-encrypt@xhos.dev";
 
+    # Wildcard cert for local services
     certs.${localDomain} = {
       group = config.services.caddy.group;
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
-      extraDomainNames = localSubdomains;
+      domain = "*.${localDomain}";
+      extraDomainNames = [localDomain];
       environmentFile = config.sops.secrets."api/cloudflare".path;
     };
 
+    # Wildcard cert for public services
     certs.${publicDomain} = {
       group = config.services.caddy.group;
       dnsProvider = "cloudflare";
       dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
-      extraDomainNames = publicSubdomains;
+      domain = "*.${publicDomain}";
+      extraDomainNames = [publicDomain];
       environmentFile = config.sops.secrets."api/cloudflare".path;
     };
+  };
+
+  # Ensure Caddy waits for certs and reloads gracefully
+  systemd.services.caddy = {
+    after = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
+    wants = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
+    reloadTriggers = lib.mkForce [];
   };
 
   services.caddy = {

@@ -1,5 +1,22 @@
-{pkgs, ...}: {
-  _enrai.exposedServices.jellyfin.port = 8096;
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
+  _enrai.exposedServices.jellyfin = {
+    port = 8096;
+    exposed = true;
+  };
+
+  persist.dirs = ["/var/lib/private/jellyseerr"];
+  _enrai.exposedServices.jellyseerr = {
+    port = config.services.jellyseerr.port;
+    exposed = true;
+  };
+
+  services.jellyseerr.enable = true;
+
 
   services.jellyfin = {
     enable = true;
