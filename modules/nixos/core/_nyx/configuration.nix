@@ -41,13 +41,14 @@
         exec nix run github:xhos/nix#installer
       '';
     })
-    (writeShellApplication {
-      name = "e";
-      text = ''
-        exec nix run github:xhos/nix#enter-helper
-      '';
-    })
   ];
+
+  # insecure, but i want to ssh to not fiddle with the laptop when installing
+  services.openssh = {
+    enable = true;
+    settings.PermitRootLogin = "yes";
+  };
+  users.users.root.password = lib.mkForce "nix";
 
   services.getty.autologinUser = lib.mkForce "root";
 }

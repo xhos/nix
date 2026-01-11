@@ -7,12 +7,13 @@
   hostname,
   homeUser ? "xhos",
   extraSpecialArgs ? {},
+  minimal ? false,
 }:
 lib.nixosSystem {
   specialArgs = {inherit inputs import-tree;} // extraSpecialArgs;
   modules =
-    [
-      ../modules/nixos
+    lib.optionals (!minimal) [../modules/nixos]
+    ++ [
       (import-tree.forHost hostname ../modules/nixos)
     ]
     ++ lib.optionals (homeUser != null) (

@@ -117,6 +117,7 @@
       nyx = mkNixosSystem {
         hostname = "nyx";
         homeUser = null;
+        minimal = true;
       };
       vyverne = mkNixosSystem {hostname = "vyverne";};
       zireael = mkNixosSystem {hostname = "zireael";};
