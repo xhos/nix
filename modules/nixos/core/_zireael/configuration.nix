@@ -13,7 +13,7 @@
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./zireael.pub];
 
-  impermanence.enable = true;
+  impermanence.enable = false;
   bluetooth   .enable = true;
   greetd      .enable = true;
   audio       .enable = true;

@@ -6,7 +6,7 @@
 
   stylix.base16Scheme = ./min-dark.yaml;
 
-  impermanence.enable = true;
+  impermanence.enable = false;
 
   modules = {
     rofi.enable = true;

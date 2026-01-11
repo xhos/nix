@@ -1,86 +1,125 @@
-{pkgs}:
-pkgs.writeShellApplication {
-  name = "installer";
+{pkgs}: let
+  keysLabel = "NIXKEYS";
+  repoUrl = "git@github.com:xhos/nix.git";
+  workdir = "/tmp/nix";
+  keysRuntime = "/run/installer-keys";
+in
+  # disko version last seen https://github.com/xhos/nix/blob/d2094fc746c73866b14f18bfe0cefa58d6e4266b/scripts/installer.nix
+  pkgs.writeShellApplication {
+    name = "installer";
+    runtimeInputs = with pkgs; [
+      git
+      jq
+      gum
+      rsync
+      util-linux
+    ];
+    text = ''
+      set -euo pipefail
 
-  runtimeInputs = with pkgs; [
-    git
-    jq
-    gum
-    disko
-    rsync
-  ];
+      log() { printf "\033[1;34m[INFO]\033[0m %s\n" "$*"; }
+      fail() { printf "\033[1;31m[ERROR]\033[0m %s\n" "$*" >&2; exit 1; }
 
-  text = ''
-    #!/usr/bin/env bash
-    set -euo pipefail
+      setup_keys() {
+        [[ -f "${keysRuntime}/sops" && -f ~/.ssh/github ]] && return 0
 
-    log() { printf "\033[1;34m[INFO]\033[0m %s\n" "$*"; }
-    fail() { echo "$*" >&2; exit 1; }
+        log "looking for ${keysLabel} partition..."
+        local dev
+        dev=$(lsblk -o PATH,LABEL -pr 2>/dev/null | awk '$2 == "${keysLabel}" {print $1; exit}')
+        [[ -b "$dev" ]] || fail "${keysLabel} partition not found"
 
-    WORKDIR=/tmp/nix
-    REPO_URL="https://github.com/xhos/nix.git"
+        local mnt
+        mnt=$(mktemp -d)
+        mount -o ro "$dev" "$mnt"
 
-    # clone or update repository
-    if [ -d "$WORKDIR/.git" ]; then
-      log "updating repo in $WORKDIR"
-      git -C "$WORKDIR" fetch --prune --quiet
-      git -C "$WORKDIR" reset --hard origin/HEAD --quiet
-    else
-      log "cloning $REPO_URL"
-      git clone --depth=1 "$REPO_URL" "$WORKDIR"
-    fi
+        [[ -f "$mnt/keys/github" ]] || { umount "$mnt"; fail "github key not found"; }
+        [[ -f "$mnt/keys/sops" ]] || { umount "$mnt"; fail "sops key not found"; }
 
-    # select host
-    HOST=$(nix flake show "$WORKDIR" --json \
-      | jq -r '.nixosConfigurations | keys[]' \
-      | gum choose --header "select machine")
-    [ -n "$HOST" ] || fail "no host selected"
+        mkdir -p "${keysRuntime}"
+        cp "$mnt/keys/sops" "${keysRuntime}/sops"
+        chmod 600 "${keysRuntime}/sops"
 
-    HOST_DIR="$WORKDIR/hosts/$HOST"
-    [ -d "$HOST_DIR" ] || fail "missing host directory: $HOST_DIR"
+        mkdir -p ~/.ssh && chmod 700 ~/.ssh
+        cp "$mnt/keys/github" ~/.ssh/github
+        chmod 600 ~/.ssh/github
 
-    CONFIG="$HOST_DIR/disko.nix"
-    [ -f "$CONFIG" ] || fail "disko.nix missing"
+        cat > ~/.ssh/config << 'EOF'
+      Host github.com
+        IdentityFile ~/.ssh/github
+        IdentitiesOnly yes
+        StrictHostKeyChecking accept-new
+        UserKnownHostsFile /dev/null
+      EOF
+        chmod 600 ~/.ssh/config
 
-    # select system disk
-    DISK=$(lsblk -dpno NAME,SIZE \
-      | gum choose --header "select system disk for \"$HOST\"" \
-      | awk '{print $1}')
-    [ -b "$DISK" ] || fail "invalid disk selected"
+        umount "$mnt" && rmdir "$mnt"
+        log "keys configured"
+      }
 
-    # select data disk
-    DATA_DISK=$(lsblk -dpno NAME,SIZE \
-      | grep -v "$DISK" \
-      | gum choose --header "select data disk for \"$HOST\"" \
-      | awk '{print $1}')
-    [ -b "$DATA_DISK" ] || fail "invalid data disk selected"
+      clone_repo() {
+        if [[ -d "${workdir}/.git" ]]; then
+          log "updating repo"
+          git -C "${workdir}" fetch --prune --quiet
+          git -C "${workdir}" reset --hard origin/HEAD --quiet
+        else
+          log "cloning repo"
+          git clone --depth=1 "${repoUrl}" "${workdir}"
+        fi
+      }
 
-    gum confirm "warning: this will wipe $DISK and $DATA_DISK. continue?" || exit 1
+      select_host() {
+        local host
+        host=$(nix flake show "${workdir}" --json 2>/dev/null \
+          | jq -r '.nixosConfigurations | keys[]' \
+          | gum choose --header "select host")
+        [[ -n "$host" ]] || fail "no host selected"
+        echo "$host"
+      }
 
-    # run disko
-    log "running disko on $DISK (system) and $DATA_DISK (data)"
-    disko --mode zap_create_mount --argstr disk "$DISK" --argstr dataDisk "$DATA_DISK" "$CONFIG"
+      check_mount() {
+        mountpoint -q /mnt || fail "/mnt not mounted - partition and mount manually first"
+        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted - mount your EFI partition"
+      }
 
-    # generate hardware config
-    log "generating hardware-configuration.nix"
-    nixos-generate-config --root /mnt --no-filesystems
-    cp -f /mnt/etc/nixos/hardware-configuration.nix "$HOST_DIR/hardware-configuration.nix"
+      setup_keys
+      clone_repo
 
-    if grep -q "impermanence.enable = true" "$HOST_DIR"/*.nix; then
-      log "detected impermanence - syncing to /mnt/persist/etc/nixos"
-      mkdir -p /mnt/persist/etc/nixos
-      rsync -a --delete "$WORKDIR/" /mnt/persist/etc/nixos/
-      FLAKE_PATH="/mnt/persist/etc/nixos"
-    else
-      log "syncing repo into /mnt/etc/nixos"
-      rsync -a --delete "$WORKDIR/" /mnt/etc/nixos/
-      FLAKE_PATH="/mnt/etc/nixos"
-    fi
+      HOST=$(select_host)
+      HOST_DIR="${workdir}/modules/nixos/core/_$HOST"
+      [[ -d "$HOST_DIR" ]] || fail "host directory not found: $HOST_DIR"
 
-    # install
-    log "installing nixos for $HOST from $FLAKE_PATH"
-    nixos-install --root /mnt --flake "path:$FLAKE_PATH#$HOST"
+      log "selected: $HOST"
+      check_mount
 
-    echo "done."
-  '';
-}
+      log "generating hardware-configuration.nix"
+      nixos-generate-config --root /mnt --no-filesystems
+      cp /mnt/etc/nixos/hardware-configuration.nix "$HOST_DIR/hardware-configuration.nix"
+
+      USE_PERSIST=false
+      if nix eval "${workdir}#nixosConfigurations.$HOST.config.impermanence.enable" 2>/dev/null | grep -q "true"; then
+        USE_PERSIST=true
+      fi
+
+      if $USE_PERSIST; then
+        FLAKE_PATH="/mnt/persist/etc/nixos"
+        SOPS_DEST="/mnt/persist/var/lib/sops-nix"
+      else
+        FLAKE_PATH="/mnt/etc/nixos"
+        SOPS_DEST="/mnt/var/lib/sops-nix"
+      fi
+
+      log "syncing config to $FLAKE_PATH"
+      mkdir -p "$FLAKE_PATH"
+      rsync -a --delete "${workdir}/" "$FLAKE_PATH/"
+
+      log "installing sops key"
+      mkdir -p "$SOPS_DEST"
+      cp "${keysRuntime}/sops" "$SOPS_DEST/key.txt"
+      chmod 600 "$SOPS_DEST/key.txt"
+
+      log "installing NixOS"
+      nixos-install --root /mnt --flake "path:$FLAKE_PATH#$HOST" --no-root-passwd
+
+      gum style --foreground 82 --bold "done - reboot when ready"
+    '';
+  }
