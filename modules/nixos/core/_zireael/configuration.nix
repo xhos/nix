@@ -1,7 +1,6 @@
 {inputs, ...}: {
   imports = [
     ./hardware-configuration.nix
-    ./disko.nix
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
   ];

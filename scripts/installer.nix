@@ -92,7 +92,7 @@ in
       check_mount
 
       log "generating hardware-configuration.nix"
-      nixos-generate-config --root /mnt --no-filesystems
+      nixos-generate-config --root /mnt
       cp /mnt/etc/nixos/hardware-configuration.nix "$HOST_DIR/hardware-configuration.nix"
 
       USE_PERSIST=false
