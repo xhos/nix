@@ -1,4 +1,5 @@
-{inputs, ...}: {
+{pkgs,inputs, ...}: {
+
   imports = [
     ./hardware-configuration.nix
     inputs.disko.nixosModules.disko
@@ -18,12 +19,13 @@
   audio       .enable = true;
   boot        .enable = true;
   syncthing   .enable = true;
+  vm          .enable = true;
 
   greeter = "yawn";
   systemd.tmpfiles.rules = [
     "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
   ];
   hardware.sensor.iio.enable = true; # screen rotation sensor
-  # boot.kernelPackages = pkgs.linuxPackages_;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   services.fprintd.enable = true;
 }
