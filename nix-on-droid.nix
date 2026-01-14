@@ -36,5 +36,23 @@
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./pixel.pub];
 
+  services.openssh = {
+    enable = true;
+    ports = [22];
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+      StreamLocalBindUnlink = "yes";
+      GatewayPorts = "clientspecified";
+    };
+  };
+
+  networking = {
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [22];
+    };
+  };
+
   system.stateVersion = "24.05";
 }
