@@ -38,7 +38,7 @@ in {
             "go" # same for go
             ".local/share/zed"
             ".local/share/nautilus" # nautilus bookmarks
-
+            ".config/teams-for-linux"
             ".config/claude"
             ".local/state/wireplumber"
 
