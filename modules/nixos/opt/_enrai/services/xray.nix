@@ -1,6 +1,5 @@
-{ config, ... }:
-{
-  sops.secrets."vpn/xray" = { };
+{config, ...}: {
+  sops.secrets."vpn/xray" = {};
 
   _enrai.exposedServices.vpn = {
     port = 10808;

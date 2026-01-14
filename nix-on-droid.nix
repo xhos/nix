@@ -1,41 +1,40 @@
-{ pkgs, inputs, ... }: {
-  # Simply install just the packages
-  environment.packages = [
-    # User-facing stuff that you really really want to have
-    # vim # or some other editor, e.g. nano or neovim
-
-    # Some common stuff that people expect to have
-    #procps
-    #killall
-    #diffutils
-    #findutils
-    #utillinux
-    #tzdata
-    #hostname
-    #man
-    #gnugrep
-    #gnupg
-    #gnused
-    #gnutar
-    #bzip2
-    #gzip
-    #xz
-    #zip
-    #unzip
+{
+  pkgs,
+  inputs,
+  ...
+}: {
+  environment.packages = with pkgs; [
+    iproute2
+    vim
+    procps
+    killall
+    diffutils
+    findutils
+    utillinux
+    tzdata
+    hostname
+    man
+    gnugrep
+    gnupg
+    gnused
+    gnutar
+    bzip2
+    gzip
+    xz
+    zip
+    unzip
     inputs.swissh.packages."${pkgs.stdenv.hostPlatform.system}".default
   ];
 
-  # Backup etc files instead of failing to activate generation if a file already exists in /etc
   environment.etcBackupExtension = ".bak";
 
-  # Read the changelog before changing this value
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+
+  # nix.extraOptions = ''
+  # experimental-features = nix-command flakes
+  # '';
+
+  users.users.xhos.openssh.authorizedKeys.keyFiles = [./pixel.pub];
+
   system.stateVersion = "24.05";
-
-  # Set up nix for flakes
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
-
-  # Set your time zone
-  #time.timeZone = "Europe/Berlin";
 }

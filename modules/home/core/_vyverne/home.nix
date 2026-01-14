@@ -45,5 +45,5 @@
   };
 
   services.kdeconnect.enable = true;
-  home.packages = with pkgs; [ jetbrains.idea ];
+  home.packages = with pkgs; [jetbrains.idea teams-for-linux];
 }

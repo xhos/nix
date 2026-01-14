@@ -73,7 +73,7 @@
     chromium
     inputs.claude-desktop.packages.${stdenv.hostPlatform.system}.claude-desktop-with-fhs
     inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".default
-
+    jellyfin-desktop
     # Desktop utilities
     font-manager
     rnote

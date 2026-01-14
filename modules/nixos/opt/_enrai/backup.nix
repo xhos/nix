@@ -39,12 +39,12 @@ in {
 
     sops.secrets = {
       "passwords/restic" = {
-        owner = "restic"; 
-        group = "restic"; 
+        owner = "restic";
+        group = "restic";
       };
       "rclone" = {
         owner = "restic";
-        group = "restic"; 
+        group = "restic";
       };
     };
 
