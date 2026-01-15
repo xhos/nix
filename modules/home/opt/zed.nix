@@ -174,19 +174,6 @@
 
       agent_ui_font_size = 14.0;
 
-      ssh_connections = [
-        {
-          host = "enrai";
-          projects = [
-            {paths = ["/etc/nixos"];}
-            {paths = ["/home/xhos"];}
-            {paths = ["/home/xhos/Projects/arian/./"];}
-            {paths = ["/home/xhos/Projects/orbs/./"];}
-            {paths = ["/var/lib/hass"];}
-          ];
-        }
-      ];
-
       file_scan_exclusions = [
         ".pre-commit-config.yaml"
         ".direnv"

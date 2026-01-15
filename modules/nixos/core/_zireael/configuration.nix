@@ -12,8 +12,6 @@
   networking.hostName = "zireael";
   networking.hostId = "5ca416d5";
 
-  boot.supportedFilesystems = ["zfs"];
-
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./zireael.pub];
 
   impermanence.enable = false;
@@ -29,6 +27,8 @@
     "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
   ];
   hardware.sensor.iio.enable = true; # screen rotation sensor
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
+ 
   services.fprintd.enable = true;
 }
