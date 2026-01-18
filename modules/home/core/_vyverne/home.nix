@@ -15,7 +15,6 @@
     discord.enable = true;
     secrets.enable = true;
     telegram.enable = true;
-    obs.enable = true;
     whisper.enable = true;
     fonts.enable = true;
     rclone.enable = true;
@@ -44,6 +43,5 @@
     ];
   };
 
-  services.kdeconnect.enable = true;
   home.packages = with pkgs; [jetbrains.idea teams-for-linux];
 }

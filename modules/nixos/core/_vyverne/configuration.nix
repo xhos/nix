@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  inputs,
+  config,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ./disko.nix
@@ -17,6 +21,7 @@
   nvidia.enable = true;
   vm.enable = true;
   ai.enable = false;
+  obs.enable = true;
   boot.enable = true;
   syncthing.enable = true;
 
@@ -25,9 +30,18 @@
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
 
   services.hardware.openrgb.enable = true;
+  programs.kdeconnect.enable = true;
 
+  # makes adb work
   programs.adb.enable = true;
   users.users.xhos.extraGroups = ["adbusers" "kvm"];
+
+  # use android phone as a webcam
+  boot.kernelModules = ["v4l2loopback"];
+  boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback exclusive_caps=1 card_label="Phone Cam"
+  '';
 
   systemd.tmpfiles.rules = [
     "d /games 0755 xhos users - -"
@@ -35,10 +49,13 @@
 
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
 
+  # fix fn keys not working on infi75
   boot.kernelParams = ["hid_apple.fnmode=2"];
   boot.supportedFilesystems = ["zfs"];
   services.gvfs.enable = true;
   services.udisks2.enable = true;
+
+  # allow poweroff/reboot over ssh without sudo
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
       if ((action.id == "org.freedesktop.login1.power-off" ||
