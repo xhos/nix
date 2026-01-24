@@ -80,11 +80,15 @@ in
         local header="$1"
         local exclude="''${2:-}"
         local disk
+
+        local lsblk_output
+        lsblk_output=$(lsblk -dpno NAME,SIZE,MODEL)
+
         if [[ -n "$exclude" ]]; then
-          disk=$(lsblk -dpno NAME,SIZE,MODEL | grep -v "$exclude" | gum choose --header "$header" | awk '{print $1}')
-        else
-          disk=$(lsblk -dpno NAME,SIZE,MODEL | gum choose --header "$header" | awk '{print $1}')
+          lsblk_output=$(echo "$lsblk_output" | grep -vE "$exclude")
         fi
+
+        disk=$(echo "$lsblk_output" | gum choose --header "$header" | awk '{print $1}')
         [[ -b "$disk" ]] || fail "invalid disk: $disk"
         echo "$disk"
       }
@@ -103,28 +107,49 @@ in
       USE_DISKO=false
       if [[ -f "$DISKO_CONFIG" ]]; then
         USE_DISKO=true
-        log "found disko.nix - will partition automatically"
+        log "found disko.nix"
       fi
 
       # ── check for impermanence ────────────────────────────────────────
       USE_PERSIST=false
       if nix eval "${workdir}#nixosConfigurations.$HOST.config.impermanence.enable" 2>/dev/null | grep -q "true"; then
         USE_PERSIST=true
-        log "impermanence enabled for this host"
+        log "impermanence enabled"
       fi
 
       # ── disk selection & partitioning ─────────────────────────────────
       if $USE_DISKO; then
-        SYSTEM_DISK=$(select_disk "select SYSTEM disk (SSD) for $HOST")
-        DATA_DISK=$(select_disk "select DATA disk (HDD) for $HOST" "$SYSTEM_DISK")
+        # parse disko.nix for disk arguments (lines like: argName ? "/dev/...")
+        mapfile -t DISK_PARAMS < <(grep -oP '^\s*\K\w+(?=\s*\?\s*"/dev/)' "$DISKO_CONFIG")
 
-        gum confirm "WARNING: this will WIPE $SYSTEM_DISK and $DATA_DISK" || exit 1
+        if [[ ''${#DISK_PARAMS[@]} -eq 0 ]]; then
+          fail "no disk parameters found in disko.nix"
+        fi
 
-        log "running disko on $SYSTEM_DISK (system) and $DATA_DISK (data)"
-        disko --mode destroy,format,mount \
-          --argstr disk "$SYSTEM_DISK" \
-          --argstr dataDisk "$DATA_DISK" \
-          "$DISKO_CONFIG"
+        declare -A SELECTED_DISKS
+        DISKO_ARGS=()
+        exclude_pattern=""
+
+        for param in "''${DISK_PARAMS[@]}"; do
+          disk=$(select_disk "select disk for '$param'" "$exclude_pattern")
+          SELECTED_DISKS[$param]="$disk"
+          DISKO_ARGS+=(--argstr "$param" "$disk")
+
+          # add to exclude pattern for next iteration
+          if [[ -n "$exclude_pattern" ]]; then
+            exclude_pattern+="|"
+          fi
+          exclude_pattern+="$disk"
+        done
+
+        # build warning message
+        wipe_list=$(printf ", %s" "''${SELECTED_DISKS[@]}")
+        wipe_list="''${wipe_list:2}"
+
+        gum confirm "WARNING: this will WIPE $wipe_list" || exit 1
+
+        log "running disko"
+        disko --mode destroy,format,mount "''${DISKO_ARGS[@]}" "$DISKO_CONFIG"
       else
         log "no disko.nix - assuming manual partitioning"
         mountpoint -q /mnt || fail "/mnt not mounted - partition and mount manually first"
@@ -133,14 +158,12 @@ in
 
       # ── verify mounts ─────────────────────────────────────────────────
       if $USE_DISKO; then
-        # disko mounts partitions under /mnt, but /mnt itself may not be a mountpoint (tmpfs root)
         mountpoint -q /mnt/nix || fail "/mnt/nix not mounted"
         mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
         if $USE_PERSIST; then
           mountpoint -q /mnt/persist || fail "/mnt/persist not mounted"
         fi
       else
-        # manual partitioning - expect traditional root mount
         mountpoint -q /mnt || fail "/mnt not mounted"
         mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
       fi
