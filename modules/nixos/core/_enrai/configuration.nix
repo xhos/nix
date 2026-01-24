@@ -20,14 +20,6 @@
   impermanence.enable = true;
   headless = true;
 
-  boot.supportedFilesystems = ["zfs"];
-
-  boot.zfs = {
-    forceImportRoot = true;
-    forceImportAll = true;
-    extraPools = ["storage"];
-  };
-
   services.gvfs.enable = true;
   services.udisks2.enable = true;
   services.vscode-server.enable = true;
@@ -54,12 +46,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # ZFS ARC cap at 8GB
-  boot.extraModprobeConfig = ''
-    options zfs zfs_arc_max=8589934592
-  '';
-
-  # Compressed RAM swap
+  # compressed RAM swap
   zramSwap = {
     enable = true;
     algorithm = "zstd";
