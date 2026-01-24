@@ -41,7 +41,7 @@ in {
             ".local/share/zed"
 
             # nautilus bookmarks
-            ".local/share/nautilus" 
+            ".local/share/nautilus"
             ".config/gtk-3.0/"
 
             ".config/teams-for-linux"
