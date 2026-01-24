@@ -4,7 +4,6 @@
   workdir = "/tmp/nix";
   keysRuntime = "/run/installer-keys";
 in
-  # disko version last seen https://github.com/xhos/nix/blob/d2094fc746c73866b14f18bfe0cefa58d6e4266b/scripts/installer.nix
   pkgs.writeShellApplication {
     name = "installer";
     runtimeInputs = with pkgs; [
@@ -13,6 +12,7 @@ in
       gum
       rsync
       util-linux
+      disko
     ];
     text = ''
       set -euo pipefail
@@ -76,30 +76,74 @@ in
         echo "$host"
       }
 
-      check_mount() {
-        mountpoint -q /mnt || fail "/mnt not mounted - partition and mount manually first"
-        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted - mount your EFI partition"
+      select_disk() {
+        local header="$1"
+        local exclude="''${2:-}"
+        local disk
+        if [[ -n "$exclude" ]]; then
+          disk=$(lsblk -dpno NAME,SIZE,MODEL | grep -v "$exclude" | gum choose --header "$header" | awk '{print $1}')
+        else
+          disk=$(lsblk -dpno NAME,SIZE,MODEL | gum choose --header "$header" | awk '{print $1}')
+        fi
+        [[ -b "$disk" ]] || fail "invalid disk: $disk"
+        echo "$disk"
       }
 
+      # ── main ──────────────────────────────────────────────────────────
       setup_keys
       clone_repo
 
       HOST=$(select_host)
       HOST_DIR="${workdir}/modules/nixos/core/_$HOST"
       [[ -d "$HOST_DIR" ]] || fail "host directory not found: $HOST_DIR"
-
       log "selected: $HOST"
-      check_mount
 
-      log "generating hardware-configuration.nix"
-      nixos-generate-config --root /mnt
-      cp /mnt/etc/nixos/hardware-configuration.nix "$HOST_DIR/hardware-configuration.nix"
+      # ── check for disko config ────────────────────────────────────────
+      DISKO_CONFIG="$HOST_DIR/disko.nix"
+      USE_DISKO=false
+      if [[ -f "$DISKO_CONFIG" ]]; then
+        USE_DISKO=true
+        log "found disko.nix - will partition automatically"
+      fi
 
+      # ── check for impermanence ────────────────────────────────────────
       USE_PERSIST=false
       if nix eval "${workdir}#nixosConfigurations.$HOST.config.impermanence.enable" 2>/dev/null | grep -q "true"; then
         USE_PERSIST=true
+        log "impermanence enabled for this host"
       fi
 
+      # ── disk selection & partitioning ─────────────────────────────────
+      if $USE_DISKO; then
+        SYSTEM_DISK=$(select_disk "select SYSTEM disk (SSD) for $HOST")
+        DATA_DISK=$(select_disk "select DATA disk (HDD) for $HOST" "$SYSTEM_DISK")
+
+        gum confirm "WARNING: this will WIPE $SYSTEM_DISK and $DATA_DISK" || exit 1
+
+        log "running disko on $SYSTEM_DISK (system) and $DATA_DISK (data)"
+        disko --mode destroy,format,mount \
+          --argstr disk "$SYSTEM_DISK" \
+          --argstr dataDisk "$DATA_DISK" \
+          "$DISKO_CONFIG"
+      else
+        log "no disko.nix - assuming manual partitioning"
+        mountpoint -q /mnt || fail "/mnt not mounted - partition and mount manually first"
+        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
+      fi
+
+      # ── verify mounts ─────────────────────────────────────────────────
+      mountpoint -q /mnt || fail "/mnt not mounted after disko"
+      mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
+      if $USE_PERSIST; then
+        mountpoint -q /mnt/persist || fail "/mnt/persist not mounted (required for impermanence)"
+      fi
+
+      # ── generate hardware config ──────────────────────────────────────
+      log "generating hardware-configuration.nix"
+      nixos-generate-config --root /mnt --no-filesystems
+      cp /mnt/etc/nixos/hardware-configuration.nix "$HOST_DIR/hardware-configuration.nix"
+
+      # ── determine paths based on impermanence ─────────────────────────
       if $USE_PERSIST; then
         FLAKE_PATH="/mnt/persist/etc/nixos"
         SOPS_DEST="/mnt/persist/var/lib/sops-nix"
@@ -108,16 +152,19 @@ in
         SOPS_DEST="/mnt/var/lib/sops-nix"
       fi
 
+      # ── sync config ───────────────────────────────────────────────────
       log "syncing config to $FLAKE_PATH"
       mkdir -p "$FLAKE_PATH"
       rsync -a --delete "${workdir}/" "$FLAKE_PATH/"
 
-      log "installing sops key"
+      # ── install sops key ──────────────────────────────────────────────
+      log "installing sops key to $SOPS_DEST"
       mkdir -p "$SOPS_DEST"
       cp "${keysRuntime}/sops" "$SOPS_DEST/key.txt"
       chmod 600 "$SOPS_DEST/key.txt"
 
-      log "installing NixOS"
+      # ── install NixOS ─────────────────────────────────────────────────
+      log "installing NixOS for $HOST"
       nixos-install --root /mnt --flake "path:$FLAKE_PATH#$HOST" --no-root-passwd
 
       gum style --foreground 82 --bold "done - reboot when ready"
