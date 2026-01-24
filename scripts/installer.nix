@@ -132,10 +132,17 @@ in
       fi
 
       # ── verify mounts ─────────────────────────────────────────────────
-      mountpoint -q /mnt || fail "/mnt not mounted after disko"
-      mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
-      if $USE_PERSIST; then
-        mountpoint -q /mnt/persist || fail "/mnt/persist not mounted (required for impermanence)"
+      if $USE_DISKO; then
+        # disko mounts partitions under /mnt, but /mnt itself may not be a mountpoint (tmpfs root)
+        mountpoint -q /mnt/nix || fail "/mnt/nix not mounted"
+        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
+        if $USE_PERSIST; then
+          mountpoint -q /mnt/persist || fail "/mnt/persist not mounted"
+        fi
+      else
+        # manual partitioning - expect traditional root mount
+        mountpoint -q /mnt || fail "/mnt not mounted"
+        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
       fi
 
       # ── generate hardware config ──────────────────────────────────────
