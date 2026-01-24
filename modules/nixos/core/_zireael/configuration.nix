@@ -29,6 +29,6 @@
   hardware.sensor.iio.enable = true; # screen rotation sensor
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
- 
+
   services.fprintd.enable = true;
 }

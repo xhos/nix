@@ -4,6 +4,7 @@
   ...
 }: {
   config = lib.mkIf (config.headless != true) {
+    persist.dirs = [".config/clipse"];
     home.file.".config/clipse/custom_theme.json".text = ''      {
          "UseCustom":          false,
          "TitleFore":          "#${config.text}",

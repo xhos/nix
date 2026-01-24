@@ -65,4 +65,11 @@
       }
     });
   '';
+
+  # downloading ram
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50; # up to 50% of RAM as compressed swap
+  };
 }

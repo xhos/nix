@@ -51,6 +51,7 @@
 
   # GUI packages for desktop systems only
   guiPkgs = with pkgs; [
+    kdiskmark
     easyeffects # pipewire audio effects
 
     brightnessctl # screen brightness control

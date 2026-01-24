@@ -23,6 +23,7 @@
       "tokyo-night"
       "toml"
       "wakatime"
+      "svelte"
     ];
 
     extraPackages = [

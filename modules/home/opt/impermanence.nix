@@ -35,10 +35,15 @@ in {
         directories =
           [
             "nix"
+            ".aws"
             ".npm" # then npm cache cannot be configured to be in the projects dir and its insane in size, it sucks.
             "go" # same for go
             ".local/share/zed"
-            ".local/share/nautilus" # nautilus bookmarks
+
+            # nautilus bookmarks
+            ".local/share/nautilus" 
+            ".config/gtk-3.0/"
+
             ".config/teams-for-linux"
             ".config/claude"
             ".local/state/wireplumber"
@@ -58,7 +63,6 @@ in {
             ".config/libreoffice"
             ".config/spotify"
             ".config/calibre"
-            ".config/clipse"
             ".config/Code"
             ".config/obsidian"
             ".config/chromium"

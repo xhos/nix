@@ -56,6 +56,7 @@
     jq
     wl-clipboard
     # wakatime-cli
+    awscli2
 
     # Shells & prompts
     starship
