@@ -1,6 +1,6 @@
 {
-  disk ? "/dev/sda",      # SSD
-  dataDisk ? "/dev/sdb",  # HDD
+  disk ? "/dev/sda", # SSD
+  dataDisk ? "/dev/sdb", # HDD
   ...
 }: {
   disko.devices = {
@@ -41,7 +41,7 @@
               };
             };
             media = {
-              size = "100%";  # rest of SSD (~250GB)
+              size = "100%"; # rest of SSD (~250GB)
               content = {
                 type = "filesystem";
                 format = "ext4";

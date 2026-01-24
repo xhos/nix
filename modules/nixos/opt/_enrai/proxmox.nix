@@ -8,7 +8,10 @@
   mcIp = "${vmNetwork}.20";
 in {
   nixpkgs.overlays = [inputs.proxmox-nixos.overlays."x86_64-linux"];
-
+  fileSystems."/var/lib/vz" = {
+    device = "/storage/vz";
+    options = ["bind"];
+  };
   networking = {
     bridges.vmbr0.interfaces = ["enp0s31f6"];
     interfaces.enp0s31f6.useDHCP = false;

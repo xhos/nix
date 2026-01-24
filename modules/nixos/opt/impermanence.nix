@@ -113,7 +113,7 @@ in {
 
           # proxmox
           "/var/lib/pve-cluster"
-          "/var/lib/vz"
+          # "/var/lib/vz"
           "/var/lib/rrdcached"
           "/var/lib/pve-manager"
         ];
