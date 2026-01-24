@@ -3,7 +3,11 @@
   config,
   ...
 }: {
-  _enrai.exposedServices.jellyfin.port = 8096;
+  _enrai.exposedServices.jellyfin = {
+    exposed = true;
+    amneziaAccessible = true;
+    port = 8096;
+  };
   _enrai.exposedServices.jellyseerr.port = config.services.jellyseerr.port;
 
   persist.dirs = [

@@ -1,6 +1,13 @@
 {config, ...}: {
   _enrai.exposedServices.photos.port = config.services.immich.port;
-  _enrai.backup.services.immich.paths = ["${config.services.immich.mediaLocation}"];
+  _enrai.backup.services.immich = {
+    paths = ["${config.services.immich.mediaLocation}"];
+    exclude = [
+      "${config.services.immich.mediaLocation}/thumbs"
+      "${config.services.immich.mediaLocation}/encoded-video"
+    ];
+    user = "immich";
+  };
 
   persist.dirs = [
     "/var/lib/redis-immich"
@@ -17,5 +24,6 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/redis-immich 0750 redis-immich redis-immich -"
     "d /var/cache/immich 0750 immich immich -"
+    "d /storage/photos 0750 immich immich -"
   ];
 }

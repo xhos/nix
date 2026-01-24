@@ -25,6 +25,10 @@
   exposedServices = lib.attrValues config._enrai.exposedServices;
   dynamicServicePorts = lib.unique (map (s: s.port) exposedServices);
 
+  # Services accessible from Amnezia VPN
+  amneziaAccessibleServices = lib.filter (s: s.amneziaAccessible) exposedServices;
+  amneziaServicePorts = lib.unique (map (s: s.port) amneziaAccessibleServices);
+
   # Combine core and dynamic ports for LAN-exposed services
   lanTcpPorts =
     [
@@ -55,6 +59,11 @@ in {
           type = lib.types.bool;
           default = false;
           description = "Whether to expose via WireGuard tunnel to internet";
+        };
+        amneziaAccessible = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Whether Amnezia VPN clients can access this service";
         };
         # Optional overrides (defaults to attribute name)
         name = lib.mkOption {
@@ -101,6 +110,11 @@ in {
             # VMs only need DHCP (vmbr1)
             iifname vmbr1 udp dport 67 accept
 
+            # Amnezia VPN clients can access specific services
+            ${lib.optionalString (amneziaServicePorts != []) ''
+          iifname vmbr1 ip saddr ${amneziaIp} tcp dport ${mkPortSet amneziaServicePorts} accept
+        ''}
+
             # WireGuard tunnel
             iifname wg0 accept
           }
@@ -127,6 +141,10 @@ in {
           chain prerouting {
             type nat hook prerouting priority dstnat; policy accept;
 
+            # Direct access from router (bypasses VPS tunnel)
+            iifname vmbr0 tcp dport 25565 dnat to ${mcIp}:25565
+
+            # WireGuard tunnel forwards
             iifname wg0 tcp dport 2222 dnat to ${mcIp}:22
             iifname wg0 tcp dport 2223 dnat to ${amneziaIp}:22
             iifname wg0 tcp dport 25565 dnat to ${mcIp}:25565
