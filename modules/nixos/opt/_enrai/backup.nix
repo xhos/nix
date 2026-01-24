@@ -24,6 +24,12 @@ in {
             type = lib.types.listOf lib.types.str;
             default = [];
           };
+
+          user = lib.mkOption {
+            type = lib.types.str;
+            default = "restic";
+            description = "User that owns the backup paths";
+          };
         };
       });
       default = {};
