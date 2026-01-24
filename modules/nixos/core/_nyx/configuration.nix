@@ -41,6 +41,12 @@
         exec nix run github:xhos/nix#installer
       '';
     })
+    (writeShellApplication {
+      name = "ir";
+      text = ''
+        exec nix run github:xhos/nix#installer --refresh
+      '';
+    })
   ];
 
   # insecure, but i want to ssh to not fiddle with the laptop when installing
