@@ -5,6 +5,10 @@
   pkgs,
   ...
 }: {
+  home.packages = [
+    inputs.tsutsumi.packages.${pkgs.system}.wakatime-ls
+  ];
+
   programs.zed-editor = lib.mkIf (config.headless != true) {
     enable = true;
 
