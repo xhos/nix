@@ -123,9 +123,9 @@
       zireael = mkNixosSystem {hostname = "zireael";};
     };
 
-    nixOnDroidConfigurations.default = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
+    nixOnDroidConfigurations.pixel = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
       pkgs = import nixpkgs {system = "aarch64-linux";};
-      modules = [./nix-on-droid.nix];
+      modules = [./modules/droid/_pixel/configuration.nix];
       extraSpecialArgs = {inherit inputs;};
     };
 
