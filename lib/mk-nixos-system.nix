@@ -21,7 +21,7 @@ lib.nixosSystem {
       ++ [
         {
           home-manager = {
-            extraSpecialArgs = {inherit inputs import-tree;};
+            extraSpecialArgs = {inherit inputs import-tree hostname;};
             backupFileExtension = ".b";
             users.${homeUser}.imports = [
               ../modules/home

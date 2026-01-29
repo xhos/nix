@@ -3,6 +3,7 @@
   config,
   inputs,
   pkgs,
+  hostname,
   ...
 }: {
   home.packages = let
@@ -54,9 +55,11 @@
       "sql"
     ];
 
-    extraPackages = [
+    extraPackages = with pkgs; [
       inputs.tsutsumi.packages.${pkgs.stdenv.hostPlatform.system}.wakatime-ls
-      pkgs.alejandra
+      alejandra
+      nil
+      nixd
     ];
 
     userSettings = {
@@ -212,11 +215,52 @@
         "CLAUDE.md"
       ];
 
-      languages.Nix = {
-        formatter = {
-          external = {
-            command = "alejandra";
-            arguments = [];
+      lsp = {
+        nixd = {
+          binary = {
+            path_lookup = true;
+          };
+          initialization_options = {
+            diagnostics.suppress = ["sema-extra-with"];
+            nixpkgs.expr = ''import (builtins.getFlake (builtins.toString ./.)).inputs.nixpkgs { }'';
+            options = {
+              nixos.expr = ''(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.${hostname}.options'';
+              home_manager.expr = ''(builtins.getFlake (builtins.toString ./.)).nixosConfigurations.${hostname}.options.home-manager.users.type.getSubOptions []'';
+            };
+            flake_parts.expr = ''let flake = builtins.getFlake ((builtins.toString ./.)); in flake.debug.options // flake.currentSystem.options'';
+          };
+        };
+        nil = {
+          binary = {
+            path_lookup = true;
+          };
+          initialization_options = {
+            diagnostics.ignored = ["unused_binding"];
+            nix = {
+              maxMemoryMB = 4096;
+              flake = {
+                autoArchive = true;
+                autoEvalInputs = true;
+                nixpkgsInputName = "nixpkgs";
+              };
+            };
+          };
+        };
+      };
+      languages = {
+        Nix = {
+          language_servers = [
+            "!nil"
+            "nixd"
+          ];
+          formatter = {
+            external = {
+              command = "alejandra";
+              arguments = [
+                "--quiet"
+                "--"
+              ];
+            };
           };
         };
       };
