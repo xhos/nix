@@ -23,6 +23,7 @@
   vm          .enable = true;
 
   greeter = "yawn";
+  terminal = "ghostty";
   systemd.tmpfiles.rules = [
     "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
   ];

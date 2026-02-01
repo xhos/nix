@@ -99,8 +99,10 @@
     ffmpeg-full
     # protonvpn-gui
     # proton-pass
-    kitty # fallback terminal
-    nautilus
+
+    file-roller
+    evince
+
     qbittorrent
     calibre
     (obsidian.override {commandLineArgs = ["--no-sandbox"];})

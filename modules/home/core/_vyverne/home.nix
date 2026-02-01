@@ -25,7 +25,6 @@
   shell = "zsh";
   prompt = "starship";
   browser = "zen";
-  terminal = "ghostty";
 
   mainMonitor = "Microstep MAG 274UPF E2 0x00000001";
 

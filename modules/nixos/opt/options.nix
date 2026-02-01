@@ -14,5 +14,11 @@
       default = "none";
       description = "which greeter to use (requires greetd.enable = true)";
     };
+
+    terminal = mkOption {
+      type = types.enum ["wezterm" "foot" "ghostty" "none"];
+      default = "none";
+      description = "default terminal emulator";
+    };
   };
 }

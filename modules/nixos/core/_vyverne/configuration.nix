@@ -26,6 +26,7 @@
   syncthing.enable = true;
 
   greeter = "yawn";
+  terminal = "ghostty";
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
 

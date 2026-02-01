@@ -1,4 +1,8 @@
-{lib, ...}: {
+{
+  lib,
+  osConfig,
+  ...
+}: {
   options = with lib; {
     # All module enable options have been moved to their respective module files
     # This file now only contains global/non-module options
@@ -50,7 +54,7 @@
         "ghostty"
         "none"
       ];
-      default = "none";
+      default = osConfig.terminal;
     };
     prompt = mkOption {
       type = types.enum [
