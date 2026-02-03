@@ -106,6 +106,7 @@
     qbittorrent
     calibre
     (obsidian.override {commandLineArgs = ["--no-sandbox"];})
+    inkscape
   ];
 in {
   nixpkgs.config = {
