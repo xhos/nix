@@ -7,8 +7,6 @@
   persistIf = condition: persistConfig: lib.mkIf condition persistConfig;
   moduleEnabled = module: config.modules.${module}.enable or false;
 in {
-  imports = [inputs.impermanence.homeManagerModules.impermanence];
-
   options.impermanence.enable = lib.mkEnableOption "wipe home folder on reboot, persist selected directories";
 
   options.persist = {

@@ -119,13 +119,13 @@
       }
     ];
 
-    "plugin:touch_gestures" = {
-      sensitivity = 5.0;
-      workspace_swipe_edge = "";
-      hyprgrass-bindm = ", longpress:2, movewindow";
-      hyprgrass-bind = ", edge:d:u, exec, toggle-osk";
-    };
-
+    # "plugin:touch_gestures" = {
+    #   sensitivity = 5.0;
+    #   workspace_swipe_edge = "";
+    #   hyprgrass-bindm = ", longpress:2, movewindow";
+    #   hyprgrass-bind = ", edge:d:u, exec, toggle-osk";
+    # };
+    #
     input = {
       kb_layout = "us, ru";
       kb_options = "caps:escape,grp:alt_shift_toggle";
