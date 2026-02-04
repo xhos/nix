@@ -47,6 +47,7 @@
 
     tree
     uv
+    android-tools
   ];
 
   # GUI packages for desktop systems only

@@ -11,6 +11,8 @@
         "libvirtd"
         "docker"
         "input"
+        "adbusers"
+        "kvm"
       ];
     };
     defaultUserShell = pkgs.zsh;

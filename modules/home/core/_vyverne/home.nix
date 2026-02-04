@@ -35,10 +35,10 @@
       "[workspace 10 silent] discord"
     ];
 
-    windowrulev2 = [
-      "workspace special silent, initialClass: spotify"
-      "workspace 10 silent, initialTitle: materialgram"
-      "workspace 10 silent, initialClass: discord"
+    windowrule = [
+      "workspace special silent, match:initial_class ^(spotify)$"
+      "workspace 10 silent, match:initial_title ^(materialgram)$"
+      "workspace 10 silent, match:initial_class ^(discord)$"
     ];
   };
 

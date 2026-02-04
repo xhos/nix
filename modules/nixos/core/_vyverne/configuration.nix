@@ -33,10 +33,6 @@
   services.hardware.openrgb.enable = true;
   programs.kdeconnect.enable = true;
 
-  # makes adb work
-  programs.adb.enable = true;
-  users.users.xhos.extraGroups = ["adbusers" "kvm"];
-
   # use android phone as a webcam
   boot.kernelModules = ["v4l2loopback"];
   boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];

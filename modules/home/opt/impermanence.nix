@@ -28,7 +28,7 @@ in {
       PATH=$PATH:/run/wrappers/bin
     '';
 
-    home.persistence."/persist/home/xhos" = lib.mkIf config.impermanence.enable (lib.mkMerge [
+    home.persistence."/persist" = lib.mkIf config.impermanence.enable (lib.mkMerge [
       {
         directories =
           [
@@ -108,8 +108,6 @@ in {
           ++ config.persist.dirs;
 
         files = [] ++ config.persist.files;
-
-        allowOther = true;
       }
 
       (persistIf (moduleEnabled "telegram") {

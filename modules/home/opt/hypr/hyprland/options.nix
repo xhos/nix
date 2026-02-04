@@ -60,24 +60,6 @@
         brightness = 0.4172;
         vibrancy = 0.1696;
       };
-
-      layerrule = [
-        "blur,RegularWindow"
-        "blur,PopupWindow"
-        "blur,notifications"
-        "ignorezero,notifications"
-
-        "blur,waybar"
-        "ignorezero,waybar"
-        "blurpopups,waybar"
-
-        "blur,rofi"
-        "ignorezero,rofi"
-
-        "blur,wvkbd"
-
-        "blur,gtk-layer-shell"
-      ];
     };
 
     animations = {

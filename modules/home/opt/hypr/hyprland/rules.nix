@@ -4,88 +4,57 @@
   ...
 }: {
   wayland.windowManager.hyprland.settings = lib.mkIf (config.de == "hyprland") {
-    # layerrule = [
-    #   "blur,waybar"
-    #   "ignorezero,waybar"
-    #   "ignorealpha 0.5,waybar"
-    #   "blur,gtk-layer-shell"
+    layerrule = [
+      "blur on, match:namespace ^(RegularWindow)$"
+      "blur on, match:namespace ^(PopupWindow)$"
 
-    #   "blur,rofi"
-    #   "ignorezero,rofi"
-    #   "ignorealpha 0.5,rofi"
-    # ];
-    # layerrule = [
-    #   "blur,RegularWindow"
-    #   "blur,PopupWindow"
-    #   "blur,notifications"
-    #   "ignorezero,notifications"
+      "blur on, match:namespace ^(notifications)$"
+      "ignore_alpha 0.0, match:namespace ^(notifications)$"
 
-    #   "blur,waybar"
-    #   "ignorezero,waybar"
-    #   "blurpopups,waybar"
+      "blur on, match:namespace ^(waybar)$"
+      "ignore_alpha 0.0, match:namespace ^(waybar)$"
+      "blur_popups on, match:namespace ^(waybar)$"
 
-    #   "blur,rofi"
-    #   "ignorezero,rofi"
+      "blur on, match:namespace ^(rofi)$"
+      "ignore_alpha 0.0, match:namespace ^(rofi)$"
 
-    #   "blur,gtk-layer-shell"
-    # ];
-    # window rules
-    windowrulev2 = [
-      # XWayland screen sharing related
-      "opacity 0.0 override, class:^(xwaylandvideobridge)$"
-      "noanim, class:^(xwaylandvideobridge)$"
-      "noinitialfocus, class:^(xwaylandvideobridge)$"
-      "maxsize 1 1, class:^(xwaylandvideobridge)$"
-      "noblur, class:^(xwaylandvideobridge)$"
-
-      # Dim around
-      "dimaround, class:^(gcr-prompter)$"
-      "dimaround, class:^(xdg-desktop-portal-gtk)$"
-      "dimaround, class:^(polkit-gnome-authentication-agent-1)$"
-
-      # Float
-      "float, class:^(pavucontrol)$"
-      "size 622 652,class:(pavucontrol)"
-      "float, class:^(blueman-manager)$"
-      "size 622 652,class:(blueman-manager)"
-      "float, class:^(nm-connection-editor)$"
-      "float, class:^(xdg-desktop-portal-gtk)$"
-      "float, title:^(Media viewer)$"
-      "float, title:^(Picture-in-Picture)$"
-      "float,class:(clipse)"
-      "size 622 652,class:(clipse)"
-
-      "float,class:(bluetui)"
-      "size 622 652,class:(bluetui)"
-
-      "float,class:(impala)"
-      "size 622 652,class:(impala)"
-
-      "float,class:(wiremix)"
-      "size 622 652,class:(wiremix)"
-
-      "tile, class:(web-app)" # for web apps to tile properly
-
-      # Idk
-      "idleinhibit focus, class:^(mpv|.+exe|celluloid)$"
-      "idleinhibit focus, class:^(firefox)$, title:^(.*YouTube.*)$"
-      "idleinhibit fullscreen, class:^(firefox)$"
-      "pin, title:^(Picture-in-Picture)$"
-      # "workspace special silent, title:^(.*is sharing (your screen|a window).)$"
-      # "workspace special silent, title:^(Firefox — Sharing Indicator)$"
-      # "workspace special, class:^(obsidian)$"
-      "opacity 0.99, class:^(obsidian)$"
+      "blur on, match:namespace ^(wvkbd)$"
+      "blur on, match:namespace ^(gtk-layer-shell)$"
     ];
 
-    # workspace = [
-    #   "w[tv1]s[false], gapsout:0, gapsin:0"
-    #   "f[1]s[false], gapsout:0, gapsin:0"
-    # ];
-    # windowrule = [
-    #   "bordersize 0, floating:0, onworkspace:w[tv1]s[false]"
-    #   "rounding 0, floating:0, onworkspace:w[tv1]s[false]"
-    #   "bordersize 0, floating:0, onworkspace:f[1]s[false]"
-    #   "rounding 0, floating:0, onworkspace:f[1]s[false]"
-    # ];
+    windowrule = [
+      # not sure if i need this anymore
+      "match:class ^(xwaylandvideobridge)$, opacity 0.0 override, no_anim on, no_initial_focus on, max_size 1 1, no_blur on"
+
+      # dim around
+      "match:class ^(gcr-prompter)$, dim_around on"
+      "match:class ^(xdg-desktop-portal-gtk)$, dim_around on"
+      "match:class ^(polkit-gnome-authentication-agent-1)$, dim_around on"
+
+      # floating rules
+      "match:class ^(pavucontrol)$, float on, size 622 652"
+      "match:class ^(blueman-manager)$, float on, size 622 652"
+      "match:class ^(clipse)$, float on, size 622 652"
+      "match:class ^(bluetui)$, float on, size 622 652"
+      "match:class ^(impala)$, float on, size 622 652"
+      "match:class ^(wiremix)$, float on, size 622 652"
+
+      "match:class ^(nm-connection-editor)$, float on"
+      "match:class ^(xdg-desktop-portal-gtk)$, float on"
+
+      "match:title ^(Media viewer)$, float on"
+      "match:title ^(Picture-in-Picture)$, float on, pin on"
+
+      # make web apps tile properly
+      "match:class web-app, tile on"
+
+      # idle inhibit
+      "match:class ^(mpv|.+exe|celluloid)$, idle_inhibit focus"
+      "match:class ^(firefox)$, match:title ^(.*YouTube.*)$, idle_inhibit focus"
+      "match:class ^(firefox)$, idle_inhibit fullscreen"
+
+      # obsidian transparency
+      "match:class ^(obsidian)$, opacity 0.99"
+    ];
   };
 }
