@@ -134,11 +134,7 @@ in {
           ".cloudflared"
           ".vscode-server"
           ".zed_server"
-          {
-            # podman stores its volumes here
-            directory = ".local/share/containers";
-            method = "symlink";
-          }
+          ".local/share/containers" # podman containers
         ];
       })
     ]);

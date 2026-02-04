@@ -8,7 +8,6 @@
     amneziaAccessible = true;
     port = 8096;
   };
-  _enrai.exposedServices.jellyseerr.port = config.services.jellyseerr.port;
 
   persist.dirs = [
     "/var/lib/jellyfin"
@@ -19,8 +18,6 @@
     "d /storage/media/cache 0755 root root -"
     "d /storage/media/cache/jellyfin 0755 jellyfin jellyfin -"
   ];
-
-  services.jellyseerr.enable = true;
 
   services.jellyfin = {
     enable = true;

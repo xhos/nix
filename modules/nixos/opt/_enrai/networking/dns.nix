@@ -24,15 +24,24 @@
       answer = enraiIP;
       enabled = true;
     })
-    localServices;
+    localServices
+    ++ [
+      {
+        domain = "*.${localDomain}";
+        answer = enraiIP;
+        enabled = true;
+      }
+    ];
 in {
   services.resolved = {
     enable = true;
-    dnssec = "false";
-    fallbackDns = ["1.1.1.1" "8.8.8.8"];
-    extraConfig = ''
-      DNSStubListener=no
-    '';
+    settings = {
+      Resolve = {
+        DNSSEC = "false";
+        FallbackDNS = ["1.1.1.1" "8.8.8.8"];
+        DNSStubListener = "no";
+      };
+    };
   };
 
   networking.nameservers = ["127.0.0.1" "1.1.1.1"];

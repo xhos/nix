@@ -154,19 +154,10 @@ in {
 
           chain postrouting {
             type nat hook postrouting priority srcnat; policy accept;
-
             oifname vmbr0 ip saddr 192.168.100.0/24 masquerade
           }
         }
       '';
     };
-
-    # DNS configuration for enrai itself
-    services.resolved.extraConfig = lib.mkForce ''
-      DNSStubListener=no
-    '';
-
-    # Use local AdGuard first, fallback to public DNS if it fails
-    networking.nameservers = lib.mkForce ["127.0.0.1" "1.1.1.1"];
   };
 }

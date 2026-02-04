@@ -56,7 +56,31 @@
     )
     publicServices;
 
-  allVhosts = mkLocalVhosts // mkPublicVhosts;
+  allVhosts =
+    mkLocalVhosts
+    // mkPublicVhosts
+    // {
+      # catch-all for undefined local subdomains
+      "*.${localDomain}" = {
+        useACMEHost = localDomain;
+        extraConfig = ''
+          bind ${enraiIP}
+          respond 404 {
+            close
+          }
+        '';
+      };
+      # catch-all for undefined public subdomains
+      "*.${publicDomain}" = {
+        useACMEHost = publicDomain;
+        listenAddresses = [config._enrai.config.tunnelIP];
+        extraConfig = ''
+          respond 404 {
+            close
+          }
+        '';
+      };
+    };
 in {
   sops.secrets."api/cloudflare" = {};
 

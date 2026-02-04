@@ -3,7 +3,7 @@
   lib,
   ...
 }: {
-  sops.secrets."passwords/wakapi" = {};
+  sops.secrets."env/wakapi" = {};
 
   # unset dynamic user stuff which makes it difficult to persist
   systemd.services.wakapi.serviceConfig = {
@@ -21,8 +21,7 @@
   services.wakapi = {
     enable = true;
     database.createLocally = true;
-
-    passwordSaltFile = config.sops.secrets."passwords/wakapi".path;
+    environmentFiles = [config.sops.secrets."env/wakapi".path];
 
     settings = {
       server.port = 3333;
