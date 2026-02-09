@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/d6/wallhaven-d671ej.png";
-    sha256 = "sha256-87aX/PWv2xilWm/waZeQxb93y0XTIG74O8Iw91IflRw=";
+    url = "https://w.wallhaven.cc/full/ex/wallhaven-exdl2k.jpg";
+    sha256 = "sha256-pg1GKu/rwOwWG8Gqc+TWLsvoG791DR+Y9/RGglPxtYE=";
   };
 
   stylix.base16Scheme = ./min-dark.yaml;
@@ -28,6 +28,12 @@
   browser = "zen";
 
   mainMonitor = "Microstep MAG 274UPF E2 0x00000001";
+
+  modules.smokeapi = {
+    enable = true;
+    appId = 2161700;
+    additionalLibraryPaths = ["/games/SteamLibrary"];
+  };
 
   wayland.windowManager.hyprland.settings = {
     exec-once = [

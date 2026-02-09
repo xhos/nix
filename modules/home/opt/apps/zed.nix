@@ -199,7 +199,7 @@
         default_profile = "ask";
         default_model = {
           provider = "copilot_chat";
-          model = "gemini-2.5-pro";
+          model = "claude-opus-4.6";
         };
         play_sound_when_agent_done = true;
       };
