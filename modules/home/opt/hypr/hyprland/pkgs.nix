@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  iconDir = "/etc/nixos/modules/home/opt/hypr/hyprland/icons";
+  iconDir = "/home/xhos/nix/modules/home/opt/hypr/hyprland/icons";
 
   brightness-script = pkgs.writeShellScriptBin "brightness-script" ''
     #!/bin/bash
@@ -175,6 +175,8 @@
 in {
   config = lib.mkIf (config.de == "hyprland") {
     home.packages = with pkgs; [
+      # things actully neeeded on hyprland
+      # ----
       brightness-script
       volume-script
       # TUI control tools

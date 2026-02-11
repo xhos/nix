@@ -4,11 +4,6 @@
   ...
 }: {
   options = with lib; {
-    # All module enable options have been moved to their respective module files
-    # This file now only contains global/non-module options
-
-    modules.firefox.enable = lib.mkEnableOption "Firefox web browser";
-
     headless = lib.mkOption {
       type = lib.types.bool;
       default = false;

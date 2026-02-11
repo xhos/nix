@@ -18,6 +18,7 @@
     whisper.enable = true;
     fonts.enable = true;
     rclone.enable = true;
+    kdeconnect.enable = true;
   };
 
   de = "hyprland";
