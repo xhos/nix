@@ -6,7 +6,7 @@
 }: {
   options.modules.kdeconnect.enable = lib.mkEnableOption "kdeconnect daemon (valent)";
 
-  config = config.modules.kdeconnect.enable {
+  config = lib.mkIf config.modules.kdeconnect.enable {
     services.kdeconnect = {
       enable = true;
       package = pkgs.valent;

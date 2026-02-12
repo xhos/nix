@@ -7,6 +7,8 @@
 }: let
   # CLI packages that work on both headless and desktop systems
   cliPkgs = with pkgs; [
+    proton-pass-cli
+
     # Development tools
     nil # nix lsp
     stylua

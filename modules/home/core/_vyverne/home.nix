@@ -11,7 +11,6 @@
   modules = {
     rofi.enable = true;
     spicetify.enable = true;
-    firefox.enable = true;
     discord.enable = true;
     secrets.enable = true;
     telegram.enable = true;
