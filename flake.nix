@@ -56,10 +56,6 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    tsutsumi = {
-      url = "github:Fuwn/tsutsumi";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     yawn.url = "github:xhos/yawn";
     swissh.url = "github:xhos/swissh";
 

@@ -67,7 +67,12 @@ in {
     cliPkgs
     (lib.optionals (config.headless != true) guiPkgs)
   ];
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowBroken = true;
+    allowUnfreePredicate = _: true;
+    permittedInsecurePackages = ["electron-25.9.0"];
+  };
 
   # # --------nautilis shenanigans----------
   # # refernces:

@@ -3,7 +3,9 @@
   inputs,
   import-tree,
   sharedNixosModules,
-}: {
+}: let
+  pkgsOverlay = (import ./pkgs-overlay.nix lib) ../pkgs;
+in {
   hostname,
   homeUser ? "xhos",
   extraSpecialArgs ? {},
@@ -15,12 +17,14 @@ lib.nixosSystem {
     lib.optionals (!minimal) [../modules/nixos]
     ++ [
       (import-tree.forHost hostname ../modules/nixos)
+      {nixpkgs.overlays = [pkgsOverlay];}
     ]
     ++ lib.optionals (homeUser != null) (
       sharedNixosModules
       ++ [
         {
           home-manager = {
+            useGlobalPkgs = true;
             extraSpecialArgs = {inherit inputs import-tree hostname;};
             backupFileExtension = ".b";
             users.${homeUser}.imports = [

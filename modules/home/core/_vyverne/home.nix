@@ -14,7 +14,6 @@
     discord.enable = true;
     secrets.enable = true;
     telegram.enable = true;
-    whisper.enable = true;
     fonts.enable = true;
     rclone.enable = true;
     kdeconnect.enable = true;
@@ -48,5 +47,5 @@
     ];
   };
 
-  home.packages = with pkgs; [jetbrains.idea teams-for-linux];
+  home.packages = with pkgs; [jetbrains.idea teams-for-linux whspr];
 }

@@ -1,31 +1,13 @@
 {
   lib,
   config,
-  inputs,
   pkgs,
   hostname,
   ...
 }: {
-  home.packages = let
-    zed-discord = pkgs.rustPlatform.buildRustPackage rec {
-      pname = "discord-presence-lsp";
-      # TODO update version
-      version = "eacb8afb406525a939a739c8c3a6834081bc9cb3";
-      # cargoHash = "sha256-JLNCEeo9fKeV4vTtPs+Yj2wRO1RKP2fuetrPlXcPBjA=";
-      cargoHash = "sha256-uc8ehP3D2HEMHzaDhOQ60I7hIzAOWvCLe50MAy0KjuY=";
-
-      src = pkgs.fetchFromGitHub {
-        owner = "xhyrom";
-        repo = "zed-discord-presence";
-        rev = version;
-        hash = "sha256-HJUoeY5fZV3Ku+ec32dHUYgP968Vdeevh6aAz9F8Ggs=";
-      };
-
-      cargoBuildFlags = "--package discord-presence-lsp";
-    };
-  in [
-    inputs.tsutsumi.packages.${pkgs.system}.wakatime-ls
-    zed-discord
+  home.packages = with pkgs; [
+    wakatime-ls
+    discord-presence-lsp
   ];
 
   programs.zed-editor = lib.mkIf (config.headless != true) {
@@ -56,7 +38,7 @@
     ];
 
     extraPackages = with pkgs; [
-      inputs.tsutsumi.packages.${pkgs.stdenv.hostPlatform.system}.wakatime-ls
+      wakatime-ls
       alejandra
       nil
       nixd
