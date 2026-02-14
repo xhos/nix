@@ -32,6 +32,7 @@ in {
       {
         directories =
           [
+            ".config/niri"
             "nix"
             ".aws"
             ".npm" # then npm cache cannot be configured to be in the projects dir and its insane in size, it sucks.
