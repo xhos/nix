@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: {
-  config = lib.mkIf (config.de == "hyprland" && config.hyprland.hyprspace.enable) {
+  config = lib.mkIf (config.wm == "hyprland" && config.hyprland.hyprspace.enable) {
     wayland.windowManager.hyprland = {
       plugins = [pkgs.hyprlandPlugins.hyprspace];
       settings = {

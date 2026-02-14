@@ -6,7 +6,7 @@
 }: {
   imports = [inputs.logi-hypr.homeManagerModules.default];
 
-  config = lib.mkIf (config.de == "hyprland") {
+  config = lib.mkIf (config.wm == "hyprland") {
     wayland.windowManager.hyprland.settings.exec-once = ["logi-hypr-run"];
 
     programs.logi-hypr = {

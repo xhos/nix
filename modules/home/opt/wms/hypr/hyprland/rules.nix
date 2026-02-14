@@ -3,7 +3,7 @@
   config,
   ...
 }: {
-  wayland.windowManager.hyprland.settings = lib.mkIf (config.de == "hyprland") {
+  wayland.windowManager.hyprland.settings = lib.mkIf (config.wm == "hyprland") {
     layerrule = [
       "blur on, match:namespace ^(RegularWindow)$"
       "blur on, match:namespace ^(PopupWindow)$"

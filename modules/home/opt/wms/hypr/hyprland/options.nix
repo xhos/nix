@@ -3,7 +3,7 @@
   lib,
   ...
 }: {
-  wayland.windowManager.hyprland.settings = lib.mkIf (config.de == "hyprland") {
+  wayland.windowManager.hyprland.settings = lib.mkIf (config.wm == "hyprland") {
     exec-once = [
       "uwsm-app -- clipse -listen"
       "uwsm-app -- wl-paste --type text --watch cliphist store"

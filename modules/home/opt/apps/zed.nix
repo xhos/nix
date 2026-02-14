@@ -47,7 +47,10 @@
     userSettings = {
       base_keymap = "VSCode";
       vim_mode = false;
-      theme = "Min Dark (Blurred)";
+      theme =
+        if config.wm == "hyprland"
+        then "Min Dark (Blurred)"
+        else "Min Dark (Solid)";
       icon_theme = "Material Icon Theme";
 
       ui_font_size = 18.0;

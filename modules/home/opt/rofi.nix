@@ -11,15 +11,19 @@
       theme = let
         inherit (config.lib.formats.rasi) mkLiteral;
         mkl = mkLiteral;
+        alpha =
+          if config.wm == "niri"
+          then ""
+          else "55";
       in {
         "*" = {
           font = mkl "\"Hack Nerd Font 12\"";
-          bg0 = mkl "#${config.lib.stylix.colors.base00}55";
-          bg1 = mkl "#${config.lib.stylix.colors.base01}55";
-          bg2 = mkl "#${config.lib.stylix.colors.base0E}55";
+          bg0 = mkl "#${config.lib.stylix.colors.base00}${alpha}";
+          bg1 = mkl "#${config.lib.stylix.colors.base01}${alpha}";
+          bg2 = mkl "#${config.lib.stylix.colors.base0E}${alpha}";
           fg0 = mkl "#${config.lib.stylix.colors.base06}";
           fg1 = mkl "#${config.lib.stylix.colors.base07}";
-          fg2 = mkl "#${config.lib.stylix.colors.base05}55";
+          fg2 = mkl "#${config.lib.stylix.colors.base05}${alpha}";
           background-color = mkl "transparent";
           text-color = mkl "@fg0";
           margin = 0;

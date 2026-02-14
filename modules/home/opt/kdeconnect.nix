@@ -13,7 +13,7 @@
     };
 
     wayland.windowManager.hyprland.settings.exec-once =
-      lib.mkIf (config.de == "hyprland")
+      lib.mkIf (config.wm == "hyprland")
       ["${lib.getExe pkgs.valent} --gapplication-service"];
   };
 }

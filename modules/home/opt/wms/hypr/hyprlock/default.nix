@@ -34,7 +34,7 @@
     echo "$song_info" | tr '[:lower:]' '[:upper:]'
   '';
 in
-  lib.mkIf (config.de == "hyprland") {
+  lib.mkIf (config.wm == "hyprland") {
     home.packages = [
       wp-blur
       song-detail

@@ -124,7 +124,7 @@ in {
         ];
       })
 
-      (lib.mkIf (config.de == "hyprland") {
+      (lib.mkIf (config.wm == "hyprland") {
         files = [
           ".config/hypr/monitors.conf"
         ];

@@ -1,10 +1,14 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  osConfig,
+  ...
+}: {
   stylix.image = pkgs.fetchurl {
     url = "https://w.wallhaven.cc/full/7j/wallhaven-7j9wle.png";
     sha256 = "sha256-oBe7QloMCdxZijzos/VRzZ5kuR3mHh7L2LIKKdtUysI=";
   };
 
-  stylix.base16Scheme = ./min-dark.yaml;
+  stylix.base16Scheme = ./min-darker.yaml;
 
   impermanence.enable = false;
 
@@ -18,7 +22,7 @@
     kdeconnect.enable = true;
   };
 
-  de = "hyprland";
+  wm = osConfig.wm;
   bar = "waybar";
   shell = "zsh";
   prompt = "starship";

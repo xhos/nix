@@ -26,7 +26,7 @@
     10
   );
 in {
-  wayland.windowManager.hyprland.settings = lib.mkIf (config.de == "hyprland") (let
+  wayland.windowManager.hyprland.settings = lib.mkIf (config.wm == "hyprland") (let
     terminal = config.home.sessionVariables.TERMINAL;
   in {
     # https://wiki.hyprland.org/Configuring/Binds/#bind-flags

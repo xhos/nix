@@ -12,7 +12,11 @@
       default-timeout = 3000;
       height = 150;
       width = 300;
-      border-radius = config.wayland.windowManager.hyprland.settings.decoration.rounding;
+      # niri TODO: integrate niri rounding once niri config is in nix
+      border-radius =
+        if config.wm == "hyprland"
+        then config.wayland.windowManager.hyprland.settings.decoration.rounding
+        else 8;
       icons = true;
       text-color = "#f8f8f2";
       layer = "overlay";

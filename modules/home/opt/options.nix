@@ -20,9 +20,10 @@
       hyprspace.enable = mkEnableOption "enable hyprland overview plugin";
     };
 
-    de = mkOption {
+    wm = mkOption {
       type = types.enum [
         "hyprland"
+        "niri"
         "none"
       ];
       default = "none";

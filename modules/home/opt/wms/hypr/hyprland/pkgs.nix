@@ -173,7 +173,7 @@
     fi
   '';
 in {
-  config = lib.mkIf (config.de == "hyprland") {
+  config = lib.mkIf (config.wm == "hyprland") {
     home.packages = with pkgs; [
       # things actully neeeded on hyprland
       # ----

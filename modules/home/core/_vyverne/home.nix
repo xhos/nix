@@ -19,7 +19,7 @@
     kdeconnect.enable = true;
   };
 
-  de = "hyprland";
+  wm = "hyprland";
   bar = "waybar";
   shell = "zsh";
   prompt = "starship";
