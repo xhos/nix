@@ -1,8 +1,5 @@
 {lib, ...}: {
   options = with lib; {
-    # All module enable options have been moved to their respective module files
-    # This file now only contains global/non-module options
-
     headless = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -12,7 +9,13 @@
     greeter = mkOption {
       type = types.enum ["autologin" "sddm" "yawn" "none"];
       default = "none";
-      description = "which greeter to use (requires greetd.enable = true)";
+      description = "which greeter to use";
+    };
+
+    wm = mkOption {
+      type = types.enum ["hyprland" "niri" "none"];
+      default = "none";
+      description = "which wm to use";
     };
 
     terminal = mkOption {

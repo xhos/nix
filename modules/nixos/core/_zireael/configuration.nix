@@ -16,7 +16,6 @@
 
   impermanence.enable = false;
   bluetooth   .enable = true;
-  greetd      .enable = true;
   audio       .enable = true;
   boot        .enable = true;
   syncthing   .enable = true;
@@ -24,6 +23,8 @@
 
   greeter = "yawn";
   terminal = "ghostty";
+  wm = "niri";
+
   systemd.tmpfiles.rules = [
     "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
   ];

@@ -78,12 +78,6 @@ in {
         ];
       })
 
-      (persistIf (config.greetd.enable && config.greeter == "tuigreet") {
-        files = [
-          "/var/cache/tuigreet/lastuser"
-        ];
-      })
-
       (persistIf (config.greeter == "regreet") {
         directories = [
           "/var/lib/regreet"

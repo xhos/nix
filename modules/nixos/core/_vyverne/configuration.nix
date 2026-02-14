@@ -17,7 +17,6 @@
   audio.enable = true;
   bluetooth.enable = true;
   games.enable = true;
-  greetd.enable = true;
   nvidia.enable = true;
   vm.enable = true;
   ai.enable = false;
@@ -27,6 +26,7 @@
 
   greeter = "yawn";
   terminal = "ghostty";
+  wm = "hyprland";
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
 
