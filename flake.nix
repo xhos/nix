@@ -1,34 +1,40 @@
 {
-  description = "overcomplicated mess of a system flake that works for some reason";
-
   inputs = {
-    # core
+    # --- core -----------------------------------------------------------
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:NixOS/nixpkgs/release-24.05";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nix-on-droid = {
       url = "github:nix-community/nix-on-droid/release-24.05";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    # system
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # --- system ---------------------------------------------------------
     disko.url = "github:nix-community/disko";
     impermanence.url = "github:nix-community/impermanence";
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
     proxmox-nixos.url = "github:SaumonNet/proxmox-nixos";
+
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nix-secrets = {
       url = "git+ssh://git@github.com/xhos/nix-secrets?ref=main&allRefs=1";
       flake = false;
     };
 
-    # hyprland
+    # --- hyprland -------------------------------------------------------
     # hyprland = {
     #   url = "github:hyprwm/Hyprland";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -47,34 +53,42 @@
     # };
     logi-hypr.url = "github:xhos/logi-hypr";
 
-    # customization
+    # --- customization --------------------------------------------------
     stylix = {
       url = "github:danth/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     spicetify-nix = {
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    yawn.url = "github:xhos/yawn";
-    swissh.url = "github:xhos/swissh";
 
-    # applications
+    yawn.url = "github:xhos/yawn";
+    # swissh.url = "github:xhos/swissh";
+
+    # --- applications ---------------------------------------------------
     claude-desktop = {
       url = "github:k3d3/claude-desktop-linux-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     nixcord.url = "github:kaylorben/nixcord";
     nxv.url = "github:xhos/nxv";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
 
-    # services
-    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
+    # --- services -------------------------------------------------------
+    declarr = {
+      url = "github:xhos/declarr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vscode-server.url = "github:nix-community/nixos-vscode-server";
     wled-album-sync.url = "github:xhos/wled-album-sync";
 
-    # utilities
+    # --- utilities ------------------------------------------------------
     import-tree.url = "github:vic/import-tree";
+    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
   };
 
   outputs = {

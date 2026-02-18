@@ -89,20 +89,17 @@ in {
           "/var/lib/postgresql"
           "/var/lib/wireguard" # wg proxy private key
           "/var/lib/docker"
-          "/var/lib/prowlarr"
           "/var/lib/acme"
           "/var/lib/caddy"
-          "/var/lib/bazarr"
-          "/var/lib/radarr"
           "/var/lib/zipline"
-          "/var/lib/recyclarr"
           "/var/lib/AdGuardHome"
           "/var/lib/dnsmasq"
           "/var/lib/glance"
           "/var/lib/qBittorrent"
-          "/var/lib/incus"
           "/var/lib/hass"
           "/var/lib/wakapi"
+
+          # TODO: why here
           "/home/xhos/.local/share/syncthing"
 
           # proxmox

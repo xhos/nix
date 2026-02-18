@@ -1,40 +1,55 @@
 {
   lib,
   config,
+  inputs,
   ...
 }: {
-  services = {
-    prowlarr.enable = true;
-    radarr.enable = true;
-    bazarr.enable = true;
-    flaresolverr.enable = true;
+  imports = [inputs.declarr.nixosModules.default];
+
+  # shared media directory
+  systemd.tmpfiles.rules = [
+    "d /storage/media 0775 root media -"
+  ];
+
+  # declarr global config
+  services.declarr = {
+    enable = true;
+    config.declarr = {
+      stateDir = "/var/lib/declarr";
+      formatDbRepo = "https://github.com/Dictionarry-Hub/Database";
+      formatDbBranch = "stable";
+      globalResolvePaths = [
+        "$.*.config.host.apiKey"
+        "$.*.config.host.password"
+        "$.*.config.host.passwordConfirmation"
+        "$.*.downloadClient.*.fields.password"
+        "$.*.applications.*.fields.apiKey"
+        "$.*.indexer.*.fields.password"
+      ];
+    };
   };
 
-  _enrai.exposedServices.prowlarr.port = config.services.prowlarr.settings.server.port;
-  _enrai.exposedServices.radarr.port = config.services.radarr.settings.server.port;
-  _enrai.exposedServices.bazarr.port = config.services.bazarr.listenPort;
-  _enrai.exposedServices.flaresolverr.port = config.services.flaresolverr.port;
+  # shared secrets
+  sops.secrets."media/password/qbit" = {
+    group = "media";
+    mode = "0440";
+  };
 
+  # media users and groups
   users = let
-    mediaServices = ["sonarr" "radarr" "bazarr" "prowlarr"];
+    mediaServices = ["sonarr" "radarr" "prowlarr"];
   in {
-    users = lib.genAttrs mediaServices (name: {
-      isSystemUser = true;
-      group = name;
-      extraGroups = ["media"];
-    });
+    users =
+      lib.genAttrs mediaServices (name: {
+        isSystemUser = true;
+        group = name;
+        extraGroups = ["media"];
+      })
+      // {declarr.extraGroups = ["media"];};
     groups = lib.genAttrs (mediaServices ++ ["media"]) (_: {});
   };
 
-  # unset dynamic user stuff which makes it difficult to persist
-  systemd.services.prowlarr.serviceConfig = {
-    DynamicUser = lib.mkForce false;
-    User = "prowlarr";
-    Group = "prowlarr";
-  };
-
-  systemd.tmpfiles.rules = [
-    "d /storage/media 0775 root media -"
-    "d /storage/media/anime 0775 root media -"
-  ];
+  # services without their own file
+  services.flaresolverr.enable = true;
+  _enrai.exposedServices.flaresolverr.port = config.services.flaresolverr.port;
 }

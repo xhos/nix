@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{pkgs, ...}: {
   _enrai.exposedServices.jellyfin = {
     exposed = true;
     amneziaAccessible = true;

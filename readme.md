@@ -30,8 +30,8 @@ all wallpapers can can be found [here](https://pics.xhos.dev/folder/cmgs64vh4000
 
 [enrai](../hosts/enrai) is my headless optiplex 5050 running a bunch of cool things, ~99% declarative. zsh, impermanence, secrets, all that good stuff:
 
+- fully declarative *arr stack thanks to [upidapi's](https://github.com/upidapi) [declarr](https://github.com/upidapi/declarr). (tho i use [my own fork](https://github.com/xhos/declarr) of it for some extra features)
 - networking: caddy reverse proxy with cloudflare acme + nat port forwarding over wirguard to the vps running my [nix-wg-proxy](https://github.com/xhos/nix-wg-proxy)
-- media pipeline: jellyfin + the usual *arr stack + qbittorrent with proton vpn
 - home assistant: yandex station max controlling wled and [wled-album-sync](https://github.com/xhos/wled-album-sync)
 - proxmox-nix running 2 vms, one for game servers, other for amnezia vpn (the only not fully declarative part)
 - zipline, wakapi, synthing, glance and more

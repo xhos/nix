@@ -173,16 +173,6 @@
                           icon = "sh:prowlarr";
                         }
                         {
-                          title = "bazarr";
-                          url = "http://${serverIP}:6767";
-                          icon = "sh:bazarr";
-                        }
-                        {
-                          title = "Bazarr";
-                          url = "http://${serverIP}:6767";
-                          icon = "sh:bazarr";
-                        }
-                        {
                           title = "Proxmox";
                           url = "http://${serverIP}:8006";
                           icon = "sh:proxmox";
@@ -265,10 +255,7 @@
                       title = "prowlarr";
                       url = "http://${serverIP}:9696";
                     }
-                    {
-                      title = "bazarr";
-                      url = "http://${serverIP}:6767";
-                    }
+
                     {
                       title = "flaresolverr";
                       url = "http://${serverIP}:8191";
