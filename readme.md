@@ -6,10 +6,10 @@
 ## old setup using [aard](https://github.com/xhos/aard)
 
 <p float="left">
-  <img src="./ss1.png" width="400" />
-  <img src="./ss2.png" width="400" /> 
-  <img src="./ss3.png" width="400" />
-  <img src="./ss4.png" width="400" />
+  <img src="./.github/ss1.png" width="400" />
+  <img src="./.github/ss2.png" width="400" /> 
+  <img src="./.github/ss3.png" width="400" />
+  <img src="./.github/ss4.png" width="400" />
 </p>
 
 </details>
