@@ -16,7 +16,7 @@
 
 all wallpapers can can be found [here](https://pics.xhos.dev/folder/cmgs64vh4000amzfs6t7oqy3f)
 
-## 🌌 main features
+## main features
 
 - modular setup, everything is toggleable and switchable
 - easy full system theming with stylix, based on the wallpaper or a base16 scheme
@@ -26,7 +26,7 @@ all wallpapers can can be found [here](https://pics.xhos.dev/folder/cmgs64vh4000
 - preconfigured web apps
 - fully-themed login screens with sddm and grub
 
-## 🏠 homelab
+## homelab
 
 [enrai](../hosts/enrai) is my headless optiplex 5050 running a bunch of cool things, ~99% declarative. zsh, impermanence, secrets, all that good stuff:
 
@@ -36,7 +36,7 @@ all wallpapers can can be found [here](https://pics.xhos.dev/folder/cmgs64vh4000
 - proxmox-nix running 2 vms, one for game servers, other for amnezia vpn (the only not fully declarative part)
 - zipline, wakapi, synthing, glance and more
 
-## 📦 repo structure
+## repo structure
 
 - **[derivs](../derivs):** nixpkgs overlays/derivations
 - **[home](../home):** per host home-manager entrypoints
@@ -49,7 +49,7 @@ all wallpapers can can be found [here](https://pics.xhos.dev/folder/cmgs64vh4000
     - **[core](../modules/nixos/core):** core modules
     - **[opt](../modules/nixos/opt):** optional and toggleable modules
 
-## ℹ️ info
+## info
 
 | component          | details                                                 |
 | ------------------ | ------------------------------------------------------- |
@@ -66,7 +66,7 @@ all wallpapers can can be found [here](https://pics.xhos.dev/folder/cmgs64vh4000
 | clipboard manager  | [clipse](https://github.com/savedra1/clipse)            |
 | fetch              | [fastfetch](https://github.com/fastfetch-cli/fastfetch) |
 
-## 🔒️ hyprlock
+## hyprlock
 
 | name | preview | sources |
 | :--- | :--- | :--- |
@@ -81,7 +81,7 @@ fonts used are:
 - Nimbus Sans L Thin
 - Nimbus Sans Black
 
-## 🖌️ themed apps
+## themed apps
 
 > [!note]
 > most of these automatically follow the stylix color scheme
@@ -92,7 +92,7 @@ fonts used are:
 - spotify:  [text](https://github.com/spicetify/spicetify-themes/tree/master/text)
 - and more that i'm forgetting...
 
-## 💡 acknowledgments
+## acknowledgments
 
 - [@joshuagrisham](https://github.com/joshuagrisham) for his work on [the galaxy book driver](https://github.com/joshuagrisham/samsung-galaxybook-extras)
 - [@itzderock](https://github.com/ItzDerock) for sharing his [nix derivation](https://github.com/joshuagrisham/samsung-galaxybook-extras/issues/14#issue-2328871732) for that driver (now irrelevant since it was merged upstream)
