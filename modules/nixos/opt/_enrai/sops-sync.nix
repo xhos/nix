@@ -8,8 +8,8 @@
   sops-proton-pass-sync = pkgs.fetchFromGitHub {
     owner = "xhos";
     repo = "sops-proton-pass-sync";
-    rev = "c2a19f39a0a600c76e934a34fac1b172b39cb3b5";
-    hash = "sha256-wWuVf7PgyGZMts7F4Xxne+maoudHjILXerAAmKqwwNI=";
+    rev = "076ce0a475514a5751859fa84d37487c343c60f4";
+    hash = "sha256-8P3CC1+KAFNKy38vBgQyqspi9n16zFmQIGPG6kY8RSg=";
   };
 in {
   systemd.services.sops-proton-pass-sync = {
@@ -23,6 +23,8 @@ in {
       ExecStart = "${sops-proton-pass-sync}/sops-proton-pass-sync.sh ${sopsFolder}/secrets.yaml";
     };
 
+    # im having issues with proton-pass-cli accessing the kernel keyring,
+    # might be a bug, this fixes it for now.
     environment.PROTON_PASS_KEY_PROVIDER = "fs";
 
     path = with pkgs; [
