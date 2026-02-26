@@ -6,9 +6,8 @@
   config = lib.mkIf (config.bar == "waybar") {
     programs.waybar.style = with config.lib.stylix.colors; ''
       @define-color background #000000;
-      @define-color foreground #${base08};
+      @define-color foreground #${base07};
       @define-color text #${base05};
-
       @define-color color0 #${base00};
       @define-color color1 #${base01};
       @define-color color2 #${base02};
@@ -29,61 +28,84 @@
       @define-color inactive #${base03};
 
       * {
-        font-family: "Hack Nerd Font Mono";
-        font-size: 13px;
+        font-family: "Monospec";
+        font-size: 11px;
         border: none;
         min-height: 0;
+        min-width: 0;
       }
 
       window#waybar {
-        background: @background;
+        background: rgba(0, 0, 0, 1);
         color: @text;
       }
 
-      #cpu,
       #clock,
-      #disk,
-      #mpris,
       #network,
-      #custom-zfs,
-      #bluetooth,
       #pulseaudio,
       #pulseaudio.microphone,
-      #backlight,
       #battery,
+      #language,
       #custom-recording,
       #custom-whisper,
       #custom-camera-cover {
-        padding: 0 8px;
-        margin: 0 2px;
+        padding: 4px 0;
+        margin: 1px 0;
         color: @text;
+      }
+
+      #clock {
+        font-size: 16px;
+        color: @foreground;
+      }
+
+      #workspaces {
+        margin: 0;
+        padding: 0;
       }
 
       #workspaces button {
         color: @inactive;
-        padding: 0 4px;
+        padding: 3px 0;
+        background: transparent;
+        border-radius: 0;
       }
 
-      #workspaces button.active {
-        color: #${base07};
+      #workspaces button.empty {
+        color: @inactive;
       }
 
-      #mpris.playing { color: @color11; }
-      #mpris.paused { color: #${base0A}; }
-      #mpris.stopped { color: @inactive; }
+      #workspaces button.active,
+      #workspaces button.focused {
+        color: @color7;
+      }
 
-      #network.disabled { color: @inactive; }
+      #network.disabled,
+      #network.disconnected {
+        color: @inactive;
+      }
 
-      #bluetooth.disabled { color: @inactive; }
+      #pulseaudio.sink-muted:not(.microphone) {
+        color: @inactive;
+      }
 
-      #pulseaudio.sink-muted:not(.microphone) { color: #${base08}; }
-      #pulseaudio.microphone.source-muted { color: @inactive; }
+      #pulseaudio.microphone.source-muted {
+        color: @inactive;
+      }
 
       #battery.plugged,
-      #battery.full { color: @color11; }
-      #battery.charging { color: @color11; }
-      #battery.warning { color: #${base0A}; }
-      #battery.critical { color: #${base08}; }
+      #battery.full,
+      #battery.charging {
+        color: @color11;
+      }
+
+      #battery.warning {
+        color: #${base0A};
+      }
+
+      #battery.critical {
+        color: #${base08};
+      }
 
       #custom-recording.recording-active,
       #custom-whisper.recording-active {
@@ -97,7 +119,7 @@
       tooltip {
         background: @background;
         color: @text;
-        border: 1px solid #${base02};
+        border: 1px solid @color2;
       }
     '';
   };

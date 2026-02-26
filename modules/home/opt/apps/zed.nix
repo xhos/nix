@@ -26,6 +26,8 @@
       "tokyo-night"
 
       # languages
+      "cmake"
+      "glsl"
       "docker-compose"
       "git-firefly"
       "dockerfile"
@@ -233,6 +235,22 @@
         };
       };
       languages = {
+        "C++" = {
+          tab_size = 4;
+        };
+        GLSL = {
+          tab_size = 4;
+        };
+        CMake = {
+          tab_size = 4;
+        };
+        Makefile = {
+          tab_size = 4;
+          hard_tabs = true;
+        };
+        TOML = {
+          tab_size = 2;
+        };
         Nix = {
           language_servers = [
             "!nil"

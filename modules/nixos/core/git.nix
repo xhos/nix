@@ -22,9 +22,7 @@
         showStash = true;
         showUntrackedFiles = "all";
       };
-      core.fileMode = false;
       init.defaultBranch = "main";
-      safe.directory = "/etc/nixos";
     };
   };
 

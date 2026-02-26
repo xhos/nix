@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/7j/wallhaven-7j261e.jpg";
-    sha256 = "sha256-wrizQZOuirSpQ2CTIy91skdvbWOvFxGmhO5mAvX+FwI=";
+    url = "https://w.wallhaven.cc/full/1q/wallhaven-1qdjv1.jpg";
+    sha256 = "sha256-G4n8TanJPF7iFkGMJqIaOqp4wZHtu0DgwAPyF0jNJok=";
   };
 
   stylix.base16Scheme = ./min-dark.yaml;
@@ -47,5 +47,10 @@
     ];
   };
 
-  home.packages = with pkgs; [jetbrains.idea teams-for-linux whspr];
+  home.packages = with pkgs; [
+    jetbrains.idea
+    teams-for-linux
+    whspr
+    android-studio-full
+  ];
 }

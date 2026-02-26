@@ -71,7 +71,7 @@ in {
     allowUnfree = true;
     allowBroken = true;
     allowUnfreePredicate = _: true;
-    permittedInsecurePackages = ["electron-25.9.0"];
+    android_sdk.accept_license = true;
   };
 
   # # --------nautilis shenanigans----------

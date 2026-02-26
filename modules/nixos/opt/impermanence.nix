@@ -36,7 +36,6 @@ in {
         hideMounts = true;
         directories =
           [
-            "/etc/nixos"
             "/etc/ssh"
             "/var/lib/nixos"
             "/var/lib/systemd/"

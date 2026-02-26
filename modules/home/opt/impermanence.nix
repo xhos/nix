@@ -31,6 +31,14 @@ in {
       {
         directories =
           [
+            # this fucking thing
+            "Android"
+            ".config/Google"
+            ".cache/Google"
+            ".gradle"
+            ".config/.android"
+
+            ".local/share/jellyfin-desktop"
             ".config/niri"
             "nix"
             ".aws"

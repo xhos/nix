@@ -25,6 +25,7 @@
       WLR_DRM_NO_MODIFIERS = "1";
       GBM_BACKEND = "nvidia-drm";
       __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+      SDL_RENDER_DRIVER = "opengl";
     };
 
     environment.systemPackages = with pkgs; [
