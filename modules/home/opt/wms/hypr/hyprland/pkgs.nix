@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  iconDir = "/home/xhos/nix/modules/home/opt/hypr/hyprland/icons";
+  iconDir = "/home/xhos/nix/modules/home/opt/wms/hypr/hyprland/icons";
 
   brightness-script = pkgs.writeShellScriptBin "brightness-script" ''
     #!/bin/bash
