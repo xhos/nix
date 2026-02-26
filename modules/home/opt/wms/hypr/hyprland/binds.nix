@@ -17,7 +17,7 @@
         ws = let
           c = (x + 1) / 10;
         in
-          builtins.toString (x + 1 - (c * 10));
+          toString (x + 1 - (c * 10));
       in [
         "SUPER, ${ws}, split:workspace, ${toString (x + 1)}"
         "SUPERSHIFT, ${ws}, split:movetoworkspace, ${toString (x + 1)}"
@@ -26,9 +26,7 @@
     10
   );
 in {
-  wayland.windowManager.hyprland.settings = lib.mkIf (config.wm == "hyprland") (let
-    terminal = config.home.sessionVariables.TERMINAL;
-  in {
+  wayland.windowManager.hyprland.settings = lib.mkIf (config.wm == "hyprland") {
     # https://wiki.hyprland.org/Configuring/Binds/#bind-flags
     bind =
       [
@@ -92,7 +90,7 @@ in {
         # "SUPER, Q, exec, uwsm-app -- ${terminal}"
         "SUPER, R, exec, uwsm-app -- whspr"
         "SUPER, B, exec, uwsm-app -- ${config.browser}"
-        "SUPERSHIFTALT, L, exec, uwsm-app -- hyprlock"
+        "SUPERSHIFT, L, exec, uwsm-app -- hyprlock"
         "SUPERSHIFT, S, exec, uwsm-app -- hyprshot -z -m region --clipboard-only"
         "SUPER, V, exec, uwsm-app -- foot -a clipse clipse"
         "SUPERSHIFT, B, exec, uwsm-app -- foot -a bluetui bluetui"
@@ -119,5 +117,5 @@ in {
       "SUPER, mouse:272, movewindow"
       "SUPER, mouse:273, resizewindow"
     ];
-  });
+  };
 }

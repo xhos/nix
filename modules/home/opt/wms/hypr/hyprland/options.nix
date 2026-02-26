@@ -106,7 +106,13 @@
     #   hyprgrass-bindm = ", longpress:2, movewindow";
     #   hyprgrass-bind = ", edge:d:u, exec, toggle-osk";
     # };
-    #
+
+    gestures = {
+      gesture = "3, vertical, workspace";
+      # workspace_swipe_distance = 100;
+      workspace_swipe_invert = true;
+    };
+
     input = {
       kb_layout = "us, ru";
       kb_options = "caps:escape,grp:alt_shift_toggle";
