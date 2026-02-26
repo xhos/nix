@@ -23,7 +23,7 @@
 
   greeter = "yawn";
   terminal = "ghostty";
-  wm = "niri";
+  wm = "hyprland";
 
   systemd.tmpfiles.rules = [
     "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
