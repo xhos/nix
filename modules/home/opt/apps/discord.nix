@@ -13,7 +13,7 @@
       enable = true;
 
       config = {
-        themeLinks = ["https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/system24.theme.css"];
+        # themeLinks = ["https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/system24.theme.css"];
 
         frameless = true;
 

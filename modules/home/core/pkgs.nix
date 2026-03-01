@@ -93,7 +93,7 @@
     wireplumber # PipeWire session manager
 
     # Heavy GUI applications
-    krita
+    # krita # broken: lager/boost build failure
     libreoffice
     postman
     gnome-solanum
@@ -106,7 +106,7 @@
     evince
 
     qbittorrent
-    calibre
+    # calibre # broken: missing qmake in build
     (obsidian.override {commandLineArgs = ["--no-sandbox"];})
     inkscape
   ];

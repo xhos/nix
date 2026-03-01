@@ -44,9 +44,27 @@
 
       u = "uwsm-app --";
     };
+
     initContent = ''
       try() {
         nix run nixpkgs#$1 -- "''${@:2}"
+      }
+
+      togif() {
+        local fps=15
+        local input
+
+        if [[ $# -eq 2 ]]; then
+          fps="$1"
+          input="$2"
+        else
+          input="$1"
+        fi
+
+        local output="''${input%.*}.gif"
+        local palette="/tmp/palette.png"
+        ffmpeg -i "$input" -vf "fps=''${fps},scale=960:-1:flags=lanczos,palettegen" -frames:v 1 -y "$palette" && \
+        ffmpeg -i "$input" -i "$palette" -filter_complex "fps=''${fps},scale=960:-1:flags=lanczos[x];[x][1:v]paletteuse" -y "$output"
       }
     '';
   };

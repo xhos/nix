@@ -103,7 +103,7 @@
     in {
       output = config.mainMonitor;
       position = "left";
-      layer = "overlay";
+      layer = "top";
       width = 34;
 
       "modules-left" = [

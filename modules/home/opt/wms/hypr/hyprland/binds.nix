@@ -89,7 +89,8 @@ in {
         # utilities
         # "SUPER, Q, exec, uwsm-app -- ${terminal}"
         "SUPER, R, exec, uwsm-app -- whspr"
-        "SUPER, B, exec, uwsm-app -- ${config.browser}"
+        # "SUPER, B, exec, uwsm-app -- ${config.browser}"
+        "SUPER, B, exec, uwsm-app -- zen-beta"
         "SUPERSHIFT, L, exec, uwsm-app -- hyprlock"
         "SUPERSHIFT, S, exec, uwsm-app -- hyprshot -z -m region --clipboard-only"
         "SUPER, V, exec, uwsm-app -- foot -a clipse clipse"

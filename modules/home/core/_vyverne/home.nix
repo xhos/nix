@@ -50,7 +50,7 @@
   home.packages = with pkgs; [
     jetbrains.idea
     teams-for-linux
-    whspr
+    # whspr # broken: ctranslate2 build failure
     android-studio-full
   ];
 }
