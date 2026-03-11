@@ -42,6 +42,7 @@ in {
             "/etc/NetworkManager/system-connections"
             "/var/lib/fprint"
             "/var/lib/fail2ban/"
+            "/var/log"
           ]
           ++ config.persist.dirs;
         files =
@@ -100,12 +101,6 @@ in {
 
           # TODO: why here
           "/home/xhos/.local/share/syncthing"
-
-          # proxmox
-          "/var/lib/pve-cluster"
-          # "/var/lib/vz"
-          "/var/lib/rrdcached"
-          "/var/lib/pve-manager"
         ];
       })
     ];
