@@ -9,6 +9,7 @@
     programs.zoxide.enableZshIntegration = true;
     programs.zsh = {
       enable = true;
+      dotDir = "${config.xdg.configHome}/zsh";
       history.path = "${config.xdg.dataHome}/zsh/zsh_history";
       plugins = [
         {
