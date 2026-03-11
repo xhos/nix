@@ -2,10 +2,19 @@
   port = toString config.services.sonarr.settings.server.port;
   secret = name: config.sops.secrets."media/${name}".path;
 in {
-  sops.secrets."media/api/sonarr" = {group = "media"; mode = "0440";};
-  sops.secrets."media/password/sonarr" = {group = "media"; mode = "0440";};
+  sops.secrets."media/api/sonarr" = {
+    group = "media";
+    mode = "0440";
+  };
+  sops.secrets."media/password/sonarr" = {
+    group = "media";
+    mode = "0440";
+  };
 
-  persist.dirs = ["/var/lib/sonarr"];
+  persist.dirs = [
+    "/var/lib/sonarr"
+    "/var/lib/declarr"
+  ];
 
   services.sonarr.enable = true;
   services.sonarr.apiKeyFile = secret "api/sonarr";
@@ -41,34 +50,52 @@ in {
     };
 
     customFormat = {
-      "Russian Subs".conditions = [{
-        name = "Russian Subs";
-        type = "release_title";
-        pattern = "Russian Subs";
-        negate = false;
-        required = true;
-      }];
-
-      "Dubs Only".conditions = [
-        {name = "English Audio"; type = "language"; language = "english"; negate = false; required = true;}
-        {name = "Not Japanese Audio"; type = "language"; language = "japanese"; negate = true; required = true;}
+      "Russian Subs".conditions = [
+        {
+          name = "Russian Subs";
+          type = "release_title";
+          pattern = "Russian Subs";
+          negate = false;
+          required = true;
+        }
       ];
 
-      "Anime Dual Audio".conditions = [{
-        name = "Dual Audio";
-        type = "release_title";
-        pattern = "Dual Audio";
-        negate = false;
-        required = true;
-      }];
+      "Dubs Only".conditions = [
+        {
+          name = "English Audio";
+          type = "language";
+          language = "english";
+          negate = false;
+          required = true;
+        }
+        {
+          name = "Not Japanese Audio";
+          type = "language";
+          language = "japanese";
+          negate = true;
+          required = true;
+        }
+      ];
 
-      "Anime Raws".conditions = [{
-        name = "Anime Raws";
-        type = "release_title";
-        pattern = "Anime Raws";
-        negate = false;
-        required = true;
-      }];
+      "Anime Dual Audio".conditions = [
+        {
+          name = "Dual Audio";
+          type = "release_title";
+          pattern = "Dual Audio";
+          negate = false;
+          required = true;
+        }
+      ];
+
+      "Anime Raws".conditions = [
+        {
+          name = "Anime Raws";
+          type = "release_title";
+          pattern = "Anime Raws";
+          negate = false;
+          required = true;
+        }
+      ];
     };
 
     downloadClient.qBittorrent = {
@@ -88,10 +115,22 @@ in {
       upgradeUntilScore = 10000;
       minCustomFormatScore = 0;
       custom_formats = [
-        {name = "Russian Subs"; score = 800;}
-        {name = "Dubs Only"; score = 1500;}
-        {name = "Anime Dual Audio"; score = 2000;}
-        {name = "Anime Raws"; score = -10000;}
+        {
+          name = "Russian Subs";
+          score = 800;
+        }
+        {
+          name = "Dubs Only";
+          score = 1500;
+        }
+        {
+          name = "Anime Dual Audio";
+          score = 2000;
+        }
+        {
+          name = "Anime Raws";
+          score = -10000;
+        }
       ];
     };
   };
