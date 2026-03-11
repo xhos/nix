@@ -21,6 +21,7 @@
   vm.enable = true;
   ai.enable = false;
   obs.enable = true;
+  davinci.enable = true;
   boot.enable = true;
   syncthing.enable = true;
 

@@ -51,7 +51,6 @@
     jetbrains.idea
     teams-for-linux
     # whspr # broken: ctranslate2 build failure
-    davinci-resolve
     android-studio-full
   ];
 }
