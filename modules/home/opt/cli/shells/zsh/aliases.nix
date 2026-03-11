@@ -66,6 +66,13 @@
         ffmpeg -i "$input" -vf "fps=''${fps},scale=960:-1:flags=lanczos,palettegen" -frames:v 1 -y "$palette" && \
         ffmpeg -i "$input" -i "$palette" -filter_complex "fps=''${fps},scale=960:-1:flags=lanczos[x];[x][1:v]paletteuse" -y "$output"
       }
+
+      fcut() {
+        local input="$1"
+        local seconds="$2"
+        local output="''${input%.*}_cut.''${input##*.}"
+        ffmpeg -sseof -"$seconds" -i "$input" -c copy "$output"
+      }
     '';
   };
 }

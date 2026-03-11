@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/1q/wallhaven-1qdjv1.jpg";
-    sha256 = "sha256-G4n8TanJPF7iFkGMJqIaOqp4wZHtu0DgwAPyF0jNJok=";
+    url = "https://w.wallhaven.cc/full/w5/wallhaven-w5126q.jpg";
+    sha256 = "sha256-RzIlA9UDHcXqIXY2KN1mG/HQPeFddzdE5bWiWizvTlA=";
   };
 
   stylix.base16Scheme = ./min-dark.yaml;
@@ -51,6 +51,7 @@
     jetbrains.idea
     teams-for-linux
     # whspr # broken: ctranslate2 build failure
+    davinci-resolve
     android-studio-full
   ];
 }

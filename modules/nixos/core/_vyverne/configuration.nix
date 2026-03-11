@@ -78,4 +78,6 @@
     algorithm = "zstd";
     memoryPercent = 50; # up to 50% of RAM as compressed swap
   };
+
+  programs.nix-ld.enable = true;
 }

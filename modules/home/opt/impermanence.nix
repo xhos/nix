@@ -31,6 +31,8 @@ in {
       {
         directories =
           [
+
+            ".cache/zen"
             # this fucking thing
             "Android"
             ".config/Google"
