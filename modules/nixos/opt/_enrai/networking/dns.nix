@@ -44,7 +44,7 @@ in {
     };
   };
 
-  networking.nameservers = ["127.0.0.1" "1.1.1.1"];
+  networking.nameservers = ["127.0.0.1"];
 
   services.adguardhome = {
     enable = true;

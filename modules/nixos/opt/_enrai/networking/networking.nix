@@ -3,21 +3,14 @@
   config,
   ...
 }: let
-  vmNetwork = "192.168.100";
-  mcIp = "${vmNetwork}.20";
-  amneziaIp = "${vmNetwork}.21";
-
   # Core infrastructure ports
   coreServicePorts = {
     ssh = 10022;
-    proxmox = 8006;
     adguard-dns = 53;
     adguard-web = 9393;
     http = 80;
     https = 443;
     wireguard = 55055;
-    dhcp-server = 67;
-    dhcp-client = 68;
     syncthing-sync = 22000;
   };
 
@@ -25,14 +18,9 @@
   exposedServices = lib.attrValues config._enrai.exposedServices;
   dynamicServicePorts = lib.unique (map (s: s.port) exposedServices);
 
-  # Services accessible from Amnezia VPN
-  amneziaAccessibleServices = lib.filter (s: s.amneziaAccessible) exposedServices;
-  amneziaServicePorts = lib.unique (map (s: s.port) amneziaAccessibleServices);
-
   # Combine core and dynamic ports for LAN-exposed services
   lanTcpPorts =
     [
-      coreServicePorts.proxmox
       coreServicePorts.adguard-web
       coreServicePorts.http
       coreServicePorts.https
@@ -41,6 +29,8 @@
 
   # Helper to generate nftables set syntax: { port1, port2, port3 }
   mkPortSet = ports: "{ ${lib.concatMapStringsSep ", " toString ports} }";
+
+  fw = config._enrai.firewall;
 in {
   # Option for services to self-register for network exposure
   options._enrai.exposedServices = lib.mkOption {
@@ -82,82 +72,112 @@ in {
     description = "Services that should be exposed on the local network";
   };
 
+  # Composable firewall rule extension points
+  options._enrai.firewall = {
+    extraInputRules = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Extra nftables input chain rules";
+    };
+    extraForwardRules = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Extra nftables forward chain rules";
+    };
+    extraPreroutingRules = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Extra nftables NAT prerouting rules";
+    };
+    extraPostroutingRules = lib.mkOption {
+      type = lib.types.lines;
+      default = "";
+      description = "Extra nftables NAT postrouting rules";
+    };
+  };
+
   config = {
-    networking.firewall.enable = lib.mkForce false;
+    # Base network infrastructure
+    networking = {
+      bridges.vmbr0.interfaces = ["enp0s31f6"];
+      interfaces.enp0s31f6.useDHCP = false;
 
-    networking.nftables = {
-      enable = true;
+      interfaces.vmbr0 = {
+        useDHCP = false;
+        ipv4.addresses = [
+          {
+            address = config._enrai.config.enraiLocalIP;
+            prefixLength = 24;
+          }
+        ];
+      };
 
-      ruleset = ''
-        table inet filter {
-          chain input {
-            type filter hook input priority filter; policy drop;
+      defaultGateway = "10.0.0.1";
 
-            ct state vmap { established : accept, related : accept, invalid : drop }
-            iifname lo accept
-            ip protocol icmp accept
-            ip6 nexthdr icmpv6 accept
+      firewall.enable = lib.mkForce false;
 
-            # Global access
-            tcp dport ${toString coreServicePorts.ssh} accept
-            udp dport ${toString coreServicePorts.wireguard} accept
+      nftables = {
+        enable = true;
 
-            # LAN only (vmbr0)
-            iifname vmbr0 ip saddr 10.0.0.0/24 tcp dport ${mkPortSet lanTcpPorts} accept
-            iifname vmbr0 ip saddr 10.0.0.0/24 udp dport { 53, 22000 } accept
-            iifname vmbr0 ip saddr 10.0.0.0/24 tcp dport { 53, 22000 } accept
+        ruleset = ''
+          table inet filter {
+            chain input {
+              type filter hook input priority filter; policy drop;
 
-            # VMs only need DHCP (vmbr1)
-            iifname vmbr1 udp dport 67 accept
+              ct state vmap { established : accept, related : accept, invalid : drop }
+              iifname lo accept
+              ip protocol icmp accept
+              ip6 nexthdr icmpv6 accept
 
-            # Amnezia VPN clients can access specific services
-            ${lib.optionalString (amneziaServicePorts != []) ''
-          iifname vmbr1 ip saddr ${amneziaIp} tcp dport ${mkPortSet amneziaServicePorts} accept
-        ''}
+              # Global access
+              tcp dport ${toString coreServicePorts.ssh} accept
+              udp dport ${toString coreServicePorts.wireguard} accept
 
-            # WireGuard tunnel
-            iifname wg0 accept
+              # LAN only (vmbr0)
+              iifname vmbr0 ip saddr 10.0.0.0/24 tcp dport ${mkPortSet lanTcpPorts} accept
+              iifname vmbr0 ip saddr 10.0.0.0/24 udp dport { 53, 22000 } accept
+              iifname vmbr0 ip saddr 10.0.0.0/24 tcp dport { 53, 22000 } accept
+
+              ${fw.extraInputRules}
+
+              # WireGuard tunnel
+              iifname wg0 accept
+            }
+
+            chain forward {
+              type filter hook forward priority filter; policy drop;
+
+              ct state vmap { established : accept, related : accept, invalid : drop }
+
+              ${fw.extraForwardRules}
+            }
+
+            chain output {
+              type filter hook output priority filter; policy accept;
+            }
           }
 
-          chain forward {
-            type filter hook forward priority filter; policy drop;
+          ${lib.optionalString (fw.extraPreroutingRules != "" || fw.extraPostroutingRules != "") ''
+          table ip nat {
+            ${lib.optionalString (fw.extraPreroutingRules != "") ''
+            chain prerouting {
+              type nat hook prerouting priority dstnat; policy accept;
 
-            ct state vmap { established : accept, related : accept, invalid : drop }
+              ${fw.extraPreroutingRules}
+            }
+            ''}
 
-            # VMs can reach internet, not LAN
-            iifname vmbr1 oifname vmbr0 ip daddr 10.0.0.0/24 drop
-            iifname vmbr1 oifname vmbr0 accept
+            ${lib.optionalString (fw.extraPostroutingRules != "") ''
+            chain postrouting {
+              type nat hook postrouting priority srcnat; policy accept;
 
-            # Port forwards to VMs
-            ip daddr 192.168.100.0/24 accept
+              ${fw.extraPostroutingRules}
+            }
+            ''}
           }
-
-          chain output {
-            type filter hook output priority filter; policy accept;
-          }
-        }
-
-        table ip nat {
-          chain prerouting {
-            type nat hook prerouting priority dstnat; policy accept;
-
-            # Direct access from router (bypasses VPS tunnel)
-            iifname vmbr0 tcp dport 25565 dnat to ${mcIp}:25565
-
-            # WireGuard tunnel forwards
-            iifname wg0 tcp dport 2222 dnat to ${mcIp}:22
-            iifname wg0 tcp dport 2223 dnat to ${amneziaIp}:22
-            iifname wg0 tcp dport 25565 dnat to ${mcIp}:25565
-            iifname wg0 tcp dport 35000-35006 dnat to ${amneziaIp}
-            iifname wg0 udp dport 35000-35006 dnat to ${amneziaIp}
-          }
-
-          chain postrouting {
-            type nat hook postrouting priority srcnat; policy accept;
-            oifname vmbr0 ip saddr 192.168.100.0/24 masquerade
-          }
-        }
-      '';
+          ''}
+        '';
+      };
     };
   };
 }

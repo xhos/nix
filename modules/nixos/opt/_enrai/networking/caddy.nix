@@ -26,6 +26,20 @@
   localServices = lib.filterAttrs (_: svc: !svc.exposed) exposedServices;
   publicServices = lib.filterAttrs (_: svc: svc.exposed) exposedServices;
 
+  # Multi-level subdomains (e.g. "api.null") aren't covered by *.lab.xhos.dev,
+  # so collect them for explicit cert entries
+  localExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (_: svc:
+    if (!svc.exposed && lib.hasInfix "." svc.subdomain)
+    then "${svc.subdomain}.${localDomain}"
+    else null
+  ) exposedServices);
+
+  publicExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (_: svc:
+    if (svc.exposed && lib.hasInfix "." svc.subdomain)
+    then "${svc.subdomain}.${publicDomain}"
+    else null
+  ) exposedServices);
+
   # Generate local vhosts (*.lab.xhos.dev)
   mkLocalVhosts =
     lib.mapAttrs' (
@@ -34,9 +48,13 @@
           useACMEHost = localDomain;
           extraConfig = ''
             bind ${enraiIP}
-            reverse_proxy ${svc.upstream}:${toString svc.port}
             @blocked not remote_ip 10.0.0.0/24
-            respond @blocked 403
+            handle @blocked {
+              respond 403
+            }
+            handle {
+              reverse_proxy ${svc.upstream}:${toString svc.port}
+            }
           '';
         }
     )
@@ -95,7 +113,7 @@ in {
       dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
       domain = "*.${localDomain}";
-      extraDomainNames = [localDomain];
+      extraDomainNames = [localDomain] ++ localExtraDomains;
       environmentFile = config.sops.secrets."api/cloudflare".path;
     };
 
@@ -106,7 +124,7 @@ in {
       dnsResolver = "1.1.1.1:53";
       dnsPropagationCheck = true;
       domain = "*.${publicDomain}";
-      extraDomainNames = [publicDomain];
+      extraDomainNames = [publicDomain] ++ publicExtraDomains;
       environmentFile = config.sops.secrets."api/cloudflare".path;
     };
   };

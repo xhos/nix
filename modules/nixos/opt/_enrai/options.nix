@@ -24,10 +24,6 @@
       description = "Domain for public services";
     };
 
-    vmNetwork = lib.mkOption {
-      type = lib.types.str;
-      default = "192.168.100";
-      description = "VM subnet prefix";
-    };
+    proxmox.enable = lib.mkEnableOption "Proxmox VE and VM infrastructure";
   };
 }
