@@ -31,8 +31,9 @@ in {
       {
         directories =
           [
-
             ".cache/zen"
+            ".config/git"
+
             # this fucking thing
             "Android"
             ".config/Google"
