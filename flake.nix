@@ -141,7 +141,7 @@
 
     packages = forEachSystem (
       system: {
-        installer = import ./scripts/installer.nix {
+        installer = import ./pkgs/installer.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };
       }
