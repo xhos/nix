@@ -2,47 +2,44 @@
   keysLabel = "NIXKEYS";
   repoUrl = "git@github.com:xhos/nix.git";
   workdir = "/tmp/nix";
-  keysRuntime = "/run/installer-keys";
+  keysDir = "/run/installer-keys";
 in
   pkgs.writeShellApplication {
     name = "installer";
+
     runtimeInputs = with pkgs; [
       git
       jq
       gum
-      rsync
+      sops
       util-linux
       disko
     ];
-    text = ''
-      set -euo pipefail
 
-      log() { printf "\033[1;34m[INFO]\033[0m %s\n" "$*"; }
-      fail() { printf "\033[1;31m[ERROR]\033[0m %s\n" "$*" >&2; exit 1; }
+    text = ''
+      log() { printf "\033[1;34m::\033[0m %s\n" "$*"; }
+      die() { printf "\033[1;31m::\033[0m %s\n" "$*" >&2; exit 1; }
 
       setup_keys() {
-        [[ -f "${keysRuntime}/sops" && -f ~/.ssh/github ]] && return 0
+        [[ -f "${keysDir}/sops" && -f ~/.ssh/github ]] && return 0
 
-        log "looking for ${keysLabel} partition..."
-        local dev
-        dev=$(lsblk -o PATH,LABEL -pr 2>/dev/null | awk '$2 == "${keysLabel}" {print $1; exit}')
-        [[ -b "$dev" ]] || fail "${keysLabel} partition not found"
+        log "looking for keys partition"
+        local dev mnt
+        dev=$(lsblk -o PATH,LABEL -pr | awk '$2 == "${keysLabel}" {print $1; exit}')
+        [[ -b "$dev" ]] || die "${keysLabel} not found"
 
-        local mnt
         mnt=$(mktemp -d)
         mount -o ro "$dev" "$mnt"
+        trap 'umount "$mnt" 2>/dev/null; rmdir "$mnt" 2>/dev/null' RETURN
 
-        [[ -f "$mnt/keys/github" ]] || { umount "$mnt"; fail "github key not found"; }
-        [[ -f "$mnt/keys/sops" ]] || { umount "$mnt"; fail "sops key not found"; }
+        [[ -f "$mnt/keys/github" ]] || die "github key missing"
+        [[ -f "$mnt/keys/sops" ]]   || die "sops key missing"
 
-        mkdir -p "${keysRuntime}"
-        cp "$mnt/keys/sops" "${keysRuntime}/sops"
-        chmod 600 "${keysRuntime}/sops"
+        mkdir -p "${keysDir}"
+        install -m600 "$mnt/keys/sops" "${keysDir}/sops"
 
         mkdir -p ~/.ssh && chmod 700 ~/.ssh
-        cp "$mnt/keys/github" ~/.ssh/github
-        chmod 600 ~/.ssh/github
-
+        install -m600 "$mnt/keys/github" ~/.ssh/github
         cat > ~/.ssh/config << 'EOF'
       Host github.com
         IdentityFile ~/.ssh/github
@@ -52,151 +49,72 @@ in
       EOF
         chmod 600 ~/.ssh/config
 
-        umount "$mnt" && rmdir "$mnt"
-        log "keys configured"
+        log "keys ready"
       }
 
       clone_repo() {
         if [[ -d "${workdir}/.git" ]]; then
-          log "updating repo"
-          git -C "${workdir}" fetch --prune --quiet
-          git -C "${workdir}" reset --hard origin/HEAD --quiet
+          git -C "${workdir}" fetch --prune -q
+          git -C "${workdir}" reset --hard origin/HEAD -q
         else
-          log "cloning repo"
           git clone --depth=1 "${repoUrl}" "${workdir}"
         fi
       }
 
-      select_host() {
-        local host
-        host=$(nix flake show "${workdir}" --json 2>/dev/null \
+      pick_host() {
+        nix flake show "${workdir}" --json 2>/dev/null \
           | jq -r '.nixosConfigurations | keys[]' \
-          | gum choose --header "select host")
-        [[ -n "$host" ]] || fail "no host selected"
-        echo "$host"
+          | gum choose --header "pick host"
       }
 
-      select_disk() {
-        local header="$1"
-        local exclude="''${2:-}"
-        local disk
-
-        local lsblk_output
-        lsblk_output=$(lsblk -dpno NAME,SIZE,MODEL)
-
-        if [[ -n "$exclude" ]]; then
-          lsblk_output=$(echo "$lsblk_output" | grep -vE "$exclude")
-        fi
-
-        disk=$(echo "$lsblk_output" | gum choose --header "$header" | awk '{print $1}')
-        [[ -b "$disk" ]] || fail "invalid disk: $disk"
-        echo "$disk"
+      pick_disk() {
+        lsblk -dpno NAME,SIZE,MODEL \
+          | gum choose --header "pick disk" \
+          | awk '{print $1}'
       }
 
-      # ── main ──────────────────────────────────────────────────────────
       setup_keys
       clone_repo
 
-      HOST=$(select_host)
-      HOST_DIR="${workdir}/modules/nixos/core/_$HOST"
-      [[ -d "$HOST_DIR" ]] || fail "host directory not found: $HOST_DIR"
-      log "selected: $HOST"
+      host=$(pick_host)
+      [[ -n "$host" ]] || die "no host selected"
 
-      # ── check for disko config ────────────────────────────────────────
-      DISKO_CONFIG="$HOST_DIR/disko.nix"
-      USE_DISKO=false
-      if [[ -f "$DISKO_CONFIG" ]]; then
-        USE_DISKO=true
-        log "found disko.nix"
+      disk=$(pick_disk)
+      [[ -b "$disk" ]] || die "invalid disk"
+
+      log "$host → $disk"
+      gum confirm "this will wipe $disk" || exit 1
+
+      # figure out what the host needs
+      host_dir="${workdir}/modules/nixos/core/_$host"
+      has_luks=false
+      has_persist=false
+
+      grep -q '"luks"' "$host_dir/disko.nix" 2>/dev/null && has_luks=true
+      grep -rq 'impermanence' "$host_dir/" 2>/dev/null && has_persist=true
+
+      if $has_luks; then
+        log "luks detected, decrypting passphrase"
+        SOPS_AGE_KEY_FILE="${keysDir}/sops" \
+          sops -d --extract '["luks_password"]' \
+          "${workdir}/secrets/secrets.yaml" > /tmp/luks-password
+        trap 'rm -f /tmp/luks-password' EXIT
       fi
 
-      # ── check for impermanence ────────────────────────────────────────
-      USE_PERSIST=false
-      if nix eval "${workdir}#nixosConfigurations.$HOST.config.impermanence.enable" 2>/dev/null | grep -q "true"; then
-        USE_PERSIST=true
-        log "impermanence enabled"
-      fi
-
-      # ── disk selection & partitioning ─────────────────────────────────
-      if $USE_DISKO; then
-        # parse disko.nix for disk arguments (lines like: argName ? "/dev/...")
-        mapfile -t DISK_PARAMS < <(grep -oP '^\s*\K\w+(?=\s*\?\s*"/dev/)' "$DISKO_CONFIG")
-
-        if [[ ''${#DISK_PARAMS[@]} -eq 0 ]]; then
-          fail "no disk parameters found in disko.nix"
-        fi
-
-        declare -A SELECTED_DISKS
-        DISKO_ARGS=()
-        exclude_pattern=""
-
-        for param in "''${DISK_PARAMS[@]}"; do
-          disk=$(select_disk "select disk for '$param'" "$exclude_pattern")
-          SELECTED_DISKS[$param]="$disk"
-          DISKO_ARGS+=(--argstr "$param" "$disk")
-
-          # add to exclude pattern for next iteration
-          if [[ -n "$exclude_pattern" ]]; then
-            exclude_pattern+="|"
-          fi
-          exclude_pattern+="$disk"
-        done
-
-        # build warning message
-        wipe_list=$(printf ", %s" "''${SELECTED_DISKS[@]}")
-        wipe_list="''${wipe_list:2}"
-
-        gum confirm "WARNING: this will WIPE $wipe_list" || exit 1
-
-        log "running disko"
-        disko --mode destroy,format,mount "''${DISKO_ARGS[@]}" "$DISKO_CONFIG"
+      extra_files=()
+      if $has_persist; then
+        extra_files+=(--extra-files "${keysDir}/sops" /persist/var/lib/sops-nix/key.txt)
       else
-        log "no disko.nix - assuming manual partitioning"
-        mountpoint -q /mnt || fail "/mnt not mounted - partition and mount manually first"
-        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
+        extra_files+=(--extra-files "${keysDir}/sops" /var/lib/sops-nix/key.txt)
       fi
 
-      # ── verify mounts ─────────────────────────────────────────────────
-      if $USE_DISKO; then
-        mountpoint -q /mnt/nix || fail "/mnt/nix not mounted"
-        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
-        if $USE_PERSIST; then
-          mountpoint -q /mnt/persist || fail "/mnt/persist not mounted"
-        fi
-      else
-        mountpoint -q /mnt || fail "/mnt not mounted"
-        mountpoint -q /mnt/boot || fail "/mnt/boot not mounted"
-      fi
+      log "installing $host"
+      disko-install \
+        --flake "${workdir}#$host" \
+        --disk main "$disk" \
+        "''${extra_files[@]}" \
+        --write-efi-boot-entries
 
-      # ── generate hardware config ──────────────────────────────────────
-      log "generating hardware-configuration.nix"
-      nixos-generate-config --root /mnt --no-filesystems
-      cp /mnt/etc/nixos/hardware-configuration.nix "$HOST_DIR/hardware-configuration.nix"
-
-      # ── determine paths based on impermanence ─────────────────────────
-      if $USE_PERSIST; then
-        FLAKE_PATH="/mnt/persist/etc/nixos"
-        SOPS_DEST="/mnt/persist/var/lib/sops-nix"
-      else
-        FLAKE_PATH="/mnt/etc/nixos"
-        SOPS_DEST="/mnt/var/lib/sops-nix"
-      fi
-
-      # ── sync config ───────────────────────────────────────────────────
-      log "syncing config to $FLAKE_PATH"
-      mkdir -p "$FLAKE_PATH"
-      rsync -a --delete "${workdir}/" "$FLAKE_PATH/"
-
-      # ── install sops key ──────────────────────────────────────────────
-      log "installing sops key to $SOPS_DEST"
-      mkdir -p "$SOPS_DEST"
-      cp "${keysRuntime}/sops" "$SOPS_DEST/key.txt"
-      chmod 600 "$SOPS_DEST/key.txt"
-
-      # ── install NixOS ─────────────────────────────────────────────────
-      log "installing NixOS for $HOST"
-      nixos-install --root /mnt --flake "path:$FLAKE_PATH#$HOST" --no-root-passwd
-
-      gum style --foreground 82 --bold "done - reboot when ready"
+      gum style --foreground 82 --bold "done — reboot whenever"
     '';
   }
