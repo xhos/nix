@@ -82,6 +82,8 @@ in
           | awk '{print $1}'
       }
 
+      # ─────────────────────────────────────────
+
       setup_keys
       clone_repo
 
@@ -110,24 +112,32 @@ in
         trap 'rm -f /tmp/luks-password' EXIT
       fi
 
-      extra_files=()
-      if $has_persist; then
-        extra_files+=(--extra-files "${keysDir}/sops" /persist/var/lib/sops-nix/key.txt)
-      else
-        extra_files+=(--extra-files "${keysDir}/sops" /var/lib/sops-nix/key.txt)
-      fi
-
       log "generating hardware-configuration.nix"
       nixos-generate-config --no-filesystems --dir /tmp/hwgen
       cp /tmp/hwgen/hardware-configuration.nix "$host_dir/hardware-configuration.nix"
       git -C "${workdir}" add "$host_dir/hardware-configuration.nix"
 
+      # partition and mount
+      log "partitioning"
+      disko --mode destroy,format,mount \
+        --argstr disk "$disk" \
+        "$host_dir/disko.nix"
+
+      export TMPDIR=/mnt/tmp
+      mkdir -p "$TMPDIR"
+
+      # install sops key
+      if $has_persist; then
+        install -Dm600 "${keysDir}/sops" /mnt/persist/var/lib/sops-nix/key.txt
+      else
+        install -Dm600 "${keysDir}/sops" /mnt/var/lib/sops-nix/key.txt
+      fi
+
+      # install
       log "installing $host"
-      disko-install \
+      nixos-install \
         --flake "${workdir}#$host" \
-        --disk main "$disk" \
-        "''${extra_files[@]}" \
-        --write-efi-boot-entries
+        --no-root-passwd
 
       gum style --foreground 82 --bold "done — reboot whenever"
     '';
