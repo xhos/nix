@@ -33,6 +33,7 @@ in {
           [
             ".cache/zen"
             ".config/git"
+            ".wine"
 
             # this fucking thing
             "Android"

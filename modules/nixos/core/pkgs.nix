@@ -7,6 +7,7 @@
 }: let
   # CLI packages useful on both headless and desktop systems
   cliPkgs = with pkgs; [
+    caligula
     # Networking tools
     nmap
     speedtest-cli
