@@ -1,25 +1,20 @@
 {
-  pkgs,
   lib,
   config,
   ...
 }: {
-  options.boot.enable = lib.mkEnableOption "GRUB bootloader with Plymouth";
+  options.boot.enable = lib.mkEnableOption "systemd-boot";
 
   config = lib.mkIf config.boot.enable {
     boot = {
       plymouth.enable = true;
       loader = {
-        systemd-boot.enable = false;
-        efi.canTouchEfiVariables = true;
-        grub = {
+        systemd-boot = {
           enable = true;
-          device = "nodev";
-          backgroundColor = "#000";
-          theme = pkgs.minimal-grub-theme;
-          useOSProber = true;
-          efiSupport = true;
+          configurationLimit = 5;
+          consoleMode = "auto";
         };
+        efi.canTouchEfiVariables = true;
       };
     };
   };

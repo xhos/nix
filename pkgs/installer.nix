@@ -139,6 +139,6 @@ in
         --flake "${workdir}#$host" \
         --no-root-passwd
 
-      gum style --foreground 82 --bold "done — reboot whenever"
+      gum style --foreground 82 --bold "done"
     '';
   }
