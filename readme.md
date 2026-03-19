@@ -38,16 +38,25 @@ all wallpapers can can be found [here](https://pics.xhos.dev/folder/cmgs64vh4000
 
 ## repo structure
 
-- **[derivs](../derivs):** nixpkgs overlays/derivations
-- **[home](../home):** per host home-manager entrypoints
-- **[hosts](../hosts):** host-specific configurations
-- **[modules](../modules):**
-  - **[home](../modules/home):** home-manager related modules
-    - **[core](../modules/home/core):** core modules
-    - **[opt](../modules/home/opt):** optional and toggleable modules
-  - **[nixos](../modules/nixos):** nixos related modules
-    - **[core](../modules/nixos/core):** core modules
-    - **[opt](../modules/nixos/opt):** optional and toggleable modules
+- **[flake.nix](./flake.nix):** main entrypoint, defines system and home configurations
+- **[lib/](./lib):** custom Nix library functions and builders (e.g., `import-tree`)
+- **[modules/](./modules):**
+  - **[home/](./modules/home):** home-manager modules
+    - **[core/](./modules/home/core):** essential user configurations and host-specific entrypoints (prefixed with `_`)
+    - **[opt/](./modules/home/opt):** optional and toggleable modules (apps, cli tools, bar, wms, etc)
+  - **[nixos/](./modules/nixos):** system-level modules
+    - **[core/](./modules/nixos/core):** base system configs, and per-host definitions (prefixed with `_`)
+    - **[opt/](./modules/nixos/opt):** optional and toggleable modules (impermanence, nvidia config, etc)
+- **[pkgs/](./pkgs):** custom packages and derivations
+
+### about `import-tree` and `mk-nixos-system`
+
+usually, in nix code you have to import each file, or folder if using `default.nix` one by one. But in my config I am using import-tree pointed at the `default.nix` files at the top of `nixos/` and `home/` that look like `{inputs, ...}: inputs.import-tree [./core ./opt]`. This allows every single file in those 2 folder to be imported automaticly, without adding it to an import list in any other file. No other default.nix files are needed. 
+
+Since hosts need to have their own separate thin modules, that should not be imported by others, import-tree ignores any folder that starts with `_`. This allows my home-manager and nixos entry points to live under `modules/home/core/_vyverne/home.nix`.
+
+`mk-nixos-system` is another custom function. It's a helper that returns `lib.nixosSystem` and takes in the hostname and some other args. Based on that host name, it finds the right entry points for nixos and home-manager.
+
 
 ## info
 
