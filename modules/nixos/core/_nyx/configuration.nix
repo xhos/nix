@@ -47,6 +47,25 @@
         exec nix run github:xhos/nix#installer --refresh
       '';
     })
+    (writeShellApplication {
+      name = "w";
+      runtimeInputs = [networkmanager util-linux];
+      text = ''
+        dev=$(lsblk -o PATH,LABEL -pr | awk '$2 == "NIXKEYS" {print $1; exit}')
+        [[ -b "$dev" ]] || { echo "NIXKEYS not found"; exit 1; }
+
+        mnt=$(mktemp -d)
+        mount -o ro "$dev" "$mnt"
+        trap 'umount "$mnt"; rmdir "$mnt"' EXIT
+
+        [[ -f "$mnt/keys/wifi" ]] || { echo "keys/wifi missing"; exit 1; }
+
+        ssid=$(sed -n '1p' "$mnt/keys/wifi")
+        pass=$(sed -n '2p' "$mnt/keys/wifi")
+
+        nmcli dev wifi connect "$ssid" password "$pass"
+      '';
+    })
   ];
 
   # insecure, but i want to ssh to not fiddle with the laptop when installing
