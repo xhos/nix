@@ -28,17 +28,21 @@
 
   # Multi-level subdomains (e.g. "api.null") aren't covered by *.lab.xhos.dev,
   # so collect them for explicit cert entries
-  localExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (_: svc:
-    if (!svc.exposed && lib.hasInfix "." svc.subdomain)
-    then "${svc.subdomain}.${localDomain}"
-    else null
-  ) exposedServices);
+  localExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (
+      _: svc:
+        if (!svc.exposed && lib.hasInfix "." svc.subdomain)
+        then "${svc.subdomain}.${localDomain}"
+        else null
+    )
+    exposedServices);
 
-  publicExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (_: svc:
-    if (svc.exposed && lib.hasInfix "." svc.subdomain)
-    then "${svc.subdomain}.${publicDomain}"
-    else null
-  ) exposedServices);
+  publicExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (
+      _: svc:
+        if (svc.exposed && lib.hasInfix "." svc.subdomain)
+        then "${svc.subdomain}.${publicDomain}"
+        else null
+    )
+    exposedServices);
 
   # Generate local vhosts (*.lab.xhos.dev)
   mkLocalVhosts =

@@ -158,23 +158,23 @@ in {
           }
 
           ${lib.optionalString (fw.extraPreroutingRules != "" || fw.extraPostroutingRules != "") ''
-          table ip nat {
-            ${lib.optionalString (fw.extraPreroutingRules != "") ''
-            chain prerouting {
-              type nat hook prerouting priority dstnat; policy accept;
+            table ip nat {
+              ${lib.optionalString (fw.extraPreroutingRules != "") ''
+              chain prerouting {
+                type nat hook prerouting priority dstnat; policy accept;
 
-              ${fw.extraPreroutingRules}
-            }
+                ${fw.extraPreroutingRules}
+              }
             ''}
 
-            ${lib.optionalString (fw.extraPostroutingRules != "") ''
-            chain postrouting {
-              type nat hook postrouting priority srcnat; policy accept;
+              ${lib.optionalString (fw.extraPostroutingRules != "") ''
+              chain postrouting {
+                type nat hook postrouting priority srcnat; policy accept;
 
-              ${fw.extraPostroutingRules}
-            }
+                ${fw.extraPostroutingRules}
+              }
             ''}
-          }
+            }
           ''}
         '';
       };

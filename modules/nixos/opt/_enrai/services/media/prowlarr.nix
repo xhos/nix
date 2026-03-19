@@ -1,10 +1,23 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   secret = name: config.sops.secrets."media/${name}".path;
   port = toString config.services.prowlarr.settings.server.port;
 in {
-  sops.secrets."media/api/prowlarr" = {group = "media"; mode = "0440";};
-  sops.secrets."media/password/prowlarr" = {group = "media"; mode = "0440";};
-  sops.secrets."media/password/rutracker" = {group = "media"; mode = "0440";};
+  sops.secrets."media/api/prowlarr" = {
+    group = "media";
+    mode = "0440";
+  };
+  sops.secrets."media/password/prowlarr" = {
+    group = "media";
+    mode = "0440";
+  };
+  sops.secrets."media/password/rutracker" = {
+    group = "media";
+    mode = "0440";
+  };
 
   persist.dirs = ["/var/lib/prowlarr"];
 
