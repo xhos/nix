@@ -1,7 +1,9 @@
 {pkgs}: let
   keysLabel = "NIXKEYS";
   repoUrl = "git@github.com:xhos/nix.git";
+  secretsUrl = "git@github.com:xhos/nix-secrets.git";
   workdir = "/tmp/nix";
+  secretsDir = "/tmp/nix-secrets";
   keysDir = "/run/installer-keys";
 in
   pkgs.writeShellApplication {
@@ -59,6 +61,13 @@ in
         else
           git clone --depth=1 "${repoUrl}" "${workdir}"
         fi
+
+        if [[ -d "${secretsDir}/.git" ]]; then
+          git -C "${secretsDir}" fetch --prune -q
+          git -C "${secretsDir}" reset --hard origin/HEAD -q
+        else
+          git clone --depth=1 "${secretsUrl}" "${secretsDir}"
+        fi
       }
 
       pick_host() {
@@ -97,7 +106,7 @@ in
         log "luks detected, decrypting passphrase"
         SOPS_AGE_KEY_FILE="${keysDir}/sops" \
           sops -d --extract '["luks_password"]' \
-          "${workdir}/secrets/secrets.yaml" > /tmp/luks-password
+          "${secretsDir}/secrets.yaml" > /tmp/luks-password
         trap 'rm -f /tmp/luks-password' EXIT
       fi
 
