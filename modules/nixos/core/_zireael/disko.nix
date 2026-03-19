@@ -25,7 +25,7 @@
             content = {
               type = "luks";
               name = "crypted";
-              askPassword = true;
+              passwordFile = "/tmp/luks-password";
               settings.allowDiscards = true;
               content = {
                 type = "btrfs";
