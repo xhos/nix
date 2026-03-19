@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
+    ./disko.nix
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
   ];
@@ -14,7 +15,7 @@
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./zireael.pub];
 
-  impermanence.enable = false;
+  impermanence.enable = true;
   bluetooth   .enable = true;
   audio       .enable = true;
   boot        .enable = true;
@@ -33,4 +34,16 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.fprintd.enable = true;
+
+  # LUKS auto decryption via TPM
+
+  # after install:
+  # systemd-cryptenroll \
+  # --tpm2-device=auto \
+  # --tpm2-pcrs=11 \
+  # --tpm2-with-pin=yes \
+  # /dev/nvme0n1p5
+
+  boot.initrd.systemd.enable = true;
+  security.tpm2.enable = true;
 }

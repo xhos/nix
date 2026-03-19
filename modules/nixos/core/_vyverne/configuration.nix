@@ -81,4 +81,15 @@
   };
 
   programs.nix-ld.enable = true;
+
+  # TODO: use disko nodev on next install
+  fileSystems."/" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = [
+      "defaults"
+      "size=25%"
+      "mode=755"
+    ];
+  };
 }

@@ -29,6 +29,9 @@ in {
   };
 
   config = lib.mkIf config.impermanence.enable {
+    fileSystems."/nix".neededForBoot = true;
+    fileSystems."/persist".neededForBoot = true;
+
     programs.fuse.userAllowOther = true;
 
     environment.persistence."/persist" = lib.mkMerge [
@@ -104,18 +107,5 @@ in {
         ];
       })
     ];
-
-    fileSystems."/" = {
-      device = "none";
-      fsType = "tmpfs";
-      options = [
-        "defaults"
-        "size=25%"
-        "mode=755"
-      ];
-    };
-
-    fileSystems."/nix".neededForBoot = true;
-    fileSystems."/persist".neededForBoot = true;
   };
 }
