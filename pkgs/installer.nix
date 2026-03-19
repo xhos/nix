@@ -118,7 +118,7 @@ in
       fi
 
       log "generating hardware-configuration.nix"
-      nixos-generate-config --no-filesystems --root / --dir /tmp/hwgen
+      nixos-generate-config --no-filesystems --dir /tmp/hwgen
       cp /tmp/hwgen/hardware-configuration.nix "$host_dir/hardware-configuration.nix"
       git -C "${workdir}" add "$host_dir/hardware-configuration.nix"
 
