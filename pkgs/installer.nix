@@ -117,6 +117,11 @@ in
         extra_files+=(--extra-files "${keysDir}/sops" /var/lib/sops-nix/key.txt)
       fi
 
+      log "generating hardware-configuration.nix"
+      nixos-generate-config --no-filesystems --root / --dir /tmp/hwgen
+      cp /tmp/hwgen/hardware-configuration.nix "$host_dir/hardware-configuration.nix"
+      git -C "${workdir}" add "$host_dir/hardware-configuration.nix"
+
       log "installing $host"
       disko-install \
         --flake "${workdir}#$host" \
