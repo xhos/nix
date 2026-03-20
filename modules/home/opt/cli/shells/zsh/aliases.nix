@@ -73,6 +73,53 @@
         local output="''${input%.*}_cut.''${input##*.}"
         ffmpeg -sseof -"$seconds" -i "$input" -c copy "$output"
       }
+
+      fixaudio() {
+        local outdir=""
+        local files=()
+
+        while [[ $# -gt 0 ]]; do
+          case "$1" in
+            -o)
+              outdir="$2"
+              shift 2
+              ;;
+            *)
+              files+=("$1")
+              shift
+              ;;
+          esac
+        done
+
+        if [[ ''${#files[@]} -eq 0 ]]; then
+          echo "usage: fixaudio [-o outdir] <file|glob...>"
+          return 1
+        fi
+
+        if [[ -n "$outdir" ]]; then
+          mkdir -p "$outdir"
+        fi
+
+        for input in "''${files[@]}"; do
+          if [[ ! -f "$input" ]]; then
+            echo "skipping: $input (not a file)"
+            continue
+          fi
+
+          local ext="''${input##*.}"
+          local base="''${input%.*}"
+          local filename="''${base##*/}_audiofix.''${ext}"
+
+          if [[ -n "$outdir" ]]; then
+            local output="$outdir/''${filename##*/}"
+          else
+            local output="''${base%/*}/''${filename##*/}"
+          fi
+
+          echo "fixing: $input -> $output"
+          ffmpeg -i "$input" -c:v copy -c:a pcm_s16le "$output"
+        done
+      }
     '';
   };
 }

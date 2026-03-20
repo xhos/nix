@@ -34,6 +34,7 @@ in {
             #lutris
             ".local/share/umu"
             ".local/share/lutris"
+            ".local/share/DaVinciResolve"
 
             ".config/qBittorrent"
             ".cache/zen"
