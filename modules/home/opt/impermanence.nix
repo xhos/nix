@@ -31,6 +31,11 @@ in {
       {
         directories =
           [
+            #lutris
+            ".local/share/umu"
+            ".local/share/lutris"
+
+            ".config/qBittorrent"
             ".cache/zen"
             ".config/git"
             ".wine"

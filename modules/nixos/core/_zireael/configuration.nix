@@ -18,17 +18,18 @@
   impermanence.enable = true;
   bluetooth   .enable = true;
   audio       .enable = true;
-  boot        .enable = true;
   syncthing   .enable = true;
   vm          .enable = true;
 
-  greeter = "yawn";
-  terminal = "ghostty";
   wm = "hyprland";
+  greeter = "yawn";
+  bootloader = "systemd-boot";
+  terminal = "ghostty";
 
   systemd.tmpfiles.rules = [
     "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
   ];
+
   hardware.sensor.iio.enable = true; # screen rotation sensor
 
   boot.kernelPackages = pkgs.linuxPackages_latest;

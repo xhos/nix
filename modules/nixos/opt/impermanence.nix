@@ -78,6 +78,7 @@ in {
         directories = [
           (userDir ".steam")
           (userDir ".local/share/Steam")
+          "/var/lib/zerotier-one"
         ];
       })
 

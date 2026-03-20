@@ -22,12 +22,12 @@
   ai.enable = false;
   obs.enable = true;
   davinci.enable = true;
-  boot.enable = true;
   syncthing.enable = true;
 
+  wm = "hyprland";
   greeter = "yawn";
   terminal = "ghostty";
-  wm = "hyprland";
+  bootloader = "grub";
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
 

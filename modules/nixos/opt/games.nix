@@ -15,5 +15,10 @@
     ];
 
     programs.steam.enable = true;
+
+    services.zerotierone = {
+      enable = true;
+      joinNetworks = ["abfd31bd47fb27ef"];
+    };
   };
 }
