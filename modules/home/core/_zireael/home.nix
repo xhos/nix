@@ -4,8 +4,8 @@
   ...
 }: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/1q/wallhaven-1qdjv1.jpg";
-    sha256 = "sha256-G4n8TanJPF7iFkGMJqIaOqp4wZHtu0DgwAPyF0jNJok=";
+    url = "https://w.wallhaven.cc/full/vp/wallhaven-vpz5w5.jpg";
+    sha256 = "sha256-38xqvUxDURO5W85IMAVDVHf5cpJiUKmQAoDEpKdTn8E=";
   };
 
   stylix.base16Scheme = ./min-darker.yaml;
