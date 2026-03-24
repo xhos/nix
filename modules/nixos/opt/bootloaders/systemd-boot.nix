@@ -10,6 +10,7 @@
         enable = true;
         configurationLimit = 5;
         consoleMode = "auto";
+        rebootForBitlocker = true;
       };
       efi.canTouchEfiVariables = true;
     };
