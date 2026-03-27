@@ -619,11 +619,11 @@
       "flake": false,
       "locked": {
         "allRefs": true,
-        "lastModified": 1773942333,
-        "narHash": "sha256-eKtRRKH2IZNZJdp9/NzgFGd5EBauweQOFsp8dCz3HEM=",
+        "lastModified": 1774570997,
+        "narHash": "sha256-mPLBeq7jAONlN7qzN1YpUm5fcB3tSgExwvjomV8U4GI=",
         "ref": "main",
-        "rev": "724ee476863de30df84575d121eb5a9586ba1d52",
-        "revCount": 50,
+        "rev": "e1c90fe76224a4ae7feaa2bd990e855a0dd5484c",
+        "revCount": 51,
         "type": "git",
         "url": "ssh://git@github.com/xhos/nix-secrets"
       },

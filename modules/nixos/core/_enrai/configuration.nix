@@ -52,4 +52,15 @@
     algorithm = "zstd";
     memoryPercent = 25;
   };
+
+   # TODO: use disko nodev on next install
+  fileSystems."/" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = [
+      "defaults"
+      "size=25%"
+      "mode=755"
+    ];
+  };
 }
