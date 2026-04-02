@@ -9,7 +9,6 @@
   config.boot = lib.mkIf config.bootloader.grub.enable {
     plymouth.enable = true;
     loader = {
-      systemd-boot.enable = false;
       efi.canTouchEfiVariables = true;
       grub = {
         enable = true;

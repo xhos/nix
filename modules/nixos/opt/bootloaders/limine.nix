@@ -9,7 +9,7 @@
     secureboot = lib.mkEnableOption "enable secureboot";
   };
 
-  config = {
+  config = lib.mkIf config.bootloader.limine.enable {
     persist.dirs = ["/var/lib/sbctl"];
     boot = {
       plymouth.enable = true;
