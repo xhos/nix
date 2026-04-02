@@ -11,14 +11,18 @@ in
     homeUser ? "xhos",
     extraSpecialArgs ? {},
     minimal ? false,
+    homelab ? false,
   }:
     lib.nixosSystem {
       specialArgs = {inherit inputs import-tree;} // extraSpecialArgs;
       modules =
         lib.optionals (!minimal) [../modules/nixos]
         ++ [
-          (import-tree.forHost hostname ../modules/nixos)
+          ../systems/${hostname}/configuration.nix
           {nixpkgs.overlays = [pkgsOverlay];}
+        ]
+        ++ lib.optionals homelab [
+          (import-tree ../modules/nixos/opt/_homelab)
         ]
         ++ lib.optionals (homeUser != null) (
           sharedNixosModules
@@ -30,7 +34,7 @@ in
                 backupFileExtension = ".b";
                 users.${homeUser}.imports = [
                   ../modules/home
-                  (import-tree.forHost hostname ../modules/home)
+                  ../systems/${hostname}/home.nix
                 ];
               };
             }

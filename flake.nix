@@ -121,22 +121,20 @@
     systems = ["x86_64-linux" "aarch64-linux"];
     forEachSystem = nixpkgs.lib.genAttrs systems;
   in {
-    nixosConfigurations = {
-      aevon = mkNixosSystem {hostname = "aevon";};
-      enrai = mkNixosSystem {hostname = "enrai";};
-      nyx = mkNixosSystem {
-        hostname = "nyx";
+    nixosConfigurations = builtins.mapAttrs (hostname: args: mkNixosSystem ({inherit hostname;} // args)) {
+      aevon = {};
+      null = {
+        homeUser = null;
+      };
+      enrai = {
+        homelab = true;
+      };
+      nyx = {
         homeUser = null;
         minimal = true;
       };
-      vyverne = mkNixosSystem {hostname = "vyverne";};
-      zireael = mkNixosSystem {hostname = "zireael";};
-    };
-
-    nixOnDroidConfigurations.pixel = inputs.nix-on-droid.lib.nixOnDroidConfiguration {
-      pkgs = import nixpkgs {system = "aarch64-linux";};
-      modules = [./modules/droid/_pixel/configuration.nix];
-      extraSpecialArgs = {inherit inputs;};
+      vyverne = {};
+      zireael = {};
     };
 
     packages = forEachSystem (
