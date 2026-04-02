@@ -4,7 +4,9 @@
   config,
   ...
 }: {
-  boot = lib.mkIf (config.bootloader == "grub") {
+  options.bootloader.grub.enable = lib.mkEnableOption "enable grub";
+
+  config.boot = lib.mkIf config.bootloader.grub.enable {
     plymouth.enable = true;
     loader = {
       systemd-boot.enable = false;

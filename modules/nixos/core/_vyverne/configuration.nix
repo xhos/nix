@@ -27,7 +27,12 @@
   wm = "hyprland";
   greeter = "yawn";
   terminal = "ghostty";
-  bootloader = "grub";
+
+  bootloader.limine = {
+    enable = true;
+    dualboot = true;
+    secureboot = true;
+  };
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
 

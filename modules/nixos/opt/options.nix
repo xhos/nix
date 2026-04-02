@@ -6,12 +6,6 @@
       description = "disable all gui related stuff";
     };
 
-    bootloader = mkOption {
-      type = types.enum ["grub" "systemd-boot" "none"];
-      default = "none";
-      description = "which bootloader to use";
-    };
-
     greeter = mkOption {
       type = types.enum ["autologin" "sddm" "yawn" "none"];
       default = "none";

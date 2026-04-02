@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/d8/wallhaven-d83wl3.jpg";
-    sha256 = "sha256-b+wQnwRhN8VXpJTcG6thK9pfkbTdgO99K6zHOUB81iw=";
+    url = "https://w.wallhaven.cc/full/e8/wallhaven-e89l8k.jpg";
+    sha256 = "sha256-vTxb7yEavo7+v8VSQstXaS15KwPJiL4qJuYTvcdjurU=";
   };
 
   stylix.base16Scheme = ./min-dark.yaml;

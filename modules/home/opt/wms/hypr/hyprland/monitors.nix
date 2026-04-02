@@ -6,6 +6,7 @@
       # hyprlang noerror true
         source = ~/.config/hypr/monitors.conf
         source = ~/.config/hypr/workspaces.conf
+        source = ~/.config/hypr/hyprfx.conf
       # hyprlang noerror false
     '';
   };

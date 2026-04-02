@@ -24,7 +24,7 @@
 
   wm = "hyprland";
   greeter = "yawn";
-  bootloader = "systemd-boot";
+  bootloader.systemd-boot.enable = true;
   terminal = "ghostty";
 
   systemd.tmpfiles.rules = [
