@@ -76,4 +76,6 @@
   users.users.root.password = lib.mkForce "nix";
 
   services.getty.autologinUser = lib.mkForce "root";
+
+  system.stateVersion = "25.05";
 }

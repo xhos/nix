@@ -15,4 +15,6 @@
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./null.pub];
 
   bootloader.systemd-boot.enable = true;
+
+  system.stateVersion = "25.05";
 }

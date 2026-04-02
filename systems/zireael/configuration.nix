@@ -57,4 +57,6 @@
     lidSwitchDocked = "ignore";
     powerKey = "hibernate";
   };
+
+  system.stateVersion = "25.05";
 }

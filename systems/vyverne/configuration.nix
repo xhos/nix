@@ -97,4 +97,6 @@
       "mode=755"
     ];
   };
+
+  system.stateVersion = "25.05";
 }

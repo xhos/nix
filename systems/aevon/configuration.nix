@@ -14,4 +14,6 @@
   nixpkgs.hostPlatform = "x86_64-linux";
 
   programs.nix-ld.enable = true;
+
+  system.stateVersion = "25.05";
 }
