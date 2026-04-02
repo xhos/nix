@@ -158,7 +158,7 @@ in {
             host = "vyverne";
             hostname = "10.0.0.11";
             user = "xhos";
-            port = 10022;
+            port = 22;
             identitiesOnly = true;
             identityFile = "${config.user.home}/.ssh/vyverne";
           };
@@ -166,7 +166,7 @@ in {
             host = "enrai";
             hostname = "10.0.0.10";
             user = "xhos";
-            port = 10022;
+            port = 22;
             identitiesOnly = true;
             identityFile = "${config.user.home}/.ssh/enrai";
           };
@@ -174,7 +174,7 @@ in {
             host = "enrai-t";
             hostname = "ssh.xhos.dev";
             user = "xhos";
-            port = 10022;
+            port = 22;
             identitiesOnly = true;
             identityFile = "${config.user.home}/.ssh/enrai";
             proxyCommand = "cloudflared access ssh --hostname %h";

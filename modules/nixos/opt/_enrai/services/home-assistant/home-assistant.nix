@@ -43,7 +43,7 @@
       shell_command = {
         shutdown_vyverne = "${pkgs.openssh}/bin/ssh -i ${
           config.sops.secrets."ssh/vyverne".path
-        } -o StrictHostKeyChecking=no -p 10022 xhos@10.0.0.11 sudo shutdown -h now";
+        } -o StrictHostKeyChecking=no -p 22 xhos@10.0.0.11 sudo shutdown -h now";
         toggle_wled_sync = "${pkgs.curl}/bin/curl -X POST http://localhost:9123/toggle";
       };
 

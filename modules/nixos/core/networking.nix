@@ -2,15 +2,12 @@
   lib,
   config,
   ...
-}: let
-  # TODO: this is silly, need to change to 22.
-  sshPort = 10022;
-in {
+}: {
   services.fail2ban.enable = true;
 
   services.openssh = {
     enable = true;
-    ports = [sshPort];
+    ports = [22];
     settings = {
       PasswordAuthentication = false;
       PermitRootLogin = "no";
@@ -33,7 +30,7 @@ in {
         }
       ];
       allowedUDPPortRanges = allowedTCPPortRanges;
-      allowedTCPPorts = [sshPort];
+      allowedTCPPorts = [22];
     };
   };
 }

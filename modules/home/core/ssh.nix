@@ -1,13 +1,12 @@
 {config, ...}: {
   sops.secrets = {
     "ssh/proxy".mode = "0600";
-    "ssh/monitor".mode = "0600";
+    "ssh/null".mode = "0600";
     "ssh/vault".mode = "0600";
     "ssh/mc".mode = "0600";
     "ssh/vyverne".mode = "0600";
     "ssh/enrai".mode = "0600";
     "ssh/github" = {
-      # this is a bit of a chicken and egg problem, but i'll come up with a solution next time i re-install
       path = "${config.home.homeDirectory}/.ssh/github";
       mode = "0600";
     };
@@ -41,12 +40,12 @@
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/proxy".path;
       };
-      "monitor" = {
-        host = "monitor";
-        hostname = "40.233.127.68";
+      "null" = {
+        host = "null";
+        hostname = "40.233.78.151";
         user = "root";
         identitiesOnly = true;
-        identityFile = config.sops.secrets."ssh/monitor".path;
+        identityFile = config.sops.secrets."ssh/null".path;
       };
       "vault" = {
         host = "vault";
@@ -69,7 +68,7 @@
         host = "vyverne";
         hostname = "10.0.0.11";
         user = "xhos";
-        port = 10022;
+        port = 22;
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/vyverne".path;
       };
@@ -77,7 +76,7 @@
         host = "enrai";
         hostname = "10.0.0.10";
         user = "xhos";
-        port = 10022;
+        port = 22;
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/enrai".path;
       };
@@ -85,7 +84,7 @@
         host = "enrai-t";
         hostname = "ssh.xhos.dev";
         user = "xhos";
-        port = 10022;
+        port = 22;
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/enrai".path;
         proxyCommand = "cloudflared access ssh --hostname %h";

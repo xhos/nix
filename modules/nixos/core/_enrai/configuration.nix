@@ -36,7 +36,7 @@
   #     "${tunnel-id}" = {
   #       credentialsFile = "/home/xhos/.cloudflared/${tunnel-id}.json";
   #       ingress = {
-  #         "ssh.xhos.dev" = "ssh://localhost:10022";
+  #         "ssh.xhos.dev" = "ssh://localhost:22";
   #       };
   #       default = "http_status:404";
   #     };
@@ -53,7 +53,7 @@
     memoryPercent = 25;
   };
 
-   # TODO: use disko nodev on next install
+  # TODO: use disko nodev on next install
   fileSystems."/" = {
     device = "none";
     fsType = "tmpfs";

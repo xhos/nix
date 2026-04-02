@@ -5,7 +5,7 @@
 }: let
   # Core infrastructure ports
   coreServicePorts = {
-    ssh = 10022;
+    ssh = 22;
     adguard-dns = 53;
     adguard-web = 9393;
     http = 80;
