@@ -142,6 +142,10 @@
         homeUser = null;
         minimal = true;
       };
+      proxy-1 = {
+        homeUser = null;
+        minimal = true;
+      };
       vyverne = {};
       zireael = {};
     };
