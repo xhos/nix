@@ -1,0 +1,21 @@
+{
+  config,
+  lib,
+  ...
+}: {
+  options.homelab.xray.enable = lib.mkEnableOption "xray VPN service";
+
+  config = lib.mkIf config.homelab.xray.enable {
+    sops.secrets."vpn/xray" = {};
+
+    _enrai.exposedServices.vpn = {
+      port = 10808;
+      exposed = true;
+    };
+
+    services.xray = {
+      enable = true;
+      settingsFile = config.sops.secrets."vpn/xray".path;
+    };
+  };
+}

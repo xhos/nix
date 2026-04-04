@@ -96,8 +96,7 @@ in {
     };
   };
 
-  config = {
-    # Base network infrastructure
+  config = lib.mkIf config.homelab.enable {
     networking = {
       bridges.vmbr0.interfaces = ["enp0s31f6"];
       interfaces.enp0s31f6.useDHCP = false;

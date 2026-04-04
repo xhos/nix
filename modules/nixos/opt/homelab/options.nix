@@ -1,4 +1,9 @@
 {lib, ...}: {
+  options.homelab.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = "Enable homelab infrastructure";
+  };
   options._enrai.config = {
     enraiLocalIP = lib.mkOption {
       type = lib.types.str;

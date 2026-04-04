@@ -20,6 +20,36 @@
   impermanence.enable = true;
   headless = true;
 
+  homelab = {
+    enable = true;
+
+    docker.enable = true;
+    tg-notify.enable = true;
+    sops-sync.enable = true;
+
+    atuin.enable = true;
+    dawarich.enable = true;
+    glance.enable = true;
+    immich.enable = true;
+    syncthing.enable = true;
+    wakapi.enable = true;
+    xray.enable = true;
+    zipline.enable = true;
+    home-assistant.enable = true;
+
+    media = {
+      servarr.enable = true;
+      jellyfin.enable = true;
+      prowlarr.enable = true;
+      radarr.enable = true;
+      sonarr.enable = true;
+      qbittorrent = {
+        enable = true;
+        proton-vpn.enable = true;
+      };
+    };
+  };
+
   services.gvfs.enable = true;
   services.udisks2.enable = true;
   services.vscode-server.enable = true;

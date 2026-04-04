@@ -22,7 +22,7 @@ in
           {nixpkgs.overlays = [pkgsOverlay];}
         ]
         ++ lib.optionals homelab [
-          (import-tree ../modules/nixos/opt/_homelab)
+          (import-tree ../modules/nixos/opt/homelab)
         ]
         ++ lib.optionals (homeUser != null) (
           sharedNixosModules

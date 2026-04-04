@@ -3,31 +3,34 @@
   config,
   ...
 }: {
-  _enrai.exposedServices.glance.port = config.services.glance.settings.server.port;
+  options.homelab.glance.enable = lib.mkEnableOption "glance dashboard";
 
-  # unset dynamic user stuff which makes it difficult to persist
-  systemd.services.glance.serviceConfig = {
-    StateDirectory = lib.mkForce null;
-    DynamicUser = lib.mkForce false;
-    User = "glance";
-    Group = "glance";
-  };
+  config = lib.mkIf config.homelab.glance.enable {
+    _enrai.exposedServices.glance.port = config.services.glance.settings.server.port;
 
-  users.users.glance = {
-    isSystemUser = true;
-    group = "glance";
-  };
-  users.groups.glance = {};
+    # unset dynamic user stuff which makes it difficult to persist
+    systemd.services.glance.serviceConfig = {
+      StateDirectory = lib.mkForce null;
+      DynamicUser = lib.mkForce false;
+      User = "glance";
+      Group = "glance";
+    };
 
-  # TODO: generete bookmarks from _enrai config
-  services.glance = {
-    enable = true;
-    openFirewall = true;
+    users.users.glance = {
+      isSystemUser = true;
+      group = "glance";
+    };
+    users.groups.glance = {};
 
-    settings = let
-      serverIP = config._enrai.config.enraiLocalIP;
-      localDomain = config._enrai.config.localDomain;
-    in {
+    # TODO: generete bookmarks from _enrai config
+    services.glance = {
+      enable = true;
+      openFirewall = true;
+
+      settings = let
+        serverIP = config._enrai.config.enraiLocalIP;
+        localDomain = config._enrai.config.localDomain;
+      in {
       pages = [
         {
           name = "Home";
@@ -307,5 +310,6 @@
         hide-footer = true;
       };
     };
+  };
   };
 }
