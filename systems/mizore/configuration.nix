@@ -9,8 +9,6 @@
   networking.hostId = "d75676d6";
   nixpkgs.hostPlatform = "x86_64-linux";
 
-  virtualisation.diskSize = 20480;
-
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./mizore.pub];
 
   zramSwap = {

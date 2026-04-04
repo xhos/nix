@@ -28,7 +28,7 @@
       # VPS
       "proxy-1" = {
         host = "proxy-1";
-        hostname = "40.233.88.40";
+        hostname = "40.233.109.227";
         user = "root";
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/proxy".path;
@@ -42,14 +42,14 @@
       };
       "mizore" = {
         host = "mizore";
-        hostname = "40.233.90.117";
+        hostname = "40.233.96.175";
         user = "xhos";
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/mizore".path;
       };
       "arashi" = {
         host = "arashi";
-        hostname = "140.238.152.128";
+        hostname = "40.233.119.97";
         user = "xhos";
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/arashi".path;
