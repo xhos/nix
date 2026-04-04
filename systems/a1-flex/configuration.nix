@@ -26,31 +26,34 @@
   # oci-image.nix never passes memSize to make-disk-image.nix (nixpkgs#479591)
   # also strip kvm requirement as OCI ARM VMs don't expose /dev/kvm
   system.build.OCIImage = lib.mkForce (
-    (import "${inputs.nixpkgs}/nixos/lib/make-disk-image.nix" {
-      inherit config lib pkgs;
-      inherit (config.virtualisation) diskSize;
-      name = "oci-image";
-      baseName = config.image.baseName;
-      format = "qcow2";
-      partitionTableType =
-        if config.oci.efi
-        then "efi"
-        else "legacy";
-      memSize = 8192;
-      configFile = builtins.path {
-        name = "oci-config-user.nix";
-        path = "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-config-user.nix";
+    let
+      base = import "${inputs.nixpkgs}/nixos/lib/make-disk-image.nix" {
+        inherit config lib pkgs;
+        inherit (config.virtualisation) diskSize;
+        name = "oci-image";
+        baseName = config.image.baseName;
+        format = "qcow2";
+        partitionTableType =
+          if config.oci.efi
+          then "efi"
+          else "legacy";
+        memSize = 8192;
+        configFile = builtins.path {
+          name = "oci-config-user.nix";
+          path = "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-config-user.nix";
+        };
       };
-    }).overrideAttrs (old: {
-      requiredSystemFeatures = lib.filter (f: f != "kvm") (old.requiredSystemFeatures or []);
-      nativeBuildInputs =
-        map
-        (p:
-          if (p.pname or "") == "qemu-kvm"
-          then pkgs.qemu
-          else p)
-        (old.nativeBuildInputs or []);
-    })
+    in
+      lib.overrideDerivation base (old: {
+        requiredSystemFeatures = lib.filter (f: f != "kvm") (old.requiredSystemFeatures or []);
+        nativeBuildInputs =
+          map
+          (p:
+            if (p.pname or "") == "qemu-kvm"
+            then pkgs.qemu
+            else p)
+          (old.nativeBuildInputs or []);
+      })
   );
 
   networking.hostName = "a1-flex";
