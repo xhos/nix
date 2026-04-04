@@ -100,7 +100,7 @@
     lib = nixpkgs.lib;
 
     # custom functions
-    import-tree = import ./lib/import-tree.nix {inherit inputs lib;};
+    import-tree = import ./lib/import-tree.nix {inherit inputs;};
 
     # shared modules across all hosts with home-manager
     sharedNixosModules = [
