@@ -98,5 +98,8 @@
     ];
   };
 
+  # to be able to build the OCI arm image
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
+
   system.stateVersion = "25.05";
 }

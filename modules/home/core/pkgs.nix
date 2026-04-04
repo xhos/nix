@@ -65,8 +65,8 @@
     oh-my-posh
     nushell
     fish
-    zsh
     grc
+    opentofu
   ];
 
   # GUI packages for desktop systems

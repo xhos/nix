@@ -101,6 +101,48 @@ fonts used are:
 - spotify:  [text](https://github.com/spicetify/spicetify-themes/tree/master/text)
 - and more that i'm forgetting...
 
+## installing
+
+mostly notes for myself for re-deploying/re-installing
+
+### bare metal
+
+1. Build the ISO with [the GitHub Action](https://github.com/xhos/nix/actions/workflows/build-iso.yml)
+2. Burn it onto a USB stick, with [caligula](https://github.com/ifd3f/caligula)
+3. Install 
+
+### nixos-infect (for low power VPS)
+
+on target host (assumed ubuntu 22.04 on Oracle Cloud, meaning "ubuntu" as the default user)
+
+```sh
+sudo apt update && sudo apt upgrade -y
+```
+
+make root ssh work
+
+```sh
+sudo mkdir -p /root/.ssh
+sudo cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/
+sudo chown root:root /root/.ssh/authorized_keys
+sudo chmod 600 /root/.ssh/authorized_keys
+```
+
+```sh
+sudo sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin prohibit-password/g' /etc/ssh/sshd_config
+sudo sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/g' /etc/ssh/sshd_config
+```
+
+```sh
+sudo systemctl restart ssh
+```
+
+```sh
+curl https://raw.githubusercontent.com/elitak/nixos-infect/master/nixos-infect | NIX_CHANNEL=nixos-25.11 doNetConf=y bash -x
+```
+
+### nixos-anywhere (prefered for decent VPS)
+
 ## acknowledgments
 
 - [@joshuagrisham](https://github.com/joshuagrisham) for his work on [the galaxy book driver](https://github.com/joshuagrisham/samsung-galaxybook-extras)

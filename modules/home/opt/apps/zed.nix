@@ -37,6 +37,7 @@
       "nix"
       "ruff"
       "sql"
+      "opentofu"
     ];
 
     extraPackages = with pkgs; [

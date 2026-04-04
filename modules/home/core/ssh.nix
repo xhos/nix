@@ -1,8 +1,8 @@
 {config, ...}: {
   sops.secrets = {
     "ssh/proxy".mode = "0600";
-    "ssh/null".mode = "0600";
-    "ssh/vault".mode = "0600";
+    "ssh/mizore".mode = "0600";
+    "ssh/arashi".mode = "0600";
     "ssh/mc".mode = "0600";
     "ssh/vyverne".mode = "0600";
     "ssh/enrai".mode = "0600";
@@ -40,19 +40,19 @@
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/proxy".path;
       };
-      "null" = {
-        host = "null";
-        hostname = "40.233.78.151";
-        user = "root";
+      "mizore" = {
+        host = "mizore";
+        hostname = "40.233.90.117";
+        user = "xhos";
         identitiesOnly = true;
-        identityFile = config.sops.secrets."ssh/null".path;
+        identityFile = config.sops.secrets."ssh/mizore".path;
       };
-      "vault" = {
-        host = "vault";
-        hostname = "40.233.74.249";
-        user = "ubuntu";
+      "arashi" = {
+        host = "arashi";
+        hostname = "140.238.152.128";
+        user = "xhos";
         identitiesOnly = true;
-        identityFile = config.sops.secrets."ssh/vault".path;
+        identityFile = config.sops.secrets."ssh/arashi".path;
       };
       # VM
       "mc" = {
@@ -79,15 +79,6 @@
         port = 22;
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/enrai".path;
-      };
-      "enrai-t" = {
-        host = "enrai-t";
-        hostname = "ssh.xhos.dev";
-        user = "xhos";
-        port = 22;
-        identitiesOnly = true;
-        identityFile = config.sops.secrets."ssh/enrai".path;
-        proxyCommand = "cloudflared access ssh --hostname %h";
       };
     };
   };

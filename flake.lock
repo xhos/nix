@@ -619,11 +619,11 @@
       "flake": false,
       "locked": {
         "allRefs": true,
-        "lastModified": 1775152761,
-        "narHash": "sha256-KT2wG+i4EELifDIbUyowuwUE+DCHM7Ro2PPxQRBuEMU=",
+        "lastModified": 1775171534,
+        "narHash": "sha256-OpbrTUhxziqGwDnphjTg30j7VLmnyvARwrcE5HsHteQ=",
         "ref": "main",
-        "rev": "5d732f31a9f91909e66b42c8fe06c5070b7c6eea",
-        "revCount": 52,
+        "rev": "545d547b150c16ed3150a12bbfc5c1738446accb",
+        "revCount": 55,
         "type": "git",
         "url": "ssh://git@github.com/xhos/nix-secrets"
       },
@@ -1069,11 +1069,11 @@
         "nvf": "nvf"
       },
       "locked": {
-        "lastModified": 1766687138,
-        "narHash": "sha256-0VeIMWxlmctb6VdTsTYy+hnmnUFL23ugLRZMxMjMOis=",
+        "lastModified": 1775180686,
+        "narHash": "sha256-9BmciFpPagk6QaSiYSkYi1Anl8rOAyYmdLBpZlQWwt4=",
         "owner": "xhos",
         "repo": "nxv",
-        "rev": "880439894d7c09660b22be015966b5673bf46ff3",
+        "rev": "fc0c8e871e4086eb60918ad2e5c78af24b8cc77d",
         "type": "github"
       },
       "original": {

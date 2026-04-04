@@ -123,8 +123,17 @@
   in {
     nixosConfigurations = builtins.mapAttrs (hostname: args: mkNixosSystem ({inherit hostname;} // args)) {
       aevon = {};
-      null = {
+      mizore = {
         homeUser = null;
+      };
+      arashi = {};
+      a1-flex = {
+        homeUser = null;
+        minimal = true;
+      };
+      e2-micro = {
+        homeUser = null;
+        minimal = true;
       };
       enrai = {
         homelab = true;
@@ -137,12 +146,15 @@
       zireael = {};
     };
 
-    packages = forEachSystem (
-      system: {
+    packages =
+      forEachSystem (system: {
         installer = import ./pkgs/installer.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };
-      }
-    );
+        e2-micro-image = self.nixosConfigurations.e2-micro.config.system.build.OCIImage;
+      })
+      // {
+        aarch64-linux.a1-flex-image = self.nixosConfigurations.a1-flex.config.system.build.OCIImage;
+      };
   };
 }

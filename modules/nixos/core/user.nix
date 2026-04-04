@@ -1,4 +1,7 @@
 {pkgs, ...}: {
+  # if setting the default shell to zsh it must be installed
+  programs.zsh.enable = true;
+
   users = {
     users.xhos = {
       isNormalUser = true;
