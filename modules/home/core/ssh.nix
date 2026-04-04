@@ -29,7 +29,7 @@
       "proxy-1" = {
         host = "proxy-1";
         hostname = "40.233.109.227";
-        user = "root";
+        user = "xhos";
         identitiesOnly = true;
         identityFile = config.sops.secrets."ssh/proxy".path;
       };
