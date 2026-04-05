@@ -9,11 +9,11 @@
     homelab.exposedServices.photos.port = config.services.immich.port;
     homelab.backup.services.immich = {
       paths = ["${config.services.immich.mediaLocation}"];
+      databases = ["immich"];
       exclude = [
         "${config.services.immich.mediaLocation}/thumbs"
         "${config.services.immich.mediaLocation}/encoded-video"
       ];
-      user = "immich";
     };
 
     persist.dirs = [
