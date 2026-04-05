@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{inputs, lib, ...}: {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
   ];
@@ -46,6 +46,13 @@
 
   networking.firewall.allowedTCPPorts = [80 443];
   networking.firewall.allowedUDPPorts = [41641];
+
+  services.tailscale.extraUpFlags = lib.mkForce ["--login-server" "http://127.0.0.1:8080"];
+
+  systemd.services.tailscaled-autoconnect = {
+    after = ["headscale.service"];
+    requires = ["headscale.service"];
+  };
 
   system.stateVersion = "25.11";
 }
