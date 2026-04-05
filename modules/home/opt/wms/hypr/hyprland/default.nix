@@ -10,7 +10,7 @@
       package = pkgs.hyprland;
       plugins = with pkgs.hyprlandPlugins; [
         hypr-dynamic-cursors
-        hyprsplit
+        # hyprsplit
         # hyprgrass
       ];
 

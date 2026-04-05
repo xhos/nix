@@ -132,9 +132,7 @@
         homeUser = null;
         minimal = true;
       };
-      enrai = {
-        homelab = true;
-      };
+      enrai = {};
       nyx = {
         homeUser = null;
         minimal = true;

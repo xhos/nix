@@ -1,7 +1,7 @@
 {lib, ...}: {
   options.homelab.enable = lib.mkOption {
     type = lib.types.bool;
-    default = true;
+    default = false;
     description = "enable homelab infra";
   };
 

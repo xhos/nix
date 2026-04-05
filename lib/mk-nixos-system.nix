@@ -11,7 +11,6 @@ in
     homeUser ? "xhos",
     extraSpecialArgs ? {},
     minimal ? false,
-    homelab ? false,
   }:
     lib.nixosSystem {
       specialArgs = {inherit inputs import-tree;} // extraSpecialArgs;
@@ -20,9 +19,6 @@ in
         ++ [
           ../systems/${hostname}/configuration.nix
           {nixpkgs.overlays = [pkgsOverlay];}
-        ]
-        ++ lib.optionals homelab [
-          (import-tree ../modules/nixos/opt/homelab)
         ]
         ++ lib.optionals (homeUser != null) (
           sharedNixosModules
