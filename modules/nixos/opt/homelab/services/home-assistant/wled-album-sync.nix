@@ -12,7 +12,7 @@
       port = 9123;
 
       homeAssistant = {
-        url = "http://${config._enrai.config.enraiLocalIP}:8123";
+        url = "http://${config.homelab.config.homelabLocalIP}:8123";
         entity = "media_player.yandex_station_xk0000000000000286720000e2296918";
       };
 

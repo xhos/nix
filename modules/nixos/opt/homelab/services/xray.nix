@@ -8,7 +8,7 @@
   config = lib.mkIf config.homelab.xray.enable {
     sops.secrets."vpn/xray" = {};
 
-    _enrai.exposedServices.vpn = {
+    homelab.exposedServices.vpn = {
       port = 10808;
       exposed = true;
     };

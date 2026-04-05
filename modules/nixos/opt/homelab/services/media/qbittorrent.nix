@@ -15,7 +15,7 @@
       vpnNamespace = "proton";
     };
 
-    _enrai.exposedServices.qbittorrent = {
+    homelab.exposedServices.qbittorrent = {
       port = config.services.qbittorrent.webuiPort;
       upstream = config.vpnNamespaces.proton.namespaceAddress;
     };

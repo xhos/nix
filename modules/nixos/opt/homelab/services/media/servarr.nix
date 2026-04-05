@@ -54,6 +54,6 @@
 
     # services without their own file
     services.flaresolverr.enable = true;
-    _enrai.exposedServices.flaresolverr.port = config.services.flaresolverr.port;
+    homelab.exposedServices.flaresolverr.port = config.services.flaresolverr.port;
   };
 }

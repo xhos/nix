@@ -6,8 +6,8 @@
   options.homelab.immich.enable = lib.mkEnableOption "enable immich";
 
   config = lib.mkIf config.homelab.immich.enable {
-    _enrai.exposedServices.photos.port = config.services.immich.port;
-    _enrai.backup.services.immich = {
+    homelab.exposedServices.photos.port = config.services.immich.port;
+    homelab.backup.services.immich = {
       paths = ["${config.services.immich.mediaLocation}"];
       exclude = [
         "${config.services.immich.mediaLocation}/thumbs"

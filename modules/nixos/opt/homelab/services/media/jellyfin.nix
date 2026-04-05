@@ -7,9 +7,8 @@
   options.homelab.media.jellyfin.enable = lib.mkEnableOption "enable jellyfin";
 
   config = lib.mkIf config.homelab.media.jellyfin.enable {
-    _enrai.exposedServices.jellyfin = {
+    homelab.exposedServices.jellyfin = {
       exposed = true;
-      amneziaAccessible = true;
       port = 8096;
     };
 

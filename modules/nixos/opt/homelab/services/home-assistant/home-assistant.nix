@@ -12,7 +12,7 @@
       owner = "hass";
     };
 
-    _enrai.exposedServices.home-assistant.port = 8123;
+    homelab.exposedServices.home-assistant.port = 8123;
 
     services.home-assistant = {
       enable = true;

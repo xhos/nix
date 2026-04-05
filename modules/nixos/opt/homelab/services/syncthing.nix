@@ -22,7 +22,7 @@
       };
     };
 
-    _enrai.exposedServices.syncthing.port = 8384;
+    homelab.exposedServices.syncthing.port = 8384;
 
     services.syncthing = {
       enable = true;
@@ -30,7 +30,7 @@
       dataDir = "/home/xhos/.local/share/syncthing";
       key = config.sops.secrets."syncthing/enrai/key".path;
       cert = config.sops.secrets."syncthing/enrai/cert".path;
-      guiAddress = "${config._enrai.config.enraiLocalIP}:8384";
+      guiAddress = "${config.homelab.config.homelabLocalIP}:8384";
 
       guiPasswordFile = config.sops.secrets."syncthing/enrai/guiPassword".path;
 

@@ -6,7 +6,7 @@
   options.homelab.dawarich.enable = lib.mkEnableOption "enable dawarich";
 
   config = lib.mkIf config.homelab.dawarich.enable {
-    _enrai.exposedServices.timeline.port = config.services.dawarich.webPort;
+    homelab.exposedServices.timeline.port = config.services.dawarich.webPort;
 
     sops.secrets."passwords/dawarich" = {};
 
@@ -25,7 +25,7 @@
     services.dawarich = {
       enable = true;
       webPort = 7000;
-      localDomain = "timeline." + config._enrai.config.localDomain;
+      localDomain = "timeline." + config.homelab.config.localDomain;
       secretKeyBaseFile = config.sops.secrets."passwords/dawarich".path;
       configureNginx = false;
     };

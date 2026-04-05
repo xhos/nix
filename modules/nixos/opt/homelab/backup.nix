@@ -3,10 +3,10 @@
   lib,
   ...
 }: let
-  cfg = config._enrai.backup;
+  cfg = config.homelab.backup;
   serviceBackups = lib.filterAttrs (_: v: v.paths != []) cfg.services;
 in {
-  options._enrai.backup = {
+  options.homelab.backup = {
     defaultRepository = lib.mkOption {
       type = lib.types.str;
       default = "rclone:onedrive:restic-backups";

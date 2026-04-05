@@ -27,7 +27,7 @@
 
       services.prowlarr.enable = true;
       services.prowlarr.apiKeyFile = secret "api/prowlarr";
-      _enrai.exposedServices.prowlarr.port = config.services.prowlarr.settings.server.port;
+      homelab.exposedServices.prowlarr.port = config.services.prowlarr.settings.server.port;
 
       # unset dynamic user stuff which makes it difficult to persist
       systemd.services.prowlarr.serviceConfig = {

@@ -1,0 +1,121 @@
+{
+  inputs,
+  config,
+  lib,
+  ...
+}: {
+  options.homelab.proxmox.enable = lib.mkEnableOption "Proxmox VE and VM infrastructure";
+
+  config = let
+    vmNetwork = "192.168.100";
+    amneziaIp = "${vmNetwork}.21";
+    mcIp = "${vmNetwork}.20";
+
+    exposedServices = lib.attrValues config.homelab.exposedServices;
+    amneziaAccessibleServices = lib.filter (s: s.amneziaAccessible) exposedServices;
+    amneziaServicePorts = lib.unique (map (s: s.port) amneziaAccessibleServices);
+    mkPortSet = ports: "{ ${lib.concatMapStringsSep ", " toString ports} }";
+  in
+    lib.mkIf config.homelab.proxmox.enable {
+      nixpkgs.overlays = [inputs.proxmox-nixos.overlays."x86_64-linux"];
+
+      fileSystems."/var/lib/vz" = {
+        device = "/storage/vz";
+        options = ["bind"];
+      };
+
+      networking = {
+        # Air-gapped VM bridge
+        bridges.vmbr1.interfaces = [];
+        interfaces.vmbr1 = {
+          useDHCP = false;
+          ipv4.addresses = [
+            {
+              address = "${vmNetwork}.1";
+              prefixLength = 24;
+            }
+          ];
+        };
+      };
+
+      systemd.services.dnsmasq = {
+        after = ["sys-devices-virtual-net-vmbr1.device"];
+        bindsTo = ["sys-devices-virtual-net-vmbr1.device"];
+      };
+
+      services.dnsmasq = {
+        enable = true;
+        settings = {
+          interface = "vmbr1";
+          bind-interfaces = true;
+          port = 0; # disable DNS, only DHCP
+
+          dhcp-range = "${vmNetwork}.20,${vmNetwork}.50,24h";
+          dhcp-option = [
+            "3,${vmNetwork}.1"
+            "6,1.1.1.1,8.8.8.8"
+          ];
+          dhcp-host = [
+            "BC:24:11:18:FA:6B,${mcIp}"
+            "BC:24:11:1F:12:A5,${amneziaIp}"
+          ];
+        };
+      };
+
+      homelab.exposedServices.proxmox.port = 8006;
+
+      services.proxmox-ve = {
+        enable = true;
+        ipAddress = config.homelab.config.homelabLocalIP;
+        bridges = [
+          "vmbr0"
+          "vmbr1"
+        ];
+      };
+
+      # VM nftables rules injected into base firewall
+      homelab.firewall = {
+        extraInputRules = ''
+          # VMs only need DHCP (vmbr1)
+          iifname vmbr1 udp dport 67 accept
+
+          # Amnezia VPN clients can access specific services
+          ${lib.optionalString (amneziaServicePorts != []) ''
+            iifname vmbr1 ip saddr ${amneziaIp} tcp dport ${mkPortSet amneziaServicePorts} accept
+          ''}
+        '';
+
+        extraForwardRules = ''
+          # VMs can reach internet, not LAN
+          iifname vmbr1 oifname vmbr0 ip daddr 10.0.0.0/24 drop
+          iifname vmbr1 oifname vmbr0 accept
+
+          # Port forwards to VMs
+          ip daddr 192.168.100.0/24 accept
+        '';
+
+        extraPreroutingRules = ''
+          # Direct access from router (bypasses VPS tunnel)
+          iifname vmbr0 tcp dport 25565 dnat to ${mcIp}:25565
+
+          # WireGuard tunnel forwards
+          iifname wg0 tcp dport 2222 dnat to ${mcIp}:22
+          iifname wg0 tcp dport 2223 dnat to ${amneziaIp}:22
+          iifname wg0 tcp dport 25565 dnat to ${mcIp}:25565
+          iifname wg0 tcp dport 35000-35006 dnat to ${amneziaIp}
+          iifname wg0 udp dport 35000-35006 dnat to ${amneziaIp}
+        '';
+
+        extraPostroutingRules = ''
+          oifname vmbr0 ip saddr 192.168.100.0/24 masquerade
+        '';
+      };
+
+      # Proxmox persistence
+      environment.persistence."/persist".directories = [
+        "/var/lib/pve-cluster"
+        "/var/lib/rrdcached"
+        "/var/lib/pve-manager"
+      ];
+    };
+}

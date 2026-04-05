@@ -2,164 +2,127 @@
   config,
   lib,
   ...
-}: {
-  config = let
-    enraiIP = config._enrai.config.enraiLocalIP;
-    localDomain = config._enrai.config.localDomain;
-    publicDomain = config._enrai.config.publicDomain;
+}: let
+  localDomain = config.homelab.config.localDomain;
+  publicDomain = config.homelab.config.publicDomain;
 
-    # Collect all registered services and apply defaults
-    exposedServices = lib.mapAttrs (name: svc:
-      svc
-      // {
-        name =
-          if svc.name != ""
-          then svc.name
-          else name;
-        subdomain =
-          if svc.subdomain != ""
-          then svc.subdomain
-          else name;
-      })
-    config._enrai.exposedServices;
+  services =
+    lib.mapAttrs (
+      name: svc:
+        svc
+        // {
+          name =
+            if svc.name != ""
+            then svc.name
+            else name;
+          subdomain =
+            if svc.subdomain != ""
+            then svc.subdomain
+            else name;
+        }
+    )
+    config.homelab.exposedServices;
 
-    # Split services into local-only and public
-    localServices = lib.filterAttrs (_: svc: !svc.exposed) exposedServices;
-    publicServices = lib.filterAttrs (_: svc: svc.exposed) exposedServices;
+  localServices = lib.filterAttrs (_: svc: !svc.exposed) services;
+  publicServices = lib.filterAttrs (_: svc: svc.exposed) services;
 
-    # Multi-level subdomains (e.g. "api.null") aren't covered by *.lab.xhos.dev,
-    # so collect them for explicit cert entries
-    localExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (
+  # DNS-01 needs explicit entries for multi-level subdomains e.g. api.null
+  # since they aren't covered by the wildcard
+  extraDomains = domain: exposed:
+    lib.filter (d: d != null) (lib.mapAttrsToList (
         _: svc:
-          if (!svc.exposed && lib.hasInfix "." svc.subdomain)
-          then "${svc.subdomain}.${localDomain}"
+          if svc.exposed == exposed && lib.hasInfix "." svc.subdomain
+          then "${svc.subdomain}.${domain}"
           else null
       )
-      exposedServices);
+      services);
 
-    publicExtraDomains = lib.filter (d: d != null) (lib.mapAttrsToList (
-        _: svc:
-          if (svc.exposed && lib.hasInfix "." svc.subdomain)
-          then "${svc.subdomain}.${publicDomain}"
-          else null
-      )
-      exposedServices);
-
-    # Generate local vhosts (*.lab.xhos.dev)
-    mkLocalVhosts =
-      lib.mapAttrs' (
-        _: svc:
-          lib.nameValuePair "${svc.subdomain}.${localDomain}" {
-            useACMEHost = localDomain;
-            extraConfig = ''
-              bind ${enraiIP}
-              @blocked not remote_ip 10.0.0.0/24
-              handle @blocked {
-                respond 403
-              }
-              handle {
-                reverse_proxy ${svc.upstream}:${toString svc.port}
-              }
-            '';
-          }
-      )
-      localServices;
-
-    # Generate public vhosts (*.xhos.dev via WireGuard)
-    mkPublicVhosts =
-      lib.mapAttrs' (
-        _: svc:
-          lib.nameValuePair "${svc.subdomain}.${publicDomain}" {
-            useACMEHost = publicDomain;
-            listenAddresses = [config._enrai.config.tunnelIP];
-            extraConfig = ''
-              reverse_proxy 127.0.0.1:${toString svc.port}
-            '';
-          }
-      )
-      publicServices;
-
-    allVhosts =
-      mkLocalVhosts
-      // mkPublicVhosts
-      // {
-        # catch-all for undefined local subdomains
-        "*.${localDomain}" = {
+  mkLocalVhosts =
+    lib.mapAttrs' (
+      _: svc:
+        lib.nameValuePair "${svc.subdomain}.${localDomain}" {
           useACMEHost = localDomain;
           extraConfig = ''
-            bind ${enraiIP}
-            respond 404 {
-              close
-            }
+            reverse_proxy ${svc.upstream}:${toString svc.port}
           '';
-        };
-        # catch-all for undefined public subdomains
-        "*.${publicDomain}" = {
+        }
+    )
+    localServices;
+
+  mkPublicVhosts =
+    lib.mapAttrs' (
+      _: svc:
+        lib.nameValuePair "${svc.subdomain}.${publicDomain}" {
           useACMEHost = publicDomain;
-          listenAddresses = [config._enrai.config.tunnelIP];
           extraConfig = ''
-            respond 404 {
-              close
-            }
+            reverse_proxy ${svc.upstream}:${toString svc.port}
           '';
-        };
+        }
+    )
+    publicServices;
+
+  catchAlls = {
+    "*.${localDomain}" = {
+      useACMEHost = localDomain;
+      extraConfig = "respond 404 { close }";
+    };
+    "*.${publicDomain}" = {
+      useACMEHost = publicDomain;
+      extraConfig = "respond 404 { close }";
+    };
+  };
+in {
+  config = lib.mkIf config.homelab.enable {
+    sops.secrets."api/cloudflare" = {};
+
+    security.acme = {
+      acceptTerms = true;
+      defaults.email = "lets-encrypt@xhos.dev";
+      certs.${localDomain} = {
+        group = config.services.caddy.group;
+        dnsProvider = "cloudflare";
+        dnsResolver = "1.1.1.1:53";
+        dnsPropagationCheck = true;
+        domain = "*.${localDomain}";
+        extraDomainNames = [localDomain] ++ extraDomains localDomain false;
+        environmentFile = config.sops.secrets."api/cloudflare".path;
       };
-  in
-    lib.mkIf config.homelab.enable {
-      sops.secrets."api/cloudflare" = {};
-
-      security.acme = {
-        acceptTerms = true;
-        defaults.email = "lets-encrypt@xhos.dev";
-
-        # Wildcard cert for local services
-        certs.${localDomain} = {
-          group = config.services.caddy.group;
-          dnsProvider = "cloudflare";
-          dnsResolver = "1.1.1.1:53";
-          dnsPropagationCheck = true;
-          domain = "*.${localDomain}";
-          extraDomainNames = [localDomain] ++ localExtraDomains;
-          environmentFile = config.sops.secrets."api/cloudflare".path;
-        };
-
-        # Wildcard cert for public services
-        certs.${publicDomain} = {
-          group = config.services.caddy.group;
-          dnsProvider = "cloudflare";
-          dnsResolver = "1.1.1.1:53";
-          dnsPropagationCheck = true;
-          domain = "*.${publicDomain}";
-          extraDomainNames = [publicDomain] ++ publicExtraDomains;
-          environmentFile = config.sops.secrets."api/cloudflare".path;
-        };
-      };
-
-      # Ensure Caddy waits for certs and reloads gracefully
-      systemd.services.caddy = {
-        after = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
-        wants = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
-        reloadTriggers = lib.mkForce [];
-      };
-
-      services.caddy = {
-        enable = true;
-        email = "lets-encrypt@xhos.dev";
-
-        globalConfig = ''
-          admin off
-          servers ${config._enrai.config.tunnelIP}:443 {
-            listener_wrappers {
-              proxy_protocol {
-                timeout 5s
-                allow 10.100.0.0/24
-              }
-              tls
-            }
-          }
-        '';
-
-        virtualHosts = allVhosts;
+      certs.${publicDomain} = {
+        group = config.services.caddy.group;
+        dnsProvider = "cloudflare";
+        dnsResolver = "1.1.1.1:53";
+        dnsPropagationCheck = true;
+        domain = "*.${publicDomain}";
+        extraDomainNames = [publicDomain] ++ extraDomains publicDomain true;
+        environmentFile = config.sops.secrets."api/cloudflare".path;
       };
     };
+
+    systemd.services.caddy = {
+      after = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
+      wants = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
+      reloadTriggers = lib.mkForce [];
+    };
+
+    services.caddy = {
+      enable = true;
+      email = "lets-encrypt@xhos.dev";
+
+      # PROXY protocol for public services coming through proxy-1
+      globalConfig = ''
+        admin off
+        servers :443 {
+          listener_wrappers {
+            proxy_protocol {
+              timeout 5s
+              allow 100.64.0.0/10
+            }
+            tls
+          }
+        }
+      '';
+
+      virtualHosts = mkLocalVhosts // mkPublicVhosts // catchAlls;
+    };
+  };
 }

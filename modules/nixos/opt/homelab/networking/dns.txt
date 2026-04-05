@@ -4,7 +4,7 @@
   ...
 }: {
   config = let
-    enraiIP = config._enrai.config.enraiLocalIP;
+    enraiIP = config._enrai.config.homelabLocalIP;
     localDomain = config._enrai.config.localDomain;
 
     exposedServices = lib.mapAttrs (name: svc:

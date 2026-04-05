@@ -2,33 +2,32 @@
   options.homelab.enable = lib.mkOption {
     type = lib.types.bool;
     default = true;
-    description = "Enable homelab infrastructure";
+    description = "enable homelab infra";
   };
-  options._enrai.config = {
-    enraiLocalIP = lib.mkOption {
+
+  options.homelab.config = {
+    homelabLocalIP = lib.mkOption {
       type = lib.types.str;
       default = "10.0.0.10";
-      description = "Enrai's IP on main LAN";
+      description = "homelab's IP on main LAN";
     };
 
     tunnelIP = lib.mkOption {
       type = lib.types.str;
       default = "10.100.0.10";
-      description = "Enrai's IP on WireGuard tunnel";
+      description = "homelab's IP on WireGuard tunnel";
     };
 
     localDomain = lib.mkOption {
       type = lib.types.str;
       default = "lab.xhos.dev";
-      description = "Domain for local services";
+      description = "domain for local services";
     };
 
     publicDomain = lib.mkOption {
       type = lib.types.str;
       default = "xhos.dev";
-      description = "Domain for public services";
+      description = "domain for public services";
     };
-
-    proxmox.enable = lib.mkEnableOption "Proxmox VE and VM infrastructure";
   };
 }

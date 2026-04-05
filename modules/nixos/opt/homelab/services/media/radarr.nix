@@ -23,7 +23,7 @@
 
       services.radarr.enable = true;
       services.radarr.apiKeyFile = secret "api/radarr";
-      _enrai.exposedServices.radarr.port = config.services.radarr.settings.server.port;
+      homelab.exposedServices.radarr.port = config.services.radarr.settings.server.port;
 
       systemd.services.radarr.environment = {
         RADARR__AUTH__METHOD = "Forms";

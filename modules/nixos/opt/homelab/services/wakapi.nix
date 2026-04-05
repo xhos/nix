@@ -16,7 +16,7 @@
       Group = "wakapi";
     };
 
-    _enrai.exposedServices.wakapi = {
+    homelab.exposedServices.wakapi = {
       port = 3333;
       exposed = true;
     };

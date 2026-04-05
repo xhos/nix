@@ -26,7 +26,7 @@
 
       services.sonarr.enable = true;
       services.sonarr.apiKeyFile = secret "api/sonarr";
-      _enrai.exposedServices.sonarr.port = config.services.sonarr.settings.server.port;
+      homelab.exposedServices.sonarr.port = config.services.sonarr.settings.server.port;
 
       systemd.services.sonarr.environment = {
         SONARR__AUTH__METHOD = "Forms";

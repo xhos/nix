@@ -16,6 +16,7 @@
   };
 
   networking = {
+    nameservers = ["1.1.1.1" "1.0.0.1"];
     networkmanager.enable = lib.mkIf (config.headless != true) true;
 
     firewall = rec {
