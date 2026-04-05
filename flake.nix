@@ -68,11 +68,6 @@
     # swissh.url = "github:xhos/swissh";
 
     # --- applications ---------------------------------------------------
-    claude-desktop = {
-      url = "github:k3d3/claude-desktop-linux-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixcord.url = "github:kaylorben/nixcord";
     nxv.url = "github:xhos/nxv";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";
@@ -107,6 +102,8 @@
       home-manager.nixosModules.home-manager
       inputs.stylix.nixosModules.stylix
       inputs.impermanence.nixosModules.impermanence
+      inputs.wled-album-sync.nixosModules.default
+      inputs.vpn-confinement.nixosModules.default
     ];
 
     mkNixosSystem = import ./lib/mk-nixos-system.nix {
