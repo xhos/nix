@@ -5,12 +5,10 @@
 }: let
   exposedServices = lib.attrValues config.homelab.exposedServices;
   dynamicServicePorts = lib.unique (map (s: s.port) exposedServices);
-
   lanTcpPorts = [80 443] ++ dynamicServicePorts;
-
   mkPortSet = ports: "{ ${lib.concatMapStringsSep ", " toString ports} }";
-
   fw = config.homelab.firewall;
+  cfg = config.homelab;
 in {
   options.homelab.exposedServices = lib.mkOption {
     type = lib.types.attrsOf (lib.types.submodule {
@@ -42,7 +40,20 @@ in {
       };
     });
     default = {};
-    description = "Services exposed on the local network";
+    description = "Services exposed on the network";
+  };
+
+  options.homelab.baremetal = {
+    enable = lib.mkEnableOption "baremetal networking";
+    interface = lib.mkOption {
+      type = lib.types.str;
+      default = "enp0s31f6";
+      description = "Physical NIC";
+    };
+    gateway = lib.mkOption {
+      type = lib.types.str;
+      default = "10.0.0.1";
+    };
   };
 
   options.homelab.firewall = {
@@ -64,77 +75,78 @@ in {
     };
   };
 
-  config = lib.mkIf config.homelab.enable {
-    networking = {
-      bridges.vmbr0.interfaces = ["enp0s31f6"];
-      interfaces.enp0s31f6.useDHCP = false;
-      interfaces.vmbr0 = {
-        useDHCP = false;
-        ipv4.addresses = [
-          {
-            address = config.homelab.config.homelabLocalIP;
-            prefixLength = 24;
-          }
-        ];
-      };
-      defaultGateway = "10.0.0.1";
-      firewall.enable = lib.mkForce false;
+  config = lib.mkIf cfg.enable {
+    networking = lib.mkMerge [
+      (lib.mkIf cfg.baremetal.enable {
+        interfaces.${cfg.baremetal.interface} = {
+          useDHCP = false;
+          ipv4.addresses = [
+            {
+              address = cfg.config.homelabLocalIP;
+              prefixLength = 24;
+            }
+          ];
+        };
+        defaultGateway = cfg.baremetal.gateway;
+      })
 
-      nftables = {
-        enable = true;
-        ruleset = ''
-          table inet filter {
-            chain input {
-              type filter hook input priority filter; policy drop;
+      {
+        firewall.enable = lib.mkForce false;
+        nftables = {
+          enable = true;
+          ruleset = ''
+            table inet filter {
+              chain input {
+                type filter hook input priority filter; policy drop;
 
-              ct state vmap { established : accept, related : accept, invalid : drop }
-              iifname lo accept
-              ip protocol icmp accept
-              ip6 nexthdr icmpv6 accept
+                ct state vmap { established : accept, related : accept, invalid : drop }
+                iifname lo accept
+                ip protocol icmp accept
+                ip6 nexthdr icmpv6 accept
 
-              # Global access
-              tcp dport 22 accept
+                tcp dport 22 accept
 
-              # LAN only (vmbr0)
-              iifname vmbr0 ip saddr 10.0.0.0/24 tcp dport ${mkPortSet lanTcpPorts} accept
-              iifname vmbr0 ip saddr 10.0.0.0/24 udp dport { 22000 } accept
-              iifname vmbr0 ip saddr 10.0.0.0/24 tcp dport { 22000 } accept
+                ${lib.optionalString cfg.baremetal.enable ''
+              iifname ${cfg.baremetal.interface} ip saddr 10.0.0.0/24 tcp dport ${mkPortSet lanTcpPorts} accept
+              iifname ${cfg.baremetal.interface} ip saddr 10.0.0.0/24 udp dport { 22000 } accept
+              iifname ${cfg.baremetal.interface} ip saddr 10.0.0.0/24 tcp dport { 22000 } accept
+            ''}
 
-              ${fw.extraInputRules}
+                ${fw.extraInputRules}
 
-              # Tailscale
-              iifname tailscale0 accept
+                iifname tailscale0 accept
+              }
+
+              chain forward {
+                type filter hook forward priority filter; policy drop;
+                ct state vmap { established : accept, related : accept, invalid : drop }
+                ${fw.extraForwardRules}
+              }
+
+              chain output {
+                type filter hook output priority filter; policy accept;
+              }
             }
 
-            chain forward {
-              type filter hook forward priority filter; policy drop;
-              ct state vmap { established : accept, related : accept, invalid : drop }
-              ${fw.extraForwardRules}
-            }
-
-            chain output {
-              type filter hook output priority filter; policy accept;
-            }
-          }
-
-          ${lib.optionalString (fw.extraPreroutingRules != "" || fw.extraPostroutingRules != "") ''
-            table ip nat {
-              ${lib.optionalString (fw.extraPreroutingRules != "") ''
-              chain prerouting {
-                type nat hook prerouting priority dstnat; policy accept;
-                ${fw.extraPreroutingRules}
+            ${lib.optionalString (fw.extraPreroutingRules != "" || fw.extraPostroutingRules != "") ''
+              table ip nat {
+                ${lib.optionalString (fw.extraPreroutingRules != "") ''
+                chain prerouting {
+                  type nat hook prerouting priority dstnat; policy accept;
+                  ${fw.extraPreroutingRules}
+                }
+              ''}
+                ${lib.optionalString (fw.extraPostroutingRules != "") ''
+                chain postrouting {
+                  type nat hook postrouting priority srcnat; policy accept;
+                  ${fw.extraPostroutingRules}
+                }
+              ''}
               }
             ''}
-              ${lib.optionalString (fw.extraPostroutingRules != "") ''
-              chain postrouting {
-                type nat hook postrouting priority srcnat; policy accept;
-                ${fw.extraPostroutingRules}
-              }
-            ''}
-            }
-          ''}
-        '';
-      };
-    };
+          '';
+        };
+      }
+    ];
   };
 }

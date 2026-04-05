@@ -12,12 +12,6 @@
       description = "homelab's IP on main LAN";
     };
 
-    tunnelIP = lib.mkOption {
-      type = lib.types.str;
-      default = "10.100.0.10";
-      description = "homelab's IP on WireGuard tunnel";
-    };
-
     localDomain = lib.mkOption {
       type = lib.types.str;
       default = "lab.xhos.dev";
