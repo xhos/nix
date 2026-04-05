@@ -47,7 +47,7 @@
   networking.firewall.allowedTCPPorts = [80 443];
   networking.firewall.allowedUDPPorts = [41641];
 
-  networking.hosts."127.0.0.1" = ["hs.xhos.dev"];
+  services.tailscale.extraUpFlags = lib.mkForce ["--login-server" "http://127.0.0.1:8080"];
 
   systemd.services.tailscaled-autoconnect = {
     after = ["headscale.service"];
