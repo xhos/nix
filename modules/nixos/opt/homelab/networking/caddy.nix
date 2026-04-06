@@ -116,6 +116,7 @@ in {
             proxy_protocol {
               timeout 5s
               allow 100.64.0.0/10
+              fallback_policy skip
             }
             tls
           }

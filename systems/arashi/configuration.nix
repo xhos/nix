@@ -1,4 +1,8 @@
-{inputs, lib, ...}: {
+{
+  inputs,
+  lib,
+  ...
+}: {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
   ];
@@ -20,6 +24,15 @@
     memoryPercent = 25;
   };
 
+  homelab.enable = true;
+
+  # headscale
+  homelab.exposedServices.headscale = {
+    port = 8080;
+    subdomain = "hs";
+    exposed = true;
+  };
+
   services.headscale = {
     enable = true;
     address = "127.0.0.1";
@@ -35,17 +48,62 @@
     };
   };
 
-  services.caddy = {
-    enable = true;
-    email = "lets-encrypt@xhos.dev";
+  # trek
+  sops.secrets."env/trek" = {};
+
+  homelab.exposedServices.trek = {
+    port = 3000;
+    exposed = true;
   };
 
-  services.caddy.virtualHosts."hs.xhos.dev".extraConfig = ''
-    reverse_proxy 127.0.0.1:8080
-  '';
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
 
-  networking.firewall.allowedTCPPorts = [80 443];
-  networking.firewall.allowedUDPPorts = [41641];
+  virtualisation.oci-containers = {
+    backend = "podman";
+    containers.trek = {
+      image = "mauriceboe/trek:latest";
+      ports = ["127.0.0.1:3000:3000"];
+      environment = {
+        NODE_ENV = "production";
+        PORT = "3000";
+        FORCE_HTTPS = "true";
+        TRUST_PROXY = "1";
+        ALLOW_INTERNAL_NETWORK = "false";
+        ALLOWED_ORIGINS = "https://trek.xhos.dev";
+      };
+      environmentFiles = ["/run/secrets/env/trek"];
+      volumes = [
+        "/var/lib/trek/data:/app/data"
+        "/var/lib/trek/uploads:/app/uploads"
+      ];
+      extraOptions = [
+        "--read-only"
+        "--security-opt=no-new-privileges:true"
+        "--cap-drop=ALL"
+        "--cap-add=CHOWN"
+        "--cap-add=SETUID"
+        "--cap-add=SETGID"
+        "--tmpfs=/tmp:noexec,nosuid,size=64m"
+      ];
+    };
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /var/lib/trek 0750 root root -"
+    "d /var/lib/trek/data 0750 root root -"
+    "d /var/lib/trek/uploads 0750 root root -"
+  ];
+
+  # open 80/443 for direct access (headscale needs to be reachable
+  # without tailscale) and 41641 for tailscale derp
+  homelab.firewall.extraInputRules = ''
+    tcp dport { 80, 443 } accept
+    udp dport { 41641 } accept
+  '';
 
   services.tailscale.extraUpFlags = lib.mkForce ["--login-server" "http://127.0.0.1:8080"];
 
