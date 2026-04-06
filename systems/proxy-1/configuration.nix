@@ -4,7 +4,7 @@
   config,
   ...
 }: let
-  arashiIp = "100.64.0.3";
+  arashiIp = "100.64.0.1";
 
   caddy-l4 = pkgs.caddy.withPlugins {
     plugins = ["github.com/mholt/caddy-l4@v0.0.0-20251124224044-66170bec9f4d"];
