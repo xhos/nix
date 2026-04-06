@@ -2,6 +2,7 @@
   inputs,
   pkgs,
   config,
+  lib,
   ...
 }: let
   arashiIp = "100.64.0.1";
@@ -27,10 +28,6 @@ in {
     tables.nat = {
       family = "ip";
       content = ''
-        chain prerouting {
-          type nat hook prerouting priority -100; policy accept;
-          tcp dport { 80, 443 } dnat to ${arashiIp}
-        }
         chain postrouting {
           type nat hook postrouting priority 100; policy accept;
           oifname "tailscale0" masquerade
@@ -47,12 +44,21 @@ in {
     allowedUDPPorts = [config.services.tailscale.port];
   };
 
+  systemd.services.caddy.reloadTriggers = lib.mkForce [];
+
   services.caddy = {
     enable = true;
     package = caddy-l4;
     globalConfig = ''
       admin off
       layer4 {
+        :80 {
+          route {
+            proxy {
+              upstream ${arashiIp}:80
+            }
+          }
+        }
         :443 {
           route {
             proxy {
