@@ -105,6 +105,11 @@
     udp dport { 41641 } accept
   '';
 
+  homelab.firewall.extraForwardRules = ''
+    iifname "podman0" accept
+    oifname "podman0" accept
+  '';
+
   services.tailscale.extraUpFlags = lib.mkForce ["--login-server" "http://127.0.0.1:8080"];
 
   systemd.services.tailscaled-autoconnect = {
