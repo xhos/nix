@@ -765,22 +765,6 @@
     },
     "nixpkgs_10": {
       "locked": {
-        "lastModified": 1759733170,
-        "narHash": "sha256-TXnlsVb5Z8HXZ6mZoeOAIwxmvGHp1g4Dw89eLvIwKVI=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "8913c168d1c56dc49a7718685968f38752171c3b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_11": {
-      "locked": {
         "lastModified": 1763283776,
         "narHash": "sha256-Y7TDFPK4GlqrKrivOcsHG8xSGqQx3A6c+i7novT85Uk=",
         "owner": "NixOS",
@@ -795,7 +779,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_12": {
+    "nixpkgs_11": {
       "locked": {
         "lastModified": 1774709303,
         "narHash": "sha256-D3Q07BbIA2KnTcSXIqqu9P586uWxN74zNoCH3h2ESHg=",
@@ -1100,7 +1084,6 @@
         "stylix": "stylix",
         "vpn-confinement": "vpn-confinement",
         "vscode-server": "vscode-server",
-        "wled-album-sync": "wled-album-sync",
         "yawn": "yawn",
         "zen-browser": "zen-browser"
       }
@@ -1401,28 +1384,10 @@
         "type": "github"
       }
     },
-    "wled-album-sync": {
-      "inputs": {
-        "nixpkgs": "nixpkgs_10"
-      },
-      "locked": {
-        "lastModified": 1767294629,
-        "narHash": "sha256-C67FPznKd9UZT8GsnIIyBfasIF3hsqnqIAn2IewEJNc=",
-        "owner": "xhos",
-        "repo": "wled-album-sync",
-        "rev": "c14a6b8c3c4b54888891b33485ad910b77a416ca",
-        "type": "github"
-      },
-      "original": {
-        "owner": "xhos",
-        "repo": "wled-album-sync",
-        "type": "github"
-      }
-    },
     "yawn": {
       "inputs": {
         "git-hooks": "git-hooks",
-        "nixpkgs": "nixpkgs_11"
+        "nixpkgs": "nixpkgs_10"
       },
       "locked": {
         "lastModified": 1764513527,
@@ -1441,7 +1406,7 @@
     "zen-browser": {
       "inputs": {
         "home-manager": "home-manager_4",
-        "nixpkgs": "nixpkgs_12"
+        "nixpkgs": "nixpkgs_11"
       },
       "locked": {
         "lastModified": 1775367672,

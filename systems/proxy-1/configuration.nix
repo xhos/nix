@@ -8,7 +8,7 @@
 
   caddy-l4 = pkgs.caddy.withPlugins {
     plugins = ["github.com/mholt/caddy-l4@v0.0.0-20251124224044-66170bec9f4d"];
-    hash = "sha256-wjK4Ym83Rxo6IrkM4V0OAvUb/cgs5udDc/R0IRoZ/f4=";
+    hash = "sha256-V7AJAuSKKVTilxOocyZ0ks/ruvHUcdJ+rvbe96J8ohc=";
   };
 in {
   imports = [

@@ -39,5 +39,6 @@ in
         ++ lib.optionals (homeUser == null && !minimal) [
           inputs.stylix.nixosModules.stylix
           inputs.impermanence.nixosModules.impermanence
+          inputs.vpn-confinement.nixosModules.default
         ];
     }
