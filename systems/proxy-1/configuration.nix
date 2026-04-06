@@ -62,7 +62,6 @@ in {
         :443 {
           route {
             proxy {
-              proxy_protocol v2
               upstream ${arashiIp}:443
             }
           }
