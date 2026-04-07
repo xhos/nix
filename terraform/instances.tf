@@ -16,7 +16,7 @@ resource "oci_core_instance" "arashi" {
   source_details {
     source_type             = "image"
     source_id               = oci_core_image.nixos_arm.id
-    boot_volume_size_in_gbs = 100
+    boot_volume_size_in_gbs = 300
   }
 
   create_vnic_details {
