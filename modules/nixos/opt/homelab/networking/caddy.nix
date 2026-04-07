@@ -71,8 +71,17 @@
       extraConfig = "respond 404 { close }";
     };
   };
+  tailscaleIP = config.homelab.config.tailscaleIP;
 in {
   config = lib.mkIf config.homelab.enable {
+    services.headscale.settings.dns.extra_records = lib.mkIf (
+      config.services.headscale.enable && tailscaleIP != ""
+    ) (lib.mapAttrsToList (_: svc: {
+      name = "${svc.subdomain}.${localDomain}";
+      type = "A";
+      value = tailscaleIP;
+    }) localServices);
+
     sops.secrets."api/cloudflare" = {};
 
     security.acme = {
@@ -111,15 +120,6 @@ in {
       # PROXY protocol for public services coming through proxy-1
       globalConfig = ''
         admin off
-        servers :443 {
-          listener_wrappers {
-            proxy_protocol {
-              timeout 5s
-              fallback_policy skip
-            }
-            tls
-          }
-        }
       '';
 
       virtualHosts = mkLocalVhosts // mkPublicVhosts // catchAlls;

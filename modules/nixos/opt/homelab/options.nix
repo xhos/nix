@@ -23,5 +23,11 @@
       default = "xhos.dev";
       description = "domain for public services";
     };
+
+    tailscaleIP = lib.mkOption {
+      type = lib.types.str;
+      default = "";
+      description = "tailscale IP of this node (used for headscale extra_records)";
+    };
   };
 }

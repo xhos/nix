@@ -8,6 +8,7 @@
   ];
 
   networking.hostName = "arashi";
+  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
   networking.hostId = "3891dea5";
 
   nixpkgs.hostPlatform = "aarch64-linux";
@@ -24,7 +25,11 @@
     memoryPercent = 25;
   };
 
-  homelab.enable = true;
+  homelab = {
+    enable = true;
+    immich.enable = true;
+    config.tailscaleIP = "100.64.0.1";
+  };
 
   # headscale
   homelab.exposedServices.headscale = {
@@ -59,8 +64,12 @@
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
-    defaultNetwork.settings.dns_enabled = true;
+    defaultNetwork.settings.dns_enabled = false;
   };
+
+  # to update
+  # sudo podman pull mauriceboe/trek:latest
+  # sudo systemctl restart podman-trek.service
 
   virtualisation.oci-containers = {
     backend = "podman";
@@ -88,6 +97,8 @@
         "--cap-add=SETUID"
         "--cap-add=SETGID"
         "--tmpfs=/tmp:noexec,nosuid,size=64m"
+        "--dns=1.1.1.1"
+        "--dns=1.0.0.1"
       ];
     };
   };
@@ -95,7 +106,8 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/trek 0750 root root -"
     "d /var/lib/trek/data 0750 root root -"
-    "d /var/lib/trek/uploads 0750 root root -"
+    "d /var/lib/trek/uploads 0777 root root -"
+    "d /var/lib/trek/uploads/avatars 0777 root root -"
   ];
 
   # open 80/443 for direct access (headscale needs to be reachable
@@ -108,6 +120,10 @@
   homelab.firewall.extraForwardRules = ''
     iifname "podman0" accept
     oifname "podman0" accept
+  '';
+
+  homelab.firewall.extraPostroutingRules = ''
+    ip saddr 10.88.0.0/16 masquerade
   '';
 
   services.tailscale.extraUpFlags = lib.mkForce ["--login-server" "http://127.0.0.1:8080"];
