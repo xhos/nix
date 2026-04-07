@@ -56,6 +56,7 @@ in {
           route {
             proxy {
               upstream ${arashiIp}:80
+              proxy_protocol v2
             }
           }
         }
@@ -63,6 +64,7 @@ in {
           route {
             proxy {
               upstream ${arashiIp}:443
+              proxy_protocol v2
             }
           }
         }
