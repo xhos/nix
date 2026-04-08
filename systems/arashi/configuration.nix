@@ -31,28 +31,6 @@
     config.tailscaleIP = "100.64.0.1";
   };
 
-  # headscale
-  homelab.exposedServices.headscale = {
-    port = 8080;
-    subdomain = "hs";
-    exposed = true;
-  };
-
-  services.headscale = {
-    enable = true;
-    address = "127.0.0.1";
-    port = 8080;
-    settings = {
-      server_url = "https://hs.xhos.dev";
-      ip_prefixes = ["100.64.0.0/10"];
-      dns = {
-        magic_dns = true;
-        base_domain = "lab.xhos.dev";
-        nameservers.global = ["1.1.1.1" "1.0.0.1"];
-      };
-    };
-  };
-
   # trek
   sops.secrets."env/trek" = {};
 

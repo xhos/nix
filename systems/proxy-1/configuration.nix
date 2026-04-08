@@ -17,6 +17,8 @@ in {
   ];
   headless = true;
 
+  homelab.headscale.enable = true;
+
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "proxy-1";
   networking.hostId = "6e172669";
