@@ -1,7 +1,4 @@
-{
-  inputs,
-  ...
-}: {
+{inputs, ...}: {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
   ];
@@ -27,7 +24,7 @@
   homelab = {
     enable = true;
     immich.enable = true;
-    config.tailscaleIP = "100.64.0.1";
+    config.tailscaleIP = "100.64.0.3";
   };
 
   # trek
@@ -86,7 +83,6 @@
     "d /var/lib/trek/uploads 0777 root root -"
     "d /var/lib/trek/uploads/avatars 0777 root root -"
   ];
-
 
   homelab.firewall.extraForwardRules = ''
     iifname "podman0" accept
