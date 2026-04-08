@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  ...
 }: {
   options.homelab.headscale.enable = lib.mkEnableOption "run headscale control plane (should be one of these in the network)";
 
@@ -11,7 +12,7 @@
       exposed = true;
     };
 
-    sops.secrets."vpn/headscale-identity" = {};
+    sops.secrets."vpn/headscale-identity".owner = config.services.headscale.user;
 
     # on homelab hosts, exposedServices handles the Caddy vhost via caddy.nix
     # on non-homelab hosts (e.g. proxy-1), add a direct vhost for TLS termination
@@ -20,6 +21,8 @@
         reverse_proxy 127.0.0.1:${toString config.services.headscale.port}
       '';
     };
+
+    services.tailscale.extraUpFlags = ["--login-server" "http://127.0.0.1:8080"];
 
     services.headscale = {
       enable = true;
