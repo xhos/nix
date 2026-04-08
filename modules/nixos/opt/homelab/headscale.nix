@@ -7,7 +7,7 @@
 
   config = lib.mkIf config.homelab.headscale.enable {
     homelab.exposedServices.headscale = {
-      port = 8443;
+      port = 8080;
       subdomain = "hs";
       exposed = true;
     };
@@ -17,12 +17,10 @@
     services.headscale = {
       enable = true;
       address = "127.0.0.1";
-      port = 8443;
+      port = 8080;
       settings = {
         noise.private_key_path = config.sops.secrets."vpn/headscale-identity".path;
         server_url = "https://hs.xhos.dev";
-        tls_letsencrypt_hostname = "hs.xhos.dev";
-        tls_letsencrypt_challenge_type = "TLS-ALPN-01";
         ip_prefixes = ["100.64.0.0/10"];
         dns = {
           magic_dns = true;

@@ -28,10 +28,10 @@
 
   # DNS-01 needs explicit entries for multi-level subdomains e.g. api.null
   # since they aren't covered by the wildcard
-  extraDomains = domain: exposed:
+  extraDomains = domain:
     lib.filter (d: d != null) (lib.mapAttrsToList (
         _: svc:
-          if svc.exposed == exposed && lib.hasInfix "." svc.subdomain
+          if !svc.exposed && lib.hasInfix "." svc.subdomain
           then "${svc.subdomain}.${domain}"
           else null
       )
@@ -49,11 +49,11 @@
     )
     localServices;
 
+  # public services served over plain HTTP (TLS terminated at proxy-1)
   mkPublicVhosts =
     lib.mapAttrs' (
       _: svc:
-        lib.nameValuePair "${svc.subdomain}.${publicDomain}" {
-          useACMEHost = publicDomain;
+        lib.nameValuePair "http://${svc.subdomain}.${publicDomain}" {
           extraConfig = ''
             reverse_proxy ${svc.upstream}:${toString svc.port}
           '';
@@ -64,10 +64,6 @@
   catchAlls = {
     "*.${localDomain}" = {
       useACMEHost = localDomain;
-      extraConfig = "respond 404 { close }";
-    };
-    "*.${publicDomain}" = {
-      useACMEHost = publicDomain;
       extraConfig = "respond 404 { close }";
     };
   };
@@ -93,23 +89,14 @@ in {
         dnsResolver = "1.1.1.1:53";
         dnsPropagationCheck = true;
         domain = "*.${localDomain}";
-        extraDomainNames = [localDomain] ++ extraDomains localDomain false;
-        environmentFile = config.sops.secrets."api/cloudflare".path;
-      };
-      certs.${publicDomain} = {
-        group = config.services.caddy.group;
-        dnsProvider = "cloudflare";
-        dnsResolver = "1.1.1.1:53";
-        dnsPropagationCheck = true;
-        domain = "*.${publicDomain}";
-        extraDomainNames = [publicDomain] ++ extraDomains publicDomain true;
+        extraDomainNames = [localDomain] ++ extraDomains localDomain;
         environmentFile = config.sops.secrets."api/cloudflare".path;
       };
     };
 
     systemd.services.caddy = {
-      after = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
-      wants = ["acme-${localDomain}.service" "acme-${publicDomain}.service"];
+      after = ["acme-${localDomain}.service"];
+      wants = ["acme-${localDomain}.service"];
       reloadTriggers = lib.mkForce [];
     };
 
@@ -117,7 +104,6 @@ in {
       enable = true;
       email = "lets-encrypt@xhos.dev";
 
-      # PROXY protocol for public services coming through proxy-1
       globalConfig = ''
         admin off
       '';

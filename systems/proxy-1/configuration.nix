@@ -1,16 +1,10 @@
 {
   inputs,
-  pkgs,
   config,
   lib,
   ...
 }: let
   arashiIp = "100.64.0.1";
-
-  caddy-l4 = pkgs.caddy.withPlugins {
-    plugins = ["github.com/mholt/caddy-l4@v0.0.0-20251124224044-66170bec9f4d"];
-    hash = "sha256-V7AJAuSKKVTilxOocyZ0ks/ruvHUcdJ+rvbe96J8ohc=";
-  };
 in {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
@@ -46,40 +40,46 @@ in {
     allowedUDPPorts = [config.services.tailscale.port 41641];
   };
 
-  systemd.services.caddy.reloadTriggers = lib.mkForce [];
+  sops.secrets."api/cloudflare" = {};
+
+  security.acme = {
+    acceptTerms = true;
+    defaults.email = "lets-encrypt@xhos.dev";
+    certs."xhos.dev" = {
+      group = config.services.caddy.group;
+      dnsProvider = "cloudflare";
+      dnsResolver = "1.1.1.1:53";
+      dnsPropagationCheck = true;
+      domain = "*.xhos.dev";
+      extraDomainNames = ["xhos.dev"];
+      environmentFile = config.sops.secrets."api/cloudflare".path;
+    };
+  };
+
+  systemd.services.caddy = {
+    after = ["acme-xhos.dev.service"];
+    wants = ["acme-xhos.dev.service"];
+    reloadTriggers = lib.mkForce [];
+  };
 
   services.caddy = {
     enable = true;
-    package = caddy-l4;
-    globalConfig = ''
-      admin off
-      layer4 {
-        :80 {
-          route {
-            proxy {
-              upstream ${arashiIp}:80
-            }
-          }
-        }
-        :443 {
-          route {
-            match {
-              tls {
-                sni hs.xhos.dev
-              }
-            }
-            proxy {
-              upstream 127.0.0.1:8443
-            }
-          }
-          route {
-            proxy {
-              upstream ${arashiIp}:443
-            }
-          }
-        }
-      }
-    '';
+    globalConfig = "admin off";
+
+    virtualHosts."hs.xhos.dev" = {
+      useACMEHost = "xhos.dev";
+      extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString config.services.headscale.port}
+      '';
+    };
+
+    # catch-all for other public services — forward to arashi
+    virtualHosts."*.xhos.dev" = {
+      useACMEHost = "xhos.dev";
+      extraConfig = ''
+        reverse_proxy ${arashiIp}:80
+      '';
+    };
   };
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./proxy.pub];
