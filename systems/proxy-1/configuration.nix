@@ -82,6 +82,11 @@ in {
     };
   };
 
+  systemd.services.tailscaled-autoconnect = {
+    after = ["headscale.service" "caddy.service"];
+    requires = ["headscale.service" "caddy.service"];
+  };
+
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./proxy.pub];
 
   system.stateVersion = "25.11";
