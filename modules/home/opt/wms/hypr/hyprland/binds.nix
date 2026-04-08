@@ -19,8 +19,8 @@
         in
           toString (x + 1 - (c * 10));
       in [
-        "SUPER, ${ws}, split:workspace, ${toString (x + 1)}"
-        "SUPERSHIFT, ${ws}, split:movetoworkspace, ${toString (x + 1)}"
+        "SUPER, ${ws}, workspace, ${toString (x + 1)}"
+        "SUPERSHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
       ]
     )
     10
@@ -32,7 +32,7 @@ in {
       [
         # Compositor commands
         "SUPER, C, killactive"
-        "SUPER, S, togglesplit"
+        # "SUPER, S, togglesplit"
         "SUPER, E, exec, uwsm-app -- nautilus"
         "SUPER, F, fullscreen"
         "SUPER, P, pseudo"
@@ -75,16 +75,16 @@ in {
         "SUPER, grave, togglespecialworkspace"
 
         # cycle through workspaces
-        "SUPERALT, up, split:workspace, m-1"
-        "SUPERALT, down, split:workspace, m+1"
-        "SUPERALT, k, split:workspace, m-1"
-        "SUPERALT, j, split:workspace, m+1"
-        "SUPER, mouse_down, split:workspace, e-1"
-        "SUPER, mouse_up, split:workspace, e+1"
+        "SUPERALT, up, movetoworkspace, m-1"
+        "SUPERALT, down, movetoworkspace, m+1"
+        "SUPERALT, k, movetoworkspace, m-1"
+        "SUPERALT, j, movetoworkspace, m+1"
+        "SUPER, mouse_down, movetoworkspace, e-1"
+        "SUPER, mouse_up, movetoworkspace, e+1"
 
         # swap all windows between monitors
-        "SUPERSHIFT, G, split:swapactiveworkspaces, current +1"
-        "SUPERSHIFT, R, split:grabroguewindows"
+        # "SUPERSHIFT, G, split:swapactiveworkspaces, current +1"
+        # "SUPERSHIFT, R, split:grabroguewindows"
 
         # utilities
         # "SUPER, Q, exec, uwsm-app -- ${terminal}"

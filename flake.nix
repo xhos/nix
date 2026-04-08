@@ -35,22 +35,26 @@
     };
 
     # --- hyprland -------------------------------------------------------
-    # hyprland = {
-    # url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-    # inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # hypr-dynamic-cursors = {
-    #   url = "github:VirtCode/hypr-dynamic-cursors";
-    #   inputs.hyprland.follows = "hyprland";
-    # };
+    hyprland = {
+      url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    hypr-dynamic-cursors = {
+      url = "github:VirtCode/hypr-dynamic-cursors";
+      inputs.hyprland.follows = "hyprland";
+    };
     # hyprgrass = {
     #   url = "github:horriblename/hyprgrass";
     #   inputs.hyprland.follows = "hyprland";
     # };
     # hyprsplit = {
-    #   url = "github:shezdy/hyprsplit";
+    #   url = "github:shezdy/hyprsplit/v0.54.2";
     #   inputs.hyprland.follows = "hyprland";
     # };
+    split-monitor-workspaces = {
+      url = "github:zjeffer/split-monitor-workspaces";
+      inputs.hyprland.follows = "hyprland";
+    };
     logi-hypr.url = "github:xhos/logi-hypr";
 
     # --- customization --------------------------------------------------
