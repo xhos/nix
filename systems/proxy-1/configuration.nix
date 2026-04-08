@@ -63,6 +63,16 @@ in {
         }
         :443 {
           route {
+            match {
+              tls {
+                sni hs.xhos.dev
+              }
+            }
+            proxy {
+              upstream 127.0.0.1:8443
+            }
+          }
+          route {
             proxy {
               upstream ${arashiIp}:443
             }
