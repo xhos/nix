@@ -13,6 +13,14 @@
 
     sops.secrets."vpn/headscale-identity" = {};
 
+    # on homelab hosts, exposedServices handles the Caddy vhost via caddy.nix
+    # on non-homelab hosts (e.g. proxy-1), add a direct vhost for TLS termination
+    services.caddy.virtualHosts."hs.xhos.dev" = lib.mkIf (!config.homelab.enable) {
+      extraConfig = ''
+        reverse_proxy 127.0.0.1:${toString config.services.headscale.port}
+      '';
+    };
+
     services.headscale = {
       enable = true;
       address = "127.0.0.1";

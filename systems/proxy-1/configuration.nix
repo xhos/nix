@@ -43,7 +43,7 @@ in {
     enable = true;
     trustedInterfaces = ["tailscale0"];
     allowedTCPPorts = [80 443];
-    allowedUDPPorts = [config.services.tailscale.port];
+    allowedUDPPorts = [config.services.tailscale.port 41641];
   };
 
   systemd.services.caddy.reloadTriggers = lib.mkForce [];

@@ -1,6 +1,5 @@
 {
   inputs,
-  lib,
   ...
 }: {
   imports = [
@@ -88,12 +87,6 @@
     "d /var/lib/trek/uploads/avatars 0777 root root -"
   ];
 
-  # open 80/443 for direct access (headscale needs to be reachable
-  # without tailscale) and 41641 for tailscale derp
-  homelab.firewall.extraInputRules = ''
-    tcp dport { 80, 443 } accept
-    udp dport { 41641 } accept
-  '';
 
   homelab.firewall.extraForwardRules = ''
     iifname "podman0" accept
@@ -103,13 +96,6 @@
   homelab.firewall.extraPostroutingRules = ''
     ip saddr 10.88.0.0/16 masquerade
   '';
-
-  services.tailscale.extraUpFlags = lib.mkForce ["--login-server" "http://127.0.0.1:8080"];
-
-  systemd.services.tailscaled-autoconnect = {
-    after = ["headscale.service"];
-    requires = ["headscale.service"];
-  };
 
   system.stateVersion = "25.11";
 }
