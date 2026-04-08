@@ -55,7 +55,9 @@
       _: svc:
         lib.nameValuePair "http://${svc.subdomain}.${publicDomain}" {
           extraConfig = ''
-            reverse_proxy ${svc.upstream}:${toString svc.port}
+            reverse_proxy ${svc.upstream}:${toString svc.port} {
+              header_up X-Forwarded-Proto https
+            }
           '';
         }
     )

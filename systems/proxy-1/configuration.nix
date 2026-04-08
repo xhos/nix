@@ -4,7 +4,7 @@
   lib,
   ...
 }: let
-  arashiIp = "100.64.0.1";
+  arashiIp = "100.64.0.3";
 in {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
