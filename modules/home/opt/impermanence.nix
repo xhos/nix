@@ -31,6 +31,9 @@ in {
       {
         directories =
           [
+            ".copilot"
+            ".config/gh"
+            ".local/share/nvf"
             #lutris
             ".local/share/umu"
             ".local/share/lutris"

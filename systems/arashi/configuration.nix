@@ -4,14 +4,17 @@
   ];
 
   networking.hostName = "arashi";
-  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
   networking.hostId = "3891dea5";
 
   nixpkgs.hostPlatform = "aarch64-linux";
 
   headless = true;
 
-  virtualisation.diskSize = 20480;
+  homelab = {
+    enable = true;
+    immich.enable = true;
+    config.tailscaleIP = "100.64.0.3";
+  };
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./arashi.pub];
 
@@ -20,12 +23,7 @@
     algorithm = "zstd";
     memoryPercent = 25;
   };
-
-  homelab = {
-    enable = true;
-    immich.enable = true;
-    config.tailscaleIP = "100.64.0.3";
-  };
+  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
   # trek
   sops.secrets."env/trek" = {};

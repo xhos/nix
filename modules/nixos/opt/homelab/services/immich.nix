@@ -25,7 +25,7 @@
       enable = true;
       mediaLocation = "/storage/photos";
       host = "127.0.0.1";
-      settings.server.externalDomain = "https://photos.lab.xhos.dev";
+      settings.server.externalDomain = "https://photos.${config.homelab.config.domain}";
     };
 
     systemd.tmpfiles.rules = [

@@ -29,7 +29,7 @@
 
       settings = let
         serverIP = config.homelab.config.homelabLocalIP;
-        localDomain = config.homelab.config.localDomain;
+        domain = config.homelab.config.domain;
       in {
         pages = [
           {
@@ -122,7 +122,7 @@
                         links = [
                           {
                             title = "jellyfin";
-                            url = "https://jellyfin.${localDomain}";
+                            url = "https://jellyfin.${domain}";
                             icon = "sh:jellyfin";
                           }
                           {
@@ -157,7 +157,7 @@
                           }
                           {
                             title = "immich";
-                            url = "http://photos.${localDomain}";
+                            url = "http://photos.${domain}";
                             icon = "sh:immich";
                           }
                         ];

@@ -25,7 +25,7 @@
     services.dawarich = {
       enable = true;
       webPort = 7000;
-      localDomain = "timeline." + config.homelab.config.localDomain;
+      localDomain = "timeline." + config.homelab.config.domain;
       secretKeyBaseFile = config.sops.secrets."passwords/dawarich".path;
       configureNginx = false;
     };

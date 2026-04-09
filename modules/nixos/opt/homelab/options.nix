@@ -12,16 +12,10 @@
       description = "homelab's IP on main LAN";
     };
 
-    localDomain = lib.mkOption {
-      type = lib.types.str;
-      default = "lab.xhos.dev";
-      description = "domain for local services";
-    };
-
-    publicDomain = lib.mkOption {
+    domain = lib.mkOption {
       type = lib.types.str;
       default = "xhos.dev";
-      description = "domain for public services";
+      description = "domain for all services";
     };
 
     tailscaleIP = lib.mkOption {

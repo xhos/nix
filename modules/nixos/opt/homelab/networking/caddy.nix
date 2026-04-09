@@ -3,8 +3,7 @@
   lib,
   ...
 }: let
-  localDomain = config.homelab.config.localDomain;
-  publicDomain = config.homelab.config.publicDomain;
+  domain = config.homelab.config.domain;
 
   services =
     lib.mapAttrs (
@@ -40,8 +39,8 @@
   mkLocalVhosts =
     lib.mapAttrs' (
       _: svc:
-        lib.nameValuePair "${svc.subdomain}.${localDomain}" {
-          useACMEHost = localDomain;
+        lib.nameValuePair "${svc.subdomain}.${domain}" {
+          useACMEHost = domain;
           extraConfig = ''
             reverse_proxy ${svc.upstream}:${toString svc.port}
           '';
@@ -53,7 +52,7 @@
   mkPublicVhosts =
     lib.mapAttrs' (
       _: svc:
-        lib.nameValuePair "http://${svc.subdomain}.${publicDomain}" {
+        lib.nameValuePair "http://${svc.subdomain}.${domain}" {
           extraConfig = ''
             reverse_proxy ${svc.upstream}:${toString svc.port} {
               header_up X-Forwarded-Proto https
@@ -64,41 +63,32 @@
     publicServices;
 
   catchAlls = {
-    "*.${localDomain}" = {
-      useACMEHost = localDomain;
+    "*.${domain}" = {
+      useACMEHost = domain;
       extraConfig = "respond 404 { close }";
     };
   };
-  tailscaleIP = config.homelab.config.tailscaleIP;
 in {
   config = lib.mkIf config.homelab.enable {
-    services.headscale.settings.dns.extra_records = lib.mkIf (
-      config.services.headscale.enable && tailscaleIP != ""
-    ) (lib.mapAttrsToList (_: svc: {
-      name = "${svc.subdomain}.${localDomain}";
-      type = "A";
-      value = tailscaleIP;
-    }) localServices);
-
     sops.secrets."api/cloudflare" = {};
 
     security.acme = {
       acceptTerms = true;
       defaults.email = "lets-encrypt@xhos.dev";
-      certs.${localDomain} = {
+      certs.${domain} = {
         group = config.services.caddy.group;
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
         dnsPropagationCheck = true;
-        domain = "*.${localDomain}";
-        extraDomainNames = [localDomain] ++ extraDomains localDomain;
+        domain = "*.${domain}";
+        extraDomainNames = [domain] ++ extraDomains domain;
         environmentFile = config.sops.secrets."api/cloudflare".path;
       };
     };
 
     systemd.services.caddy = {
-      after = ["acme-${localDomain}.service"];
-      wants = ["acme-${localDomain}.service"];
+      after = ["acme-${domain}.service"];
+      wants = ["acme-${domain}.service"];
       reloadTriggers = lib.mkForce [];
     };
 
