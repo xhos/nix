@@ -65,7 +65,7 @@
   catchAlls = {
     "*.${domain}" = {
       useACMEHost = domain;
-      extraConfig = "respond 404 { close }";
+      extraConfig = "respond 404";
     };
   };
 in {

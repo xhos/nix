@@ -16,8 +16,8 @@
     inputs.self.nixosConfigurations;
 
   hostData =
-    lib.mapAttrs (_: cfg: {
-      ip = cfg.config.homelab.config.tailscaleIP;
+    lib.mapAttrs (hostname: cfg: {
+      hostname = hostname;
       services = cfg.config.homelab.exposedServices;
     })
     homelabHosts;
@@ -35,7 +35,7 @@
             }.${domain}" {
               useACMEHost = domain;
               extraConfig = ''
-                reverse_proxy ${host.ip}:80
+                reverse_proxy ${host.hostname}.ts.${domain}:80
               '';
             }
         ) (lib.filterAttrs (_: s: s.exposed && s.subdomain != "hs") host.services)
@@ -113,7 +113,7 @@ in {
         };
         "*.${domain}" = {
           useACMEHost = domain;
-          extraConfig = "respond 404 { close }";
+          extraConfig = "respond 404";
         };
       }
     ];
