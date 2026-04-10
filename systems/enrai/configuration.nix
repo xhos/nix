@@ -20,6 +20,8 @@
   headless = true;
 
   homelab = {
+    config.tailscaleIP = "100.64.0.3";
+
     enable = true;
     baremetal = {
       enable = true;
@@ -34,11 +36,11 @@
     atuin.enable = true;
     dawarich.enable = true;
     glance.enable = true;
-    immich.enable = true;
+    immich.enable = false;
     syncthing.enable = true;
     wakapi.enable = true;
-    xray.enable = true;
-    zipline.enable = true;
+    xray.enable = false;
+    zipline.enable = false;
     home-assistant.enable = true;
 
     media = {

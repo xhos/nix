@@ -55,8 +55,8 @@
 
       # obsidian transparency
       # "match:class ^(obsidian)$, opacity 1.99"
-"match:initial_title ^(.*Obsidian.*)$, opacity 0.99 override 0.99 override"
-"match:initial_title ^(.*Obsidian.*)$, xray on"
+      "match:initial_title ^(.*Obsidian.*)$, opacity 0.99 override 0.99 override"
+      "match:initial_title ^(.*Obsidian.*)$, xray on"
     ];
   };
 }
