@@ -83,6 +83,7 @@
     };
 
     vscode-server.url = "github:nix-community/nixos-vscode-server";
+    attic.url = "github:zhaofengli/attic";
     # wled-album-sync.url = "github:xhos/wled-album-sync";
 
     # --- utilities ------------------------------------------------------
