@@ -22,7 +22,7 @@
         enable = true;
         environmentFile = config.sops.secrets."env/attic".path;
         settings = {
-          listen = "[::]:${port}";
+          listen = "[::]:${toString port}";
 
           jwt = {};
 
