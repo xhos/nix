@@ -19,10 +19,37 @@
     lib.mapAttrs (hostname: cfg: {
       hostname = hostname;
       services = cfg.config.homelab.exposedServices;
+      tcpForwards = cfg.config.homelab.tcpForwards;
     })
     homelabHosts;
 
   domain = config.homelab.config.domain;
+
+  # collect all TCP/UDP forwards across hosts -> nftables DNAT rules
+  allForwards = lib.flatten (lib.mapAttrsToList (
+      _: host:
+        lib.mapAttrsToList (
+          _: fwd: {
+            inherit (fwd) listen port proto;
+            target = "${host.hostname}.ts.${domain}";
+          }
+        )
+        host.tcpForwards
+    )
+    hostData);
+
+  dnatRules =
+    lib.concatMapStringsSep "\n" (
+      fwd: "${fwd.proto} dport ${toString fwd.listen} dnat to ${fwd.target}:${toString fwd.port}"
+    )
+    allForwards;
+
+  forwardPublicPorts =
+    map (fwd: {
+      inherit (fwd) proto;
+      port = fwd.listen;
+    })
+    allForwards;
 
   autoVhosts = lib.mkMerge (lib.mapAttrsToList (
       _: host:
@@ -60,6 +87,13 @@ in {
     tables.nat = {
       family = "ip";
       content = ''
+        ${lib.optionalString (dnatRules != "") ''
+          chain prerouting {
+            type nat hook prerouting priority dstnat; policy accept;
+            ${dnatRules}
+          }
+        ''}
+
         chain postrouting {
           type nat hook postrouting priority 100; policy accept;
           oifname "tailscale0" masquerade
@@ -72,8 +106,12 @@ in {
   networking.firewall = {
     enable = true;
     trustedInterfaces = ["tailscale0"];
-    allowedTCPPorts = [80 443];
-    allowedUDPPorts = [config.services.tailscale.port 41641];
+    allowedTCPPorts =
+      [80 443]
+      ++ (map (f: f.port) (lib.filter (f: f.proto == "tcp") forwardPublicPorts));
+    allowedUDPPorts =
+      [config.services.tailscale.port 41641]
+      ++ (map (f: f.port) (lib.filter (f: f.proto == "udp") forwardPublicPorts));
   };
 
   sops.secrets."api/cloudflare" = {};

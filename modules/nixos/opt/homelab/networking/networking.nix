@@ -43,6 +43,27 @@ in {
     description = "Services exposed on the network";
   };
 
+  options.homelab.tcpForwards = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule {
+      options = {
+        listen = lib.mkOption {
+          type = lib.types.port;
+          description = "Public port on proxy-1";
+        };
+        port = lib.mkOption {
+          type = lib.types.port;
+          description = "Port on this host to forward to";
+        };
+        proto = lib.mkOption {
+          type = lib.types.enum ["tcp" "udp"];
+          default = "tcp";
+        };
+      };
+    });
+    default = {};
+    description = "TCP/UDP ports to forward from proxy-1 to this host";
+  };
+
   options.homelab.baremetal = {
     enable = lib.mkEnableOption "baremetal networking";
     interface = lib.mkOption {
