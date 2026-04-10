@@ -20,7 +20,7 @@
   headless = true;
 
   homelab = {
-    config.tailscaleIP = "100.64.0.3";
+    config.tailscaleIP = "100.64.0.5";
 
     enable = true;
     baremetal = {
