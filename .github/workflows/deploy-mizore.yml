@@ -1,0 +1,57 @@
+name: Deploy mizore
+
+on:
+  repository_dispatch:
+    types: [deploy-mizore]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            extra-substituters = https://cache.xhos.dev/main
+            accept-flake-config = true
+
+      - name: Update null flake input
+        run: |
+          nix flake lock --update-input null
+          if git diff --quiet flake.lock; then
+            echo "LOCK_CHANGED=false" >> "$GITHUB_ENV"
+          else
+            echo "LOCK_CHANGED=true" >> "$GITHUB_ENV"
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add flake.lock
+            git commit -m "update null"
+            git push
+          fi
+
+      - uses: tailscale/github-action@v3
+        with:
+          authkey: ${{ secrets.TS_AUTHKEY }}
+          args: "--login-server https://hs.xhos.dev"
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H mizore.ts.xhos.dev >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Push to cache and deploy
+        run: |
+          nix build .#nixosConfigurations.mizore.config.system.build.toplevel
+
+          nix run nixpkgs#attic -- \
+            login ci https://attic.ts.xhos.dev "${{ secrets.ATTIC_TOKEN }}"
+          nix run nixpkgs#attic -- push main ./result
+
+          nixos-rebuild switch \
+            --flake .#mizore \
+            --target-host deploy@mizore.ts.xhos.dev \
+            --use-remote-sudo
