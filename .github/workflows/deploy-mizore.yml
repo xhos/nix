@@ -34,7 +34,8 @@ jobs:
       - uses: tailscale/github-action@v3
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
-          tailscaled-args: "--login-server https://hs.xhos.dev"
+          args: "--login-server https://hs.xhos.dev"
+          version: "1.76.6"
 
       - name: Setup SSH
         run: |
