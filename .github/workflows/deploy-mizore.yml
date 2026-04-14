@@ -40,11 +40,18 @@ jobs:
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          echo "Host mizore.ts.xhos.dev
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_mizore
+          echo "${{ secrets.NIX_SECRETS_SSH_KEY }}" > ~/.ssh/nix_secrets
+          chmod 600 ~/.ssh/deploy_mizore ~/.ssh/nix_secrets
+          cat >> ~/.ssh/config <<'EOF'
+          Host mizore.ts.xhos.dev
             StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null" >> ~/.ssh/config
+            UserKnownHostsFile /dev/null
+            IdentityFile ~/.ssh/deploy_mizore
+          Host github.com
+            IdentityFile ~/.ssh/nix_secrets
+          EOF
+          ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2>/dev/null
 
       - name: Push to cache and deploy
         run: |
