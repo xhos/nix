@@ -34,14 +34,16 @@ jobs:
       - uses: tailscale/github-action@v3
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
-          args: "--login-server https://hs.xhos.dev"
+          tailscaled-args: "--login-server https://hs.xhos.dev"
 
       - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H mizore.ts.xhos.dev >> ~/.ssh/known_hosts 2>/dev/null
+          echo "Host mizore.ts.xhos.dev
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null" >> ~/.ssh/config
 
       - name: Push to cache and deploy
         run: |
