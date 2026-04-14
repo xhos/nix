@@ -5,6 +5,7 @@
 
   headless = true;
   homelab.enable = true;
+  homelab.null.enable = true;
   homelab.config.tailscaleIP = ""; # set after first tailscale up
 
   networking.hostName = "mizore";
