@@ -57,9 +57,9 @@ jobs:
         run: |
           nix build .#nixosConfigurations.mizore.config.system.build.toplevel
 
-          nix run nixpkgs#attic -- \
+          nix run github:zhaofengli/attic#attic -- \
             login ci https://attic.ts.xhos.dev "${{ secrets.ATTIC_TOKEN }}"
-          nix run nixpkgs#attic -- push main ./result
+          nix run github:zhaofengli/attic#attic -- push main ./result
 
           nixos-rebuild switch \
             --flake .#mizore \
