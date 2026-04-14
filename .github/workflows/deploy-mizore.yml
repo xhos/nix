@@ -15,6 +15,7 @@ jobs:
         with:
           extra_nix_config: |
             extra-substituters = https://cache.xhos.dev/main
+            extra-trusted-public-keys = main:tRd1MFSNSqGNe0gOvLBCb1YCbRoKEiEaOGcR2eDVgu0=
             accept-flake-config = true
 
       - name: Update null flake input
@@ -53,14 +54,17 @@ jobs:
           EOF
           ssh-keyscan -H github.com >> ~/.ssh/known_hosts 2>/dev/null
 
-      - name: Push to cache and deploy
-        run: |
-          nix build .#nixosConfigurations.mizore.config.system.build.toplevel
+      - name: Build system closure
+        run: nix build .#nixosConfigurations.mizore.config.system.build.toplevel
 
+      - name: Push to cache
+        run: |
           nix run github:zhaofengli/attic#attic -- \
-            login ci https://attic.ts.xhos.dev "${{ secrets.ATTIC_TOKEN }}"
+            login ci https://cache.xhos.dev "${{ secrets.ATTIC_TOKEN }}"
           nix run github:zhaofengli/attic#attic -- push main ./result
 
+      - name: Deploy
+        run: |
           nixos-rebuild switch \
             --flake .#mizore \
             --target-host deploy@mizore.ts.xhos.dev \
