@@ -16,7 +16,10 @@
 
       persist.dirs = ["/var/lib/atticd"];
 
-      homelab.exposedServices.attic.port = port;
+      homelab.exposedServices.cache = {
+        port = port;
+        exposed = true;
+      };
 
       services.atticd = {
         enable = true;
