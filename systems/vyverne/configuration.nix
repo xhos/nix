@@ -10,6 +10,8 @@
     inputs.sops-nix.nixosModules.sops
   ];
 
+  profile = "desktop";
+
   networking.hostName = "vyverne";
   networking.hostId = "9a7bef04";
 

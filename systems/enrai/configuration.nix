@@ -17,7 +17,7 @@
   nixpkgs.hostPlatform = "x86_64-linux";
 
   impermanence.enable = true;
-  headless = true;
+  profile = "full";
 
   homelab = {
     config.tailscaleIP = "100.64.0.5";

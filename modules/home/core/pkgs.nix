@@ -5,108 +5,122 @@
   config,
   ...
 }: let
-  # CLI packages that work on both headless and desktop systems
-  cliPkgs = with pkgs; [
-    proton-pass-cli
-
-    # Development tools
-    nil # nix lsp
-    stylua
-    prettier
-    delve
+  # minimal — bare comfort for ssh-ing in and operating
+  essentialPkgs = with pkgs; [
+    # Core utils
     fd
-    gdb
-    cling
-    rustup
-    python3
-    nodejs
-    alejandra # nix code formatter
-    nixd
-    docker-compose
-    gcc
-    gh # GitHub CLI
-    gnumake
-    go
-    clojure
-    cloudflared
-    wakatime-cli
-
-    # CLI utilities
-    fastfetch
-    figlet # cool text gen
-    yazi # cli explorer
-    colordiff # file diff
-    lz4
-    gitmoji-cli # emoji for commits
-    glow # cli markdown renderer
-    imagemagick
-    onefetch # git repo summary
-    openvpn
-    pfetch-rs # system info
-    # rcon # remote console
-    sherlock
-    skim # fzf in rust
-    devenv
-    sshs
-    viddy # modern "watch"
-    gum # fancy scripts
-    tlrc # better man
-    dialog
+    jq
     iproute2
     netcat-gnu
-    jq
-    wl-clipboard
-    # wakatime-cli
+    colordiff
+    lz4
+    dialog
+
+    # Shell QoL
+    fastfetch
+    glow
+    tlrc
+    gum
+    viddy
+    sshs
+    starship
+
+    # Version control
+    gh
+    gnumake
+  ];
+
+  # full — dev workstation CLI (languages, toolchains, debuggers, cloud tools)
+  fullCliPkgs = with pkgs; [
+    # Nix dev
+    nil
+    nixd
+    alejandra
+
+    # Languages & toolchains
+    rustup
+    go
+    nodejs
+    python3
+    clojure
+    gcc
+    gdb
+    delve
+    cling
+
+    # Formatters
+    stylua
+    prettier
+
+    # Containers & dev envs
+    docker-compose
+    devenv
+
+    # Cloud & IaC
     awscli2
+    opentofu
+    cloudflared
+
+    # Tunnels & VPN
+    openvpn
 
     # Shells & prompts
-    starship
     oh-my-posh
     nushell
     fish
     grc
-    opentofu
+
+    # Extras
+    proton-pass-cli
+    wakatime-cli
+    figlet
+    gitmoji-cli
+    imagemagick
+    onefetch
+    pfetch-rs
+    sherlock
+    skim
+    yazi
   ];
 
-  # GUI packages for desktop systems
+  # desktop — GUI apps
   guiPkgs = with pkgs; [
-    lollypop
+    # Browsers & editors
     vscode
     chromium
     inputs.zen-browser.packages."${pkgs.stdenv.hostPlatform.system}".default
+
+    # Media
+    lollypop
     jellyfin-desktop
-    # Desktop utilities
+    mpv
+    ffmpeg-full
+    playerctl
+    loupe
+    swayimg
+
+    # Wayland/Hyprland utils
+    wl-clipboard
+    egl-wayland
+    wayvnc
+    wvkbd
+    hyprshot
+    wev
+    libnotify
+    wireplumber
+
+    # Desktop apps
     font-manager
     rnote
-    egl-wayland # needed for firefox wayland fix
-    wayvnc
-    wvkbd # on-screen keyboard
-    hyprshot
-    wev # for keybindings
-    scrcpy # android screen mirroring
-    swayimg # image viewer
-    playerctl # media controls
-    libnotify
-    loupe
-    wireplumber # PipeWire session manager
-
-    # Heavy GUI applications
-    # krita # broken: lager/boost build failure
+    scrcpy
     libreoffice
     postman
     gnome-solanum
-    mpv # video player
-    ffmpeg-full
-    # protonvpn-gui
-    # proton-pass
-
     file-roller
     evince
-
     qbittorrent
-    # calibre # broken: missing qmake in build
-    (obsidian.override {commandLineArgs = ["--no-sandbox"];})
     inkscape
+    (obsidian.override {commandLineArgs = ["--no-sandbox"];})
   ];
 in {
   home = {
@@ -114,8 +128,9 @@ in {
     homeDirectory = "/home/xhos";
     stateVersion = "25.05";
     packages = lib.concatLists [
-      cliPkgs
-      (lib.optionals (config.headless != true) guiPkgs)
+      essentialPkgs
+      (lib.optionals (config.profile != "minimal") fullCliPkgs)
+      (lib.optionals (config.profile == "desktop") guiPkgs)
     ];
   };
 }

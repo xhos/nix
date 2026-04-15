@@ -5,69 +5,71 @@
   inputs,
   ...
 }: let
-  # CLI packages useful on both headless and desktop systems
-  cliPkgs = with pkgs; [
-    caligula
-    # Networking tools
+  # minimal — every host gets this (debug, admin, nix ecosystem)
+  essentialPkgs = with pkgs; [
+    # Network debugging
     nmap
-    speedtest-cli
-    dig # dns lookup
+    dig
     openssl
-    wirelesstools # wireless utilities (useful for headless WiFi setup too)
 
-    # Hardware monitoring
+    # Hardware & disk monitoring
     lm_sensors
-    fan2go
     dysk
+    ncdu
+    procps
 
-    # Nix ecosystem tools
-    nh # nix helper
+    # Nix ecosystem & secrets
+    nh
     home-manager
-    nix-prefetch-git
-    nix-inspect
+    sops
+    age
 
     # Version control
     git
     git-lfs
-    git-extras
 
-    # Security & secrets
-    age # file encryption
-    sops # secrets encryption
-
-    # CLI utilities
-    bat # cat but better
+    # Shell essentials
+    bat
     btop
     fzf
-    procps # process info
-    ncdu # disk usage
-    ripgrep # recursively searches directories for regex patterns
+    ripgrep
+    tree
     wget
     unzip
-    inputs.nxv.packages.${pkgs.stdenv.hostPlatform.system}.default
-
-    tree
-    uv
-    android-tools
   ];
 
-  # GUI packages for desktop systems only
+  # full — workhorses/desktops get this on top of essential
+  fullCliPkgs = with pkgs; [
+    caligula
+    speedtest-cli
+    wirelesstools
+    fan2go
+    nix-prefetch-git
+    nix-inspect
+    git-extras
+    uv
+    android-tools
+    inputs.nxv.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ];
+
+  # desktop — GUI systems only
   guiPkgs = with pkgs; [
     kdiskmark
-    easyeffects # pipewire audio effects
-
-    brightnessctl # screen brightness control
-    xdg-utils # desktop integration utilities
-    gtk3 # GUI toolkit
-    kitty # fallback terminal
+    easyeffects
+    brightnessctl
+    xdg-utils
+    gtk3
+    kitty
     nautilus
     nautilus-python
   ];
 in {
   environment.systemPackages = lib.concatLists [
-    cliPkgs
-    (lib.optionals (config.headless != true) guiPkgs)
+    essentialPkgs
+    (lib.optionals (config.profile != "minimal") fullCliPkgs)
+    (lib.optionals (config.profile == "desktop") guiPkgs)
   ];
+
   nixpkgs.config = {
     allowUnfree = true;
     allowBroken = true;
@@ -75,17 +77,7 @@ in {
     android_sdk.accept_license = true;
   };
 
-  # # --------nautilis shenanigans----------
-  # # refernces:
-  # # https://github.com/NixOS/nixpkgs/blob/nixos-unstable/nixos/modules/programs/nautilus-open-any-terminal.nix
-  # # https://www.reddit.com/r/NixOS/comments/1qnw2t0/nautilus_and_openanyterminal_doa/
-
-  # Load regular extensions
+  # nautilus extension loading — only meaningful on desktop but harmless elsewhere
   environment.sessionVariables.NAUTILUS_4_EXTENSION_DIR = lib.mkForce "/run/current-system/sw/lib/nautilus/extensions-4";
-
-  # Load Python extensions via the nautilus-python extension
   environment.pathsToLink = ["/share/nautilus-python/extensions"];
-
-  # Ghostty has a built "Open in Ghostty" nautilus extension, it's loaded only when 2 above lines are present
-  # --------------------------------------
 }

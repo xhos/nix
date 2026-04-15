@@ -3,7 +3,7 @@
     inputs.nixos-wsl.nixosModules.default
   ];
 
-  headless = true;
+  profile = "full";
 
   vm.enable = true;
 

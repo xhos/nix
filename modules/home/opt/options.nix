@@ -1,12 +1,20 @@
 {
   lib,
+  config,
   osConfig,
   ...
 }: {
   options = with lib; {
+    profile = mkOption {
+      type = types.enum ["minimal" "full" "desktop"];
+      default = osConfig.profile or "desktop";
+      description = "package tier: minimal = debug/admin essentials, full = + dev CLI, desktop = + GUI";
+    };
+
     headless = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = config.profile != "desktop";
+      defaultText = "profile != \"desktop\"";
       description = "disable all gui related stuff";
     };
 

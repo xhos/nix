@@ -8,7 +8,7 @@
 
   nixpkgs.hostPlatform = "aarch64-linux";
 
-  headless = true;
+  profile = "full";
 
   homelab = {
     enable = true;

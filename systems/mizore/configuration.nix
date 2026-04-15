@@ -3,7 +3,7 @@
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
   ];
 
-  headless = true;
+  profile = "minimal";
   homelab.enable = true;
   homelab.null.enable = true;
   homelab.config.tailscaleIP = ""; # set after first tailscale up

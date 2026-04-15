@@ -73,7 +73,7 @@ in {
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
   ];
 
-  headless = true;
+  profile = "minimal";
   homelab.headscale.enable = true;
 
   nixpkgs.hostPlatform = "x86_64-linux";

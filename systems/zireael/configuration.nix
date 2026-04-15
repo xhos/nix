@@ -11,6 +11,8 @@
     inputs.sops-nix.nixosModules.sops
   ];
 
+  profile = "desktop";
+
   networking.hostName = "zireael";
   networking.hostId = "5ca416d5";
 
