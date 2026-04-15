@@ -51,7 +51,6 @@ in {
             auto_route = true;
             strict_route = true;
             stack = "system";
-            sniff = true;
           }
         ];
         outbounds = [
