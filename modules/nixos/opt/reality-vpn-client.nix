@@ -29,20 +29,14 @@ in {
         dns = {
           servers = [
             {
+              type = "https";
               tag = "remote";
-              address = "https://1.1.1.1/dns-query";
+              server = "1.1.1.1";
               detour = "reality-out";
             }
             {
+              type = "local";
               tag = "local";
-              address = "local";
-              detour = "direct";
-            }
-          ];
-          rules = [
-            {
-              outbound = "direct";
-              server = "local";
             }
           ];
           final = "remote";
