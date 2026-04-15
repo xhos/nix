@@ -2038,11 +2038,11 @@
         "null-web": "null-web"
       },
       "locked": {
-        "lastModified": 1776222418,
-        "narHash": "sha256-r6EWl9VrEPqTBT+nSYQWPTUmHF7FT3RcIG2kOTuKUb8=",
+        "lastModified": 1776228117,
+        "narHash": "sha256-3+O9ewgYQgHx4UfAz4ifkE3DpgDGPCSDTgJylyCciYE=",
         "owner": "xhos",
         "repo": "null",
-        "rev": "d16821b88ec6ab097ed9b48cd6fcf9055ff605bb",
+        "rev": "819aac68545b16a851301eded4a7547d0b147741",
         "type": "github"
       },
       "original": {
@@ -2082,11 +2082,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776121002,
-        "narHash": "sha256-jR74rhhN7c2YKNn77ptShT6JUpBkez0qG++PLgCnSVU=",
+        "lastModified": 1776228076,
+        "narHash": "sha256-1Z6GIl1DEHZZNkA3deBFA6soesEahWM7IvVQXDeYHMY=",
         "owner": "xhos",
         "repo": "arian-email-parser",
-        "rev": "a311f5c05250c34f4bcdbea179d3a14e723b995f",
+        "rev": "48294ce13233733b5613ff3a1b995947bd398a37",
         "type": "github"
       },
       "original": {
