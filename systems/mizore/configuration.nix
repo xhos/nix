@@ -42,7 +42,7 @@
   nix.settings = {
     trusted-users = ["deploy"];
     substituters = ["https://cache.xhos.dev/main"];
-    # trusted-public-keys = ["main:..."]; # add after attic cache info
+    trusted-public-keys = ["main:sD+aH0XOgkp432O05lkkl1x7XipgELXk+1mQmuDch0U="];
   };
 
   zramSwap = {

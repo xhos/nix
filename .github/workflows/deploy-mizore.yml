@@ -17,6 +17,9 @@ jobs:
             extra-substituters = https://cache.xhos.dev/main
             extra-trusted-public-keys = main:sD+aH0XOgkp432O05lkkl1x7XipgELXk+1mQmuDch0U=
             accept-flake-config = true
+            http-connections = 128
+            download-buffer-size = 536870912
+            max-substitution-jobs = 32
 
       - name: Update null flake input
         run: |
@@ -65,7 +68,7 @@ jobs:
 
       - name: Deploy
         run: |
-          nixos-rebuild switch \
+          nix run nixpkgs#nixos-rebuild -- switch \
             --flake .#mizore \
             --target-host deploy@mizore.ts.xhos.dev \
             --use-remote-sudo
