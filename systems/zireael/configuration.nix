@@ -23,6 +23,7 @@
   audio       .enable = true;
   syncthing   .enable = true;
   vm          .enable = true;
+  reality-vpn-client.enable = true;
 
   wm = "hyprland";
   greeter = "yawn";

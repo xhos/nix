@@ -25,22 +25,15 @@
       receipts.secretsFile = config.sops.secrets."env/null/receipts".path;
     };
 
-    sops.secrets."env/null/shared" = {};    # API_KEY (loaded by core + email-parser)
-    sops.secrets."env/null/gateway" = {};   # BETTER_AUTH_SECRET
-    sops.secrets."env/null/receipts" = {};  # GOOGLE_API_KEY
+    sops.secrets."env/null/shared" = {}; # API_KEY (loaded by core + email-parser)
+    sops.secrets."env/null/gateway" = {}; # BETTER_AUTH_SECRET
+    sops.secrets."env/null/receipts" = {}; # GOOGLE_API_KEY
 
     persist.dirs = ["/var/lib/null"];
 
     # homelab wiring — web frontend public, gateway public (API), SMTP forwarded
-    homelab.exposedServices.null = {
-      port = config.services.null.web.port;
-      exposed = true;
-    };
-    homelab.exposedServices."api.null" = {
-      port = config.services.null.gateway.port;
-      subdomain = "api.null";
-      exposed = true;
-    };
+    homelab.exposedServices.null.port = config.services.null.web.port;
+    homelab.exposedServices."api.null".port = config.services.null.gateway.port;
     homelab.tcpForwards.smtp = {
       listen = 25;
       port = config.services.null.emailParser.smtpPort;

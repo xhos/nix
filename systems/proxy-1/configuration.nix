@@ -18,6 +18,7 @@
   hostData =
     lib.mapAttrs (hostname: cfg: {
       hostname = hostname;
+      tailscaleIP = cfg.config.homelab.config.tailscaleIP;
       services = cfg.config.homelab.exposedServices;
       tcpForwards = cfg.config.homelab.tcpForwards;
     })
@@ -31,7 +32,7 @@
         lib.mapAttrsToList (
           _: fwd: {
             inherit (fwd) listen port proto;
-            target = "${host.hostname}.ts.${domain}";
+            target = host.tailscaleIP;
           }
         )
         host.tcpForwards
@@ -75,6 +76,7 @@ in {
 
   profile = "minimal";
   homelab.headscale.enable = true;
+  homelab.reality-vpn.enable = true;
 
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "proxy-1";
@@ -138,7 +140,10 @@ in {
 
   services.caddy = {
     enable = true;
-    globalConfig = "admin off";
+    globalConfig = ''
+      admin off
+      https_port 8443
+    '';
 
     virtualHosts = lib.mkMerge [
       autoVhosts

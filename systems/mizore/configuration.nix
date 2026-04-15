@@ -6,7 +6,7 @@
   profile = "minimal";
   homelab.enable = true;
   homelab.null.enable = true;
-  homelab.config.tailscaleIP = ""; # set after first tailscale up
+  homelab.config.tailscaleIP = "100.64.0.13";
 
   networking.hostName = "mizore";
   networking.hostId = "d75676d6";
