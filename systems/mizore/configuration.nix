@@ -28,11 +28,7 @@
       users = ["deploy"];
       commands = [
         {
-          command = "/run/current-system/sw/bin/nixos-rebuild";
-          options = ["NOPASSWD"];
-        }
-        {
-          command = "/nix/store/*/bin/switch-to-configuration";
+          command = "ALL";
           options = ["NOPASSWD"];
         }
       ];

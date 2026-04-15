@@ -25,7 +25,7 @@ in {
     services.sing-box = {
       enable = true;
       settings = {
-        log.level = "debug";
+        log.level = "warn";
         dns = {
           servers = [
             {
