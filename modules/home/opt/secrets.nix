@@ -12,7 +12,7 @@ in {
   options.modules.secrets.enable = lib.mkEnableOption "SOPS secrets management";
 
   config = lib.mkIf config.modules.secrets.enable {
-    home.file.".config/sops/config.yaml".source = "${sopsFolder}/.sops.yaml";
+    home.sessionVariables.SOPS_CONFIG = "${sopsFolder}/.sops.yaml";
 
     sops = {
       age.keyFile = "${homeDirectory}/.config/sops/age/keys.txt";

@@ -25,7 +25,7 @@ in {
     services.sing-box = {
       enable = true;
       settings = {
-        log.level = "warn";
+        log.level = "info";
         dns = {
           servers = [
             {
@@ -33,10 +33,6 @@ in {
               tag = "remote";
               server = "1.1.1.1";
               detour = "reality-out";
-            }
-            {
-              type = "local";
-              tag = "local";
             }
           ];
           final = "remote";
@@ -96,7 +92,7 @@ in {
           ];
           final = "reality-out";
           auto_detect_interface = true;
-          default_domain_resolver = "local";
+          default_domain_resolver = "remote";
         };
       };
     };
