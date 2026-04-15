@@ -46,7 +46,7 @@ in {
             address = ["172.19.0.1/30"];
             auto_route = true;
             strict_route = true;
-            stack = "system";
+            stack = "gvisor";
           }
         ];
         outbounds = [
