@@ -47,8 +47,12 @@ jobs:
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_mizore
           echo "${{ secrets.NIX_SECRETS_SSH_KEY }}" > ~/.ssh/nix_secrets
           chmod 600 ~/.ssh/deploy_mizore ~/.ssh/nix_secrets
-          cat >> ~/.ssh/config <<'EOF'
-          Host mizore.ts.xhos.dev
+          MIZORE_IP=$(tailscale ip -4 mizore)
+          echo "MIZORE_IP=$MIZORE_IP" >> "$GITHUB_ENV"
+          cat >> ~/.ssh/config <<EOF
+          Host mizore
+            HostName $MIZORE_IP
+            User deploy
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
             IdentityFile ~/.ssh/deploy_mizore
@@ -70,5 +74,5 @@ jobs:
         run: |
           nix run nixpkgs#nixos-rebuild -- switch \
             --flake .#mizore \
-            --target-host deploy@mizore.ts.xhos.dev \
-            --use-remote-sudo
+            --target-host mizore \
+            --sudo
