@@ -38,7 +38,7 @@ jobs:
       - uses: tailscale/github-action@v3
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
-          args: "--login-server https://hs.xhos.dev"
+          args: "--login-server https://hs.xhos.dev --accept-dns"
           version: "1.76.6"
 
       - name: Setup SSH
@@ -47,10 +47,9 @@ jobs:
           echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_mizore
           echo "${{ secrets.NIX_SECRETS_SSH_KEY }}" > ~/.ssh/nix_secrets
           chmod 600 ~/.ssh/deploy_mizore ~/.ssh/nix_secrets
-          MIZORE_IP=$(tailscale ip -4 mizore)
-          echo "MIZORE_IP=$MIZORE_IP" >> "$GITHUB_ENV"
+          MIZORE_IP=$(tailscale status --json | jq -r '.Peer[] | select(.HostName == "mizore") | .TailscaleIPs[0]')
           cat >> ~/.ssh/config <<EOF
-          Host mizore
+          Host mizore.ts.xhos.dev
             HostName $MIZORE_IP
             User deploy
             StrictHostKeyChecking no
@@ -74,5 +73,5 @@ jobs:
         run: |
           nix run nixpkgs#nixos-rebuild -- switch \
             --flake .#mizore \
-            --target-host mizore \
+            --target-host deploy@mizore.ts.xhos.dev \
             --sudo
