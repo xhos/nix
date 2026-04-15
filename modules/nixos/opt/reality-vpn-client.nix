@@ -96,6 +96,7 @@ in {
           ];
           final = "reality-out";
           auto_detect_interface = true;
+          default_domain_resolver = "local";
         };
       };
     };
