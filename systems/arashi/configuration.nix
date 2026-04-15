@@ -47,7 +47,7 @@
   virtualisation.oci-containers = {
     backend = "podman";
     containers.trek = {
-      image = "mauriceboe/trek:latest";
+      image = "ghcr.io/xhos/trek-with-map-drawing:latest";
       ports = ["127.0.0.1:3000:3000"];
       environment = {
         NODE_ENV = "production";
