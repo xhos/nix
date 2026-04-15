@@ -48,6 +48,12 @@ jobs:
           echo "${{ secrets.NIX_SECRETS_SSH_KEY }}" > ~/.ssh/nix_secrets
           chmod 600 ~/.ssh/deploy_mizore ~/.ssh/nix_secrets
           MIZORE_IP=$(tailscale status --json | jq -r '.Peer[] | select(.HostName == "mizore") | .TailscaleIPs[0]')
+          if [ -z "$MIZORE_IP" ] || [ "$MIZORE_IP" = "null" ]; then
+            echo "Could not find mizore in tailnet. Peers:"
+            tailscale status --json | jq -r '.Peer[] | "\(.HostName) \(.TailscaleIPs[0])"'
+            exit 1
+          fi
+          echo "mizore IP: $MIZORE_IP"
           cat >> ~/.ssh/config <<EOF
           Host mizore.ts.xhos.dev
             HostName $MIZORE_IP
