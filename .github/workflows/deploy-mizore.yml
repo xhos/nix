@@ -80,4 +80,5 @@ jobs:
           nix run nixpkgs#nixos-rebuild -- switch \
             --flake .#mizore \
             --target-host deploy@mizore.ts.xhos.dev \
-            --sudo
+            --sudo \
+            --fallback
