@@ -21,6 +21,8 @@ jobs:
             download-buffer-size = 536870912
             max-substitution-jobs = 32
 
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
       - name: Update null flake input
         run: |
           nix flake lock --update-input null
