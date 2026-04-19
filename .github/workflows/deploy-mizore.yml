@@ -12,7 +12,7 @@ jobs:
       contents: write
       actions: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: cachix/install-nix-action@v31
         with:
@@ -36,7 +36,7 @@ jobs:
 
       - name: Update null flake input
         run: |
-          nix flake lock --update-input null
+          nix flake update null
           if git diff --quiet flake.lock; then
             echo "LOCK_CHANGED=false" >> "$GITHUB_ENV"
           else
