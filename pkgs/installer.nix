@@ -97,7 +97,7 @@ in
       gum confirm "this will wipe $disk" || exit 1
 
       # figure out what the host needs
-      host_dir="${workdir}/modules/nixos/core/_$host"
+      host_dir="${workdir}/systems/$host"
       has_luks=false
       has_persist=false
 
