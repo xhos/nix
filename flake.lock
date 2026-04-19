@@ -2038,11 +2038,11 @@
         "null-web": "null-web"
       },
       "locked": {
-        "lastModified": 1776622707,
-        "narHash": "sha256-f61IU/XnaTr31Uh0dAPRt9SF7xzAL7USkXizBYWyzdg=",
+        "lastModified": 1776635158,
+        "narHash": "sha256-SP+Qsqbpfk9YzYRFM0vfm5Bm3lLPSbXxfjFwZdElyYs=",
         "owner": "xhos",
         "repo": "null",
-        "rev": "1ddda35306b9ff779ff7b5449d24d6fffeadf0fd",
+        "rev": "2bc7af7e663d4f51bfe4a7700a25e31053dc868d",
         "type": "github"
       },
       "original": {
