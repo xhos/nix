@@ -53,13 +53,13 @@
   security.tpm2.enable = true;
 
   # hibernation setup
-  boot.resumeDevice = "/dev/mapper/crypted";
-  boot.kernelParams = ["resume_offset=8716550"];
-  services.logind = lib.mkForce {
-    lidSwitch = "suspend";
-    lidSwitchDocked = "ignore";
-    powerKey = "hibernate";
-  };
+  # boot.resumeDevice = "/dev/mapper/crypted";
+  # boot.kernelParams = ["resume_offset=8716550"];
+  # services.logind = lib.mkForce {
+  #   lidSwitch = "suspend";
+  #   lidSwitchDocked = "ignore";
+  #   powerKey = "hibernate";
+  # };
 
   system.stateVersion = "25.05";
 }

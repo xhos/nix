@@ -16,10 +16,6 @@
               mountOptions = ["umask=0077"];
             };
           };
-          windows = {
-            size = "100G";
-            type = "0700";
-          };
           luks = {
             size = "100%";
             content = {
