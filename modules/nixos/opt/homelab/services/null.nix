@@ -13,6 +13,7 @@
       enable = true;
       emailParser.enable = true;
       secretsFile = config.sops.secrets."env/null/shared".path;
+      core.secretsFile = config.sops.secrets."env/null/core".path;
       gateway.secretsFile = config.sops.secrets."env/null/gateway".path;
       gateway.url = "https://api.null.${config.homelab.config.domain}";
       gateway.trustedOrigins = ["https://null.${config.homelab.config.domain}"];
@@ -26,6 +27,7 @@
     };
 
     sops.secrets."env/null/shared" = {}; # API_KEY (loaded by core + email-parser)
+    sops.secrets."env/null/core" = {}; # CREDENTIALS_KEY
     sops.secrets."env/null/gateway" = {}; # BETTER_AUTH_SECRET
     sops.secrets."env/null/receipts" = {}; # GOOGLE_API_KEY
 
