@@ -5,9 +5,14 @@ on:
     types: [deploy-mizore]
   workflow_dispatch:
 
+concurrency:
+  group: deploy-mizore
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     permissions:
       contents: write
       actions: write
@@ -87,6 +92,13 @@ jobs:
           nix run github:zhaofengli/attic#attic -- \
             login ci https://cache.xhos.dev "${{ secrets.ATTIC_TOKEN }}"
           nix run github:zhaofengli/attic#attic -- push main ./result
+
+      - name: Clear stale switch-to-configuration unit
+        run: |
+          ssh deploy@mizore.ts.xhos.dev "
+            sudo systemctl stop nixos-rebuild-switch-to-configuration.service 2>/dev/null || true
+            sudo systemctl reset-failed nixos-rebuild-switch-to-configuration.service 2>/dev/null || true
+          "
 
       - name: Deploy
         run: |
