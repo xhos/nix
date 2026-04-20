@@ -2038,11 +2038,11 @@
         "null-web": "null-web"
       },
       "locked": {
-        "lastModified": 1776702299,
-        "narHash": "sha256-D/bg3v8xEWlaXaU/z0axvRfyPGojijDTpbPguS4CEvg=",
+        "lastModified": 1776702604,
+        "narHash": "sha256-7eU0D65oL5ujhQLjv5pXseuDPJghtQGcL/CDc0cLPFU=",
         "owner": "xhos",
         "repo": "null",
-        "rev": "61ddcfdba6693c3d576a1445682490b85776d2cb",
+        "rev": "d74df92a40fc99d16a0e0a4ff9a5b9f7d53692d1",
         "type": "github"
       },
       "original": {
@@ -2060,11 +2060,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776656744,
+        "lastModified": 1776702210,
         "narHash": "sha256-yyYVLuytKIz6xWcIU04DTPY+PPDbReexeSdQLzImmto=",
         "owner": "xhos",
         "repo": "null-core",
-        "rev": "1259034bbee975c46e483d6097ddfd59ad7c70a6",
+        "rev": "2315ac6a8ab56dba23e2cfb786612b50ca728620",
         "type": "github"
       },
       "original": {
