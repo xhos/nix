@@ -22,13 +22,17 @@
   bluetooth   .enable = true;
   audio       .enable = true;
   syncthing   .enable = true;
-  vm          .enable = true;
+  intel       .enable = true;
+  davinci     .enable = true;
   reality-vpn-client.enable = true;
 
   wm = "hyprland";
   greeter = "yawn";
   bootloader.systemd-boot.enable = true;
   terminal = "ghostty";
+
+  # fix spam on boot
+  boot.blacklistedKernelModules = ["acpi_fan"];
 
   systemd.tmpfiles.rules = [
     "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"

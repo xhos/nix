@@ -19,7 +19,7 @@
     spicetify.enable = true;
     telegram.enable = true;
     fonts.enable = true;
-    kdeconnect.enable = true;
+    kdeconnect.enable = false;
   };
 
   wm = osConfig.wm;
