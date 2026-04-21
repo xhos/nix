@@ -4,11 +4,11 @@
   ...
 }: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/vp/wallhaven-vpz5w5.jpg";
-    sha256 = "sha256-38xqvUxDURO5W85IMAVDVHf5cpJiUKmQAoDEpKdTn8E=";
+    url = "https://w.wallhaven.cc/full/5y/wallhaven-5ydz59.png";
+    sha256 = "sha256-0EqE353rclbl690NA9ZXXvqjHOLVuvok0Y9jh+2pqRA=";
   };
 
-  stylix.base16Scheme = ./min-darker.yaml;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/eris.yaml";
 
   impermanence.enable = true;
 
