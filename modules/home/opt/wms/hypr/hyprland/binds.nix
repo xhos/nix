@@ -32,7 +32,7 @@ in {
       [
         # Compositor commands
         "SUPER, C, killactive"
-        # "SUPER, S, togglesplit"
+        "SUPER, S, layoutmsg, togglesplit"
         "SUPER, E, exec, uwsm-app -- nautilus"
         "SUPER, F, fullscreen"
         "SUPER, P, pseudo"
