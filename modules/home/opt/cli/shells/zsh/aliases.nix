@@ -25,8 +25,13 @@
       clwd = "nix run github:numtide/llm-agents.nix#claude-code";
       cplt = "nix run github:numtide/llm-agents.nix#copilot-cli";
 
-      # impermanence
-      imp = ''
+      nimp = "sudo ncdu -x /";
+
+      u = "uwsm-app --";
+    };
+
+    initContent = ''
+      imp() {
         sudo fd \
           --one-file-system \
           --base-directory / \
@@ -41,13 +46,8 @@
           --exclude "home/xhos/.config/wakatime" \
           --exclude "var/log" \
           --exclude "var/lib/systemd/coredump"
-      '';
-      nimp = "sudo ncdu -x /";
+      }
 
-      u = "uwsm-app --";
-    };
-
-    initContent = ''
       try() {
         nix run nixpkgs#$1 -- "''${@:2}"
       }
