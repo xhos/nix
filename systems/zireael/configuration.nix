@@ -23,6 +23,7 @@
   audio       .enable = true;
   syncthing   .enable = true;
   intel       .enable = true;
+  games       .enable = true;
   davinci     .enable = true;
   reality-vpn-client.enable = true;
 
