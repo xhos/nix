@@ -45,6 +45,11 @@
 
   services.fprintd.enable = true;
 
+  # Keep fprintd out of hyprlock's PAM stack — hyprlock talks to fprintd
+  # directly over D-Bus (auth.fingerprint), so PAM only handles the password.
+  # Without this, pam_fprintd blocks the password path on the lockscreen.
+  security.pam.services.hyprlock.fprintAuth = false;
+
   # LUKS auto decryption via TPM
 
   # after install:

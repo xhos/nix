@@ -85,6 +85,18 @@ in
           immediate_render        = true
         }
 
+        --------------------- AUTH ----------------------
+        # Fingerprint goes through fprintd's D-Bus directly (not PAM), so
+        # it scans in parallel with password input — no blocking either way.
+        auth {
+          fingerprint {
+            enabled         = true
+            ready_message   = Scan fingerprint to unlock
+            present_message = Scanning...
+            retry_delay     = 250
+          }
+        }
+
         background {
           path = $wallpaper
         }
