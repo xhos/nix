@@ -57,14 +57,21 @@
   boot.initrd.systemd.enable = true;
   security.tpm2.enable = true;
 
-  # hibernation setup
-  # boot.resumeDevice = "/dev/mapper/crypted";
-  # boot.kernelParams = ["resume_offset=8716550"];
-  # services.logind = lib.mkForce {
-  #   lidSwitch = "suspend";
-  #   lidSwitchDocked = "ignore";
-  #   powerKey = "hibernate";
-  # };
+  # comment out below 2 lines before install then update the offset with
+  # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
+  boot.resumeDevice = "/dev/mapper/crypted";
+  boot.kernelParams = ["resume_offset=34700103"];
+
+  services.logind = lib.mkForce {
+    lidSwitch = "suspend-then-hibernate";
+    lidSwitchDocked = "ignore";
+    powerKey = "hibernate";
+  };
+
+  systemd.sleep.settings.Sleep = {
+    HibernateDelaySec = "30min";
+    SuspendState = "mem";
+  };
 
   system.stateVersion = "25.05";
 }

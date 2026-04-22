@@ -35,7 +35,8 @@ in {
         "SUPER, S, layoutmsg, togglesplit"
         "SUPER, E, exec, uwsm-app -- nautilus"
         "SUPER, F, fullscreen"
-        "SUPER, P, pseudo"
+        "SUPER, P, exec, uwsm-app -- rofi-power"
+        # "SUPERSHIFT, P, pseudo"
         "SUPERSHIFT, P, pin"
         "SUPER, D, togglefloating"
 

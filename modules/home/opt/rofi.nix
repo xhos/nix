@@ -1,11 +1,38 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
   options.modules.rofi.enable = lib.mkEnableOption "rofi application launcher";
 
   config = lib.mkIf config.modules.rofi.enable {
+    home.packages = [
+      (pkgs.writeShellApplication {
+        name = "rofi-power";
+        runtimeInputs = with pkgs; [rofi systemd];
+        text = ''
+          chosen=$(printf '%s\n' \
+            "  Lock" \
+            "  Suspend" \
+            "  Hibernate" \
+            "  Logout" \
+            "  Reboot" \
+            "  Shutdown" \
+            | rofi -dmenu -i -p "Power" -theme-str 'window { width: 320px; } listview { lines: 6; }')
+
+          case "''${chosen##* }" in
+            Lock)      exec hyprlock ;;
+            Suspend)   exec systemctl suspend ;;
+            Hibernate) exec systemctl hibernate ;;
+            Logout)    exec hyprctl dispatch exit ;;
+            Reboot)    exec systemctl reboot ;;
+            Shutdown)  exec systemctl poweroff ;;
+          esac
+        '';
+      })
+    ];
+
     programs.rofi = {
       enable = true;
       theme = let
