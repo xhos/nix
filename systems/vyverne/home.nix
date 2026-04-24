@@ -4,7 +4,8 @@
     sha256 = "sha256-RlTZko8lRqVr+IMjwbCDGPYJNP3dFCZtyjOXMyTrxUw=";
   };
 
-  stylix.base16Scheme = ./min-dark.yaml;
+  # stylix.base16Scheme = ./min-dark.yaml;
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
 
   impermanence.enable = true;
 
