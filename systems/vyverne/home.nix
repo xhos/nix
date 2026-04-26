@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/5g/wallhaven-5g9q83.jpg";
-    sha256 = "sha256-RlTZko8lRqVr+IMjwbCDGPYJNP3dFCZtyjOXMyTrxUw=";
+    url = "https://realmafricasafaris.com/wp-content/uploads/2020/02/The-Shoebill-Stork.jpg";
+    sha256 = "sha256-/kIfVH281mZ8YfITslwQEwuje0aPDNsEkgQwsb6X0no=";
   };
 
   # stylix.base16Scheme = ./min-dark.yaml;
