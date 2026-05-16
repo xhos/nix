@@ -89,12 +89,11 @@ in {
     tables.nat = {
       family = "ip";
       content = ''
-        ${lib.optionalString (dnatRules != "") ''
-          chain prerouting {
-            type nat hook prerouting priority dstnat; policy accept;
-            ${dnatRules}
-          }
-        ''}
+        chain prerouting {
+          type nat hook prerouting priority dstnat; policy accept;
+          iifname "ens3" udp dport 443 counter redirect to :8443
+          ${dnatRules}
+        }
 
         chain postrouting {
           type nat hook postrouting priority 100; policy accept;
@@ -112,7 +111,7 @@ in {
       [80 443]
       ++ (map (f: f.port) (lib.filter (f: f.proto == "tcp") forwardPublicPorts));
     allowedUDPPorts =
-      [config.services.tailscale.port 41641]
+      [443 config.services.tailscale.port 41641]
       ++ (map (f: f.port) (lib.filter (f: f.proto == "udp") forwardPublicPorts));
   };
 

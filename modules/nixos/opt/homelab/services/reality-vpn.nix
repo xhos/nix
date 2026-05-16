@@ -32,6 +32,8 @@
       ];
     };
 
+    systemd.services.sslh.serviceConfig.LimitNOFILE = 65535;
+
     services.sing-box = {
       enable = true;
       settings = {
