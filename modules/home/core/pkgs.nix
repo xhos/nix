@@ -71,7 +71,6 @@
     grc
 
     # Extras
-    claude-code
     proton-pass-cli
     wakatime-cli
     figlet
