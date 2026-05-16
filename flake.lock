@@ -1402,11 +1402,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1754943163,
-        "narHash": "sha256-KvMcmgXDupb/2wOI05p1Lv7U20FVHiPim79/0bWsGpc=",
+        "lastModified": 1777970317,
+        "narHash": "sha256-0mcIs19XJtZDpiFqtKy/hAdtDNvWmjvh+mDTLu6eN/8=",
         "owner": "xhos",
         "repo": "logi-hypr",
-        "rev": "2b16ee0715860e7868d9aa7e063a1844d68c6318",
+        "rev": "c0f2b01c3034f16fd46087c033f13afe3e43e4b7",
         "type": "github"
       },
       "original": {
