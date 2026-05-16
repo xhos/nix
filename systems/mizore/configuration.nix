@@ -1,4 +1,8 @@
-{inputs, config, ...}: {
+{
+  inputs,
+  config,
+  ...
+}: {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
   ];
