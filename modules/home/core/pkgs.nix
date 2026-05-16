@@ -71,6 +71,7 @@
     grc
 
     # Extras
+    claude-code
     proton-pass-cli
     wakatime-cli
     figlet
@@ -110,6 +111,9 @@
     wireplumber
 
     # Desktop apps
+    amnezia-vpn
+    gimp
+    calibre
     font-manager
     rnote
     scrcpy

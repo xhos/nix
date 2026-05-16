@@ -44,6 +44,8 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.fprintd.enable = true;
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
 
   # Keep fprintd out of hyprlock's PAM stack — hyprlock talks to fprintd
   # directly over D-Bus (auth.fingerprint), so PAM only handles the password.
@@ -77,6 +79,6 @@
     HibernateDelaySec = "30min";
     SuspendState = "mem";
   };
-
+  programs.nix-ld.enable = true;
   system.stateVersion = "25.05";
 }

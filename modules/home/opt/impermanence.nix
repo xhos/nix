@@ -31,20 +31,35 @@ in {
       {
         directories =
           [
+            # --- configs ---
+            ".aws"
+            ".config/git"
+            ".config/qBittorrent"
+
+            # github/copilot
             ".copilot"
             ".config/gh"
+
+            # --- state ---
+            ".local/state/lazygit"
+            ".local/state/nvf/"
+
             ".local/share/nvf"
-            #lutris
-            ".local/share/umu"
-            ".local/share/lutris"
+            ".local/share/zsh"
+            ".local/share/PrismLauncher"
+            ".local/share/direnv"
+            ".local/share/zoxide" # zoxide i lv u, plz don't hv amnesia
+            ".local/share/nvim"
             ".local/share/DaVinciResolve"
 
-            ".config/qBittorrent"
+            # lutris
+            ".local/share/umu" # todo: is this lutris tho
+            ".local/share/lutris"
+
             ".cache/zen"
-            ".config/git"
             ".wine"
 
-            # this fucking thing
+            # android fucking studio (i hate it)
             "Android"
             ".config/Google"
             ".cache/Google"
@@ -54,7 +69,6 @@ in {
             ".local/share/jellyfin-desktop"
             ".config/niri"
             "nix"
-            ".aws"
             ".npm" # then npm cache cannot be configured to be in the projects dir and its insane in size, it sucks.
             "go" # same for go
             ".local/share/zed"
@@ -64,9 +78,6 @@ in {
             # nautilus bookmarks
             ".local/share/nautilus"
             ".config/gtk-3.0/"
-
-            ".config/teams-for-linux"
-            ".config/claude"
             ".local/state/wireplumber"
 
             # jetbrains
@@ -75,13 +86,13 @@ in {
             ".cache/JetBrains"
             ".java" # jetbrains for some miraculous reason stores auth here
 
-            # claude
-            ".claude"
-            ".config/Claude/"
-
             # misc configs
             ".config/pulse"
             ".config/libreoffice"
+            ".config/teams-for-linux"
+            ".config/zsh"
+            ".config/OpenRGB"
+            ".config/claude"
             ".config/spotify"
             ".config/calibre"
             ".config/Code"
@@ -92,21 +103,17 @@ in {
             ".config/nvim"
             ".config/obs-studio"
 
-            ".local/share/PrismLauncher"
-            ".local/share/direnv"
-            ".local/share/zoxide" # zoxide i lv u, plz don't hv amnesia
-
             # should techically be only enabled when steam is but oh well
             ".config/r2modmanPlus-local"
             ".config/r2modman"
 
-            ".local/share/nvim"
-            ".local/state/nvf/"
             ".zen"
             ".ssh"
             ".mozilla"
             ".vscode"
-            "work"
+            "work" # todo: unemployed, remove once i mover stuff on vyverne out of there
+
+            # the regular toplevels
             "Projects"
             "Music"
             "Documents"
@@ -120,13 +127,6 @@ in {
             ".cache/spotify"
             ".cache/huggingface"
             ".cache/Proton" # proton stores their login stuff in cache for some reason
-
-            ".config/zsh"
-            ".local/share/zsh"
-            ".config/OpenRGB"
-
-            # misc state
-            ".local/state/lazygit"
           ]
           ++ config.persist.dirs;
 

@@ -31,9 +31,16 @@
 
   home.packages = with pkgs; [
     iio-hyprland
+    proton-vpn
   ];
 
   services.hypridle.enable = true;
+
+  modules.smokeapi = {
+    enable = true;
+    appId = 427520;
+    additionalLibraryPaths = ["/home/xhos/Documents/games"];
+  };
 
   mainMonitor = "eDP-1";
 
