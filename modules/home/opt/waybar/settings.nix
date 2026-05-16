@@ -187,10 +187,12 @@
       };
 
       "network" = {
+        "format" = "net";
         "format-disabled" = "---";
         "format-disconnected" = "dsc";
         "format-ethernet" = "eth";
         "format-wifi" = "wif";
+        "max-length" = 4;
         "tooltip-format" = "{essid}\n{ipaddr}\n{ifname}";
       };
 
