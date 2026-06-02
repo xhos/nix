@@ -48,7 +48,7 @@
     delve
     cling
 
-    # Formatters
+    # Formatterspkgs
     stylua
     prettier
 
@@ -98,6 +98,7 @@
     playerctl
     loupe
     swayimg
+    darktable
 
     # Wayland/Hyprland utils
     wl-clipboard

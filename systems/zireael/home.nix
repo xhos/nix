@@ -4,8 +4,8 @@
   ...
 }: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/5y/wallhaven-5ydz59.png";
-    sha256 = "sha256-0EqE353rclbl690NA9ZXXvqjHOLVuvok0Y9jh+2pqRA=";
+    url = "https://w.wallhaven.cc/full/e8/wallhaven-e8ejjw.jpg";
+    sha256 = "sha256-By0xf2JGO9mJajdDEtFG4njnWc+0J2OMXKXD3Xzm0xU=";
   };
 
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/eris.yaml";
@@ -35,12 +35,6 @@
   ];
 
   services.hypridle.enable = true;
-
-  modules.smokeapi = {
-    enable = true;
-    appId = 427520;
-    additionalLibraryPaths = ["/home/xhos/Documents/games"];
-  };
 
   mainMonitor = "eDP-1";
 
