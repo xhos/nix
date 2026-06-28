@@ -14,6 +14,6 @@
     };
   };
 
-  time.timeZone = "Asia/Shanghai";
+  time.timeZone = "Asia/Tokyo";
   time.hardwareClockInLocalTime = true;
 }
