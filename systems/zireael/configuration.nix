@@ -47,6 +47,24 @@
   services.gvfs.enable = true;
   services.udisks2.enable = true;
 
+  services.udev.extraRules = ''
+    SUBSYSTEM=="block", ENV{ID_SERIAL_SHORT}=="575839324443354C59555255", ENV{UDISKS_IGNORE}="1"
+  '';
+
+  fileSystems."/mnt/elements" = {
+    device = "/dev/mapper/elements";
+    fsType = "btrfs";
+    options = [
+      "noatime"
+      "subvol=data"
+      "nofail"
+      "noauto"
+      "x-systemd.automount"
+      "x-systemd.device-timeout=5s"
+      "x-systemd.idle-timeout=60s" # auto-unmount after 60s idle, optional
+    ];
+  };
+
   # Keep fprintd out of hyprlock's PAM stack — hyprlock talks to fprintd
   # directly over D-Bus (auth.fingerprint), so PAM only handles the password.
   # Without this, pam_fprintd blocks the password path on the lockscreen.
@@ -65,6 +83,7 @@
   security.tpm2.enable = true;
 
   # comment out below 2 lines before install then update the offset with
+  #
   # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
   boot.resumeDevice = "/dev/mapper/crypted";
   boot.kernelParams = ["resume_offset=34700103"];
