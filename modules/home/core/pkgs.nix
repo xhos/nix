@@ -99,6 +99,7 @@
     loupe
     swayimg
     darktable
+    rapidraw
 
     # Wayland/Hyprland utils
     wl-clipboard
