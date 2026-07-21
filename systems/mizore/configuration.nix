@@ -10,6 +10,7 @@
   profile = "minimal";
   homelab.enable = true;
   homelab.null.enable = true;
+  homelab.trek.enable = true;
   homelab.config.tailscaleIP = "100.64.0.13";
 
   networking.hostName = "mizore";

@@ -13,7 +13,6 @@
   homelab = {
     enable = true;
     attic.enable = true;
-    trek.enable = true;
     config.tailscaleIP = "100.64.0.3";
   };
 
