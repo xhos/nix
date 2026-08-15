@@ -46,7 +46,6 @@
         range = 20;
         render_power = 4;
         color = "rgba(000000b3)";
-        ignore_window = true;
       };
 
       blur = {
@@ -74,10 +73,7 @@
       ];
     };
 
-    dwindle = {
-      pseudotile = true;
-      preserve_split = true;
-    };
+    dwindle.preserve_split = true;
 
     device = [
       {
@@ -136,7 +132,6 @@
       force_default_wallpaper = 0;
       key_press_enables_dpms = true;
       mouse_move_enables_dpms = true; # if DPMS is set to off, wake up the monitors if the mouse moves
-      vfr = true; # lower the amount of sent frames when nothing is happening on-screen
     };
 
     ecosystem.no_update_news = true;

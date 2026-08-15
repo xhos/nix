@@ -21,6 +21,7 @@
       lexend
       noto-fonts
       noto-fonts-cjk-sans
+  (google-fonts.override { fonts = [ "Dela Gothic One" "Shippori Mincho" "Zen Old Mincho" "M PLUS Rounded 1c" "DotGothic16" "Klee One" ]; })
       noto-fonts-color-emoji
       poppins
 

@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   i18n = {
     defaultLocale = "en_CA.UTF-8";
     extraLocaleSettings = {
@@ -14,6 +14,9 @@
     };
   };
 
-  time.timeZone = "Asia/Tokyo";
-  time.hardwareClockInLocalTime = true;
+  time.timeZone = "Europe/Lisbon";
+  # keep the RTC in UTC; local-time RTC + hibernation leaves the clock wrong
+  # on resume until NTP syncs, which breaks TLS on fresh networks. Windows
+  # dual-boot hosts (vyverne) override this back to true.
+  time.hardwareClockInLocalTime = lib.mkDefault false;
 }

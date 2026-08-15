@@ -36,6 +36,9 @@
     secureboot = true;
   };
 
+  # dual-boots Windows, which wants the RTC in local time
+  time.hardwareClockInLocalTime = true;
+
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
 
   services.hardware.openrgb.enable = true;

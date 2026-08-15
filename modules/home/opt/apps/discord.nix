@@ -12,6 +12,11 @@
     programs.nixcord = {
       enable = true;
 
+      # nixpkgs `discord` is currently broken (installPhase tar failure on the
+      # electron tarball). Vesktop builds from source and takes the same config.
+      discord.enable = false;
+      vesktop.enable = true;
+
       config = {
         # themeLinks = ["https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/system24.theme.css"];
 

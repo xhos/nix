@@ -4,8 +4,8 @@
   ...
 }: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/e8/wallhaven-e8ejjw.jpg";
-    sha256 = "sha256-By0xf2JGO9mJajdDEtFG4njnWc+0J2OMXKXD3Xzm0xU=";
+    url = "https://i.imgur.com/w65iDl5.jpeg";
+    sha256 = "sha256-WvuZoZ6OBGa1R+zZAl6/YQAazpe8k2quJSWamTZl2Tc=";
   };
 
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/eris.yaml";
@@ -15,7 +15,7 @@
   modules = {
     rofi.enable = true;
     secrets.enable = true;
-    discord.enable = true;
+    discord.enable = true; # TODO: re-enable — nixpkgs discord installPhase brotli-decompresses a now-gzip src
     spicetify.enable = true;
     telegram.enable = true;
     fonts.enable = true;
