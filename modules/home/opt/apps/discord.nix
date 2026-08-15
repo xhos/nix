@@ -27,7 +27,6 @@
           callTimer.enable = true;
           decor.enable = true;
           fixSpotifyEmbeds.enable = true;
-          friendsSince.enable = true;
           gameActivityToggle.enable = true;
           messageLogger.enable = true;
           petpet.enable = true;

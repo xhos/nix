@@ -11,7 +11,7 @@
       latitude = "43.6534817";
       longitude = "-79.3839347";
 
-      systemdTarget = "hyprland-session.target";
+      systemdTarget = "graphical-session.target";
     };
 
     home.packages = with pkgs; [

@@ -3,7 +3,7 @@ builtins.listToAttrs (
   lib.mapAttrsToList
   (name: _: {
     name = lib.removeSuffix ".nix" name;
-    value = prev.callPackage (dir + "/${name}") {};
+    value = prev.callPackage (dir + "/${name}") {pkgs = prev;};
   })
   (lib.filterAttrs (n: v: v == "regular" && lib.hasSuffix ".nix" n)
     (builtins.readDir dir))
