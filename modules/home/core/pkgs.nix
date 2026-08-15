@@ -72,6 +72,7 @@
 
     # Extras
     proton-pass-cli
+    proton-vpn-cli
     wakatime-cli
     figlet
     gitmoji-cli
@@ -100,6 +101,7 @@
     swayimg
     darktable
     rapidraw
+    feh
 
     # Wayland/Hyprland utils
     wl-clipboard
@@ -126,6 +128,8 @@
     qbittorrent
     inkscape
     (obsidian.override {commandLineArgs = ["--no-sandbox"];})
+
+    rustdesk
   ];
 in {
   home = {
