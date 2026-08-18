@@ -25,6 +25,8 @@
     )
     10
   );
+
+  popup = app: "uwsm-app -- ghostty --gtk-single-instance=false --class=com.mitchellh.ghostty.${app} -e ${app}";
 in {
   wayland.windowManager.hyprland.settings = lib.mkIf (config.wm == "hyprland") {
     # https://wiki.hyprland.org/Configuring/Binds/#bind-flags
@@ -94,10 +96,10 @@ in {
         "SUPER, B, exec, uwsm-app -- zen-beta"
         "SUPERSHIFT, L, exec, uwsm-app -- hyprlock"
         "SUPERSHIFT, S, exec, uwsm-app -- hyprshot -z -m region --clipboard-only"
-        "SUPER, V, exec, uwsm-app -- foot -a clipse clipse"
-        "SUPERSHIFT, B, exec, uwsm-app -- foot -a bluetui bluetui"
-        "SUPERSHIFT, N, exec, uwsm-app -- foot -a impala impala"
-        "SUPERSHIFT, A, exec, uwsm-app -- foot -a wiremix wiremix"
+        "SUPER, V, exec, ${popup "clipse"}"
+        "SUPERSHIFT, B, exec, ${popup "bluetui"}"
+        "SUPERSHIFT, N, exec, ${popup "impala"}"
+        "SUPERSHIFT, A, exec, ${popup "wiremix"}"
         "SUPERSHIFT, e, exec, uwsm-app -- bemoji"
         ",insert, exec, uwsm-app -- volume-script --toggle-mic"
         "ALT, code:65, exec, uwsm-app -- rofi -show drun -run-command 'uwsm-app -- {cmd}'"

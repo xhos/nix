@@ -5,6 +5,23 @@
   sharedNixosModules,
 }: let
   pkgsOverlay = (import ./pkgs-overlay.nix lib) ../pkgs;
+
+  erosanixOverlay = _final: prev: {
+    mkWindowsApp = prev.callPackage "${inputs.erosanix}/pkgs/mkwindowsapp" {
+      makeBinPath = prev.lib.makeBinPath;
+    };
+
+    mkWindowsAppNoCC = prev.callPackage "${inputs.erosanix}/pkgs/mkwindowsapp" {
+      stdenv = prev.stdenvNoCC;
+      makeBinPath = prev.lib.makeBinPath;
+    };
+
+    makeDesktopIcon = prev.callPackage "${inputs.erosanix}/lib/makeDesktopIcon.nix" {};
+
+    copyDesktopIcons =
+      prev.makeSetupHook {name = "copyDesktopIcons";}
+      "${inputs.erosanix}/hooks/copy-desktop-icons.sh";
+  };
 in
   {
     hostname,
@@ -18,7 +35,7 @@ in
         lib.optionals (!minimal) [../modules/nixos]
         ++ [
           ../systems/${hostname}/configuration.nix
-          {nixpkgs.overlays = [pkgsOverlay];}
+          {nixpkgs.overlays = [erosanixOverlay pkgsOverlay];}
         ]
         ++ lib.optionals (homeUser != null) (
           sharedNixosModules

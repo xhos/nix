@@ -32,6 +32,8 @@
       "match:class ^(polkit-gnome-authentication-agent-1)$, dim_around on"
 
       # floating rules
+      "match:class ^(com\\.mitchellh\\.ghostty\\.(clipse|bluetui|impala|wiremix))$, float on, size 622 652"
+
       "match:class ^(pavucontrol)$, float on, size 622 652"
       "match:class ^(blueman-manager)$, float on, size 622 652"
       "match:class ^(clipse)$, float on, size 622 652"

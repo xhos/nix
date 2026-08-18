@@ -14,7 +14,11 @@
       lutris
     ];
 
-    programs.steam.enable = true;
+    programs.steam = {
+      enable = true;
+      protontricks.enable = true;
+      extraCompatPackages = with pkgs; [proton-ge-bin proton-ge-9-20];
+    };
 
     services.zerotierone = {
       enable = true;

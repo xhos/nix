@@ -50,6 +50,12 @@
     # swissh.url = "github:xhos/swissh";
 
     # --- applications ---------------------------------------------------
+    # mkWindowsApp, used by pkgs/adobe-acrobat-reader.nix
+    erosanix = {
+      url = "github:emmanuelrosa/erosanix";
+      flake = false;
+    };
+
     nixcord.url = "github:kaylorben/nixcord";
     nxv.url = "github:xhos/nxv";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";

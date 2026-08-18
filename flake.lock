@@ -197,6 +197,22 @@
         "type": "github"
       }
     },
+    "erosanix": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786810088,
+        "narHash": "sha256-jBBpG81NYJhgRkab+2YZxJmggMwahnFkFjRdtGeS4SQ=",
+        "owner": "emmanuelrosa",
+        "repo": "erosanix",
+        "rev": "8299535214d46b7cded92ea83e32091c86611fa6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "emmanuelrosa",
+        "repo": "erosanix",
+        "type": "github"
+      }
+    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -1799,6 +1815,7 @@
         "attic": "attic",
         "declarr": "declarr",
         "disko": "disko",
+        "erosanix": "erosanix",
         "home-manager": "home-manager",
         "impermanence": "impermanence",
         "import-tree": "import-tree",
