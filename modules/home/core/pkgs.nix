@@ -77,6 +77,7 @@
     figlet
     gitmoji-cli
     imagemagick
+    ghostscript
     onefetch
     pfetch-rs
     sherlock
