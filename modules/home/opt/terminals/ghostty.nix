@@ -35,15 +35,13 @@ lib.mkIf (config.terminal == "ghostty") {
     };
   };
 
-  wayland.windowManager.hyprland.settings = {
-    exec-once = [
-      # export env vars to DBus for XDG portals
-      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+  # SUPER+Q is bound in modules/home/opt/wms/hypr/hyprland/hypr/binds.lua,
+  # via nix.terminal.launch.
+  hyprland.execOnce = [
+    # export env vars to DBus for XDG portals
+    "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
 
-      # start ghostty daemon in background
-      "ghostty --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
-    ];
-
-    bind = ["SUPER, Q, exec, ghostty --gtk-single-instance=true"];
-  };
+    # start ghostty daemon in background
+    "ghostty --gtk-single-instance=true --quit-after-last-window-closed=false --initial-window=false"
+  ];
 }

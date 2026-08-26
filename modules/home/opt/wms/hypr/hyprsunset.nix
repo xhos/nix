@@ -64,16 +64,6 @@
       '')
     ];
 
-    wayland.windowManager.hyprland.settings = {
-      bind = [
-        # wlsunset has 3 modes that cycle with SIGUSR1:
-        # 1. forced high temperature (day mode - 6500K)
-        # 2. forced low temperature  (night mode - 3400K)
-        # 3. automatic calculation   (default behavior)
-        "SUPER, F9, exec, pkill -USR1 wlsunset"
-      ];
-    };
-
     systemd.user.services.wlsunset-notify = {
       Unit = {
         Description = "notify on wlsunset changes";

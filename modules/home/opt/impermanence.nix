@@ -147,8 +147,12 @@ in {
       })
 
       (lib.mkIf (config.wm == "hyprland") {
+        # nwg-displays still needs .conf files
         files = [
+          ".config/hypr/monitors.lua"
           ".config/hypr/monitors.conf"
+          ".config/hypr/workspaces.lua"
+          ".config/hypr/workspaces.conf"
         ];
       })
 

@@ -174,9 +174,16 @@
   '';
 in {
   config = lib.mkIf (config.wm == "hyprland") {
+    hyprland.execOnce = [
+      "uwsm-app -- clipse -listen"
+      "uwsm-app -- wl-paste --type text --watch cliphist store"
+      "uwsm-app -- wl-paste --type image --watch cliphist store"
+    ];
+
     home.packages = with pkgs; [
       # things actully neeeded on hyprland
       # ----
+      nwg-displays
       brightness-script
       volume-script
       # TUI control tools

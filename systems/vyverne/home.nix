@@ -34,19 +34,11 @@
     additionalLibraryPaths = ["/games/SteamLibrary"];
   };
 
-  wayland.windowManager.hyprland.settings = {
-    exec-once = [
-      "[workspace special silent] spotify"
-      "[workspace 10 silent] materialgram"
-      "[workspace 10 silent] discord"
-    ];
-
-    windowrule = [
-      "workspace special silent, match:initial_class ^(spotify)$"
-      "workspace 10 silent, match:initial_title ^(materialgram)$"
-      "workspace 10 silent, match:initial_class ^(discord)$"
-    ];
-  };
+  hyprland.execOnce = [
+    "spotify"
+    "materialgram"
+    "discord"
+  ];
 
   home.packages = with pkgs; [
     jetbrains.idea

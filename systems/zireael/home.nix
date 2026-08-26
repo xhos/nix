@@ -40,12 +40,10 @@
 
   mainMonitor = "eDP-1";
 
-  wayland.windowManager.hyprland.settings = {
-    exec-once = [
-      "iio-hyprland"
+  hyprland.execOnce = [
+    "iio-hyprland"
 
-      # close camera shut on boot
-      "echo 1 > /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value"
-    ];
-  };
+    # close camera shut on boot
+    "echo 1 > /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value"
+  ];
 }

@@ -25,7 +25,7 @@
             Lock)      exec hyprlock ;;
             Suspend)   exec systemctl suspend ;;
             Hibernate) exec systemctl hibernate ;;
-            Logout)    exec hyprctl dispatch exit ;;
+            Logout)    exec hyprctl dispatch 'hl.dsp.exit()' ;;
             Reboot)    exec systemctl reboot ;;
             Shutdown)  exec systemctl poweroff ;;
           esac

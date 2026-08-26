@@ -19,7 +19,7 @@
             exec wvkbd-mobintl \
               --fn Hack \
               -L 250 \
-              -R ${toString config.wayland.windowManager.hyprland.settings.decoration.rounding} \
+              -R ${toString config.hyprland.rounding} \
               --bg ${base00} \
               --fg ${base05} \
               --fg-sp ${base0D} \

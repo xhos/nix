@@ -12,7 +12,7 @@
       package = pkgs.valent;
     };
 
-    wayland.windowManager.hyprland.settings.exec-once =
+    hyprland.execOnce =
       lib.mkIf (config.wm == "hyprland")
       ["${lib.getExe pkgs.valent} --gapplication-service"];
   };

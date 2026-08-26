@@ -7,17 +7,17 @@
   imports = [inputs.logi-hypr.homeManagerModules.default];
 
   config = lib.mkIf (config.wm == "hyprland") {
-    wayland.windowManager.hyprland.settings.exec-once = ["logi-hypr-run"];
+    hyprland.execOnce = ["logi-hypr-run"];
 
     programs.logi-hypr = {
       enable = true;
 
       gesture.commands = {
-        tap = "hyprctl dispatch togglespecialworkspace";
+        tap = ''hyprctl dispatch "hl.dsp.workspace.toggle_special()"'';
         left = "playerctl --player=spotify previous";
         right = "playerctl --player=spotify next";
-        up = "hyprctl dispatch workspace m-1";
-        down = "hyprctl dispatch workspace m+1";
+        up = ''hyprctl dispatch "hl.dsp.focus({workspace = [[m-1]]})"'';
+        down = ''hyprctl dispatch "hl.dsp.focus({workspace = [[m+1]]})"'';
       };
 
       scroll.rules = [

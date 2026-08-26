@@ -24,10 +24,6 @@
       default = "";
     };
 
-    hyprland = {
-      hyprspace.enable = mkEnableOption "enable hyprland overview plugin";
-    };
-
     wm = mkOption {
       type = types.enum [
         "hyprland"

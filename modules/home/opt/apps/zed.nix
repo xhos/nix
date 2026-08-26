@@ -34,6 +34,7 @@
       "toml"
       "html"
       "log"
+      "lua"
       "nix"
       "ruff"
       "sql"

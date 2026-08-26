@@ -6,6 +6,10 @@
 }: {
   config = lib.mkIf (config.bar == "waybar") {
     programs.waybar.settings.main = let
+      wifiClick =
+        if config.terminal == "ghostty"
+        then "uwsm-app -- ghostty --gtk-single-instance=false --class=com.mitchellh.ghostty.impala -e impala"
+        else "uwsm-app -- ${config.terminal} -e impala";
       whisper-status-script = pkgs.writeShellApplication {
         name = "whisper-status";
         runtimeInputs = with pkgs; [coreutils];
@@ -193,6 +197,7 @@
         "format-ethernet" = "eth";
         "format-wifi" = "wif";
         "max-length" = 4;
+        "on-click" = wifiClick;
         "tooltip-format" = "{essid}\n{ipaddr}\n{ifname}";
       };
 

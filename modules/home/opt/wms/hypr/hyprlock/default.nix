@@ -25,7 +25,7 @@
   srcWallpaper = config.stylix.image;
   lockBgPath = "${config.home.homeDirectory}/.config/hypr/hyprlock.png";
 
-  blur = config.wayland.windowManager.hyprland.settings.decoration.blur;
+  blur = config.hyprland.blur;
 
   wp-blur =
     pkgs.writers.writePython3Bin "wp-blur"
