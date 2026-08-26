@@ -42,8 +42,6 @@ in {
             "/etc/ssh"
             "/var/lib/nixos"
             "/var/lib/systemd/"
-            "/etc/NetworkManager/system-connections"
-            "/var/lib/NetworkManager"
             "/var/lib/upower"
             "/var/lib/fprint"
             "/var/lib/fail2ban/"

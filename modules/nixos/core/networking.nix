@@ -1,8 +1,4 @@
 {
-  lib,
-  config,
-  ...
-}: {
   services.fail2ban.enable = true;
 
   services.openssh = {
@@ -17,8 +13,6 @@
 
   networking = {
     nameservers = ["1.1.1.1" "1.0.0.1"];
-    networkmanager.enable = lib.mkIf (config.headless != true) true;
-
     firewall = rec {
       enable = true;
       allowedTCPPortRanges = [

@@ -13,10 +13,14 @@
     extraUpFlags = ["--login-server" "https://hs.xhos.dev"];
   };
 
-  # tailscaled-autoconnect loops until tailscale is Running; offline it hangs
-  # for its 90s start timeout, and multi-user.target (thus graphical.target,
-  # which uwsm waits on) is implicitly ordered after its wanted units. Pull it
-  # in from tailscaled instead so boot never waits on it.
-  systemd.services.tailscaled-autoconnect.wantedBy = lib.mkForce [];
+  systemd.services.tailscaled-autoconnect = {
+    wantedBy = lib.mkForce [];
+    startLimitIntervalSec = 0;
+    serviceConfig = {
+      TimeoutStartSec = "3min";
+      Restart = "on-failure";
+      RestartSec = "20s";
+    };
+  };
   systemd.services.tailscaled.wants = ["tailscaled-autoconnect.service"];
 }
