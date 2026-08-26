@@ -3,6 +3,7 @@ local nix = require("nix")
 local mod = "SUPER"
 local modshift = mod .. " + SHIFT"
 local modalt = mod .. " + ALT"
+local modctrl = mod .. " + CTRL"
 
 -- TUI helpers that open in a floating terminal of their own class
 -- rules.lua floats anything matching nix.terminal.class_prefix .. ".<app>".
@@ -24,8 +25,61 @@ end
 hl.bind(mod .. " + C", hl.dsp.window.close())
 hl.bind(mod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind(mod .. " + D", hl.dsp.window.float({ action = "toggle" }))
-hl.bind(mod .. " + S", hl.dsp.layout("togglesplit"))
 hl.bind(modshift .. " + P", hl.dsp.window.pin())
+
+--------------------------------------------------------------------------
+-- layout
+--------------------------------------------------------------------------
+
+hl.bind(modshift .. " + comma", hl.dsp.layout("swapcol l"))
+hl.bind(modshift .. " + period", hl.dsp.layout("swapcol r"))
+
+-- colresize +/-conf wraps around at the ends; this clamps instead.
+local function column_widths()
+  local out = {}
+  for n in tostring(hl.get_config("scrolling.explicit_column_widths")):gmatch("[%d.]+") do
+    out[#out + 1] = tonumber(n)
+  end
+  table.sort(out)
+  return out
+end
+
+local function step_width(delta)
+  return function()
+    local win, mon = hl.get_active_window(), hl.get_active_monitor()
+    if not win or not mon then return end
+
+    local widths = column_widths()
+    if #widths == 0 then return end
+
+    -- rendered width is the column minus gaps, so snap to the nearest preset
+    local frac = win.size.x / (mon.width / mon.scale)
+    local idx, best = 1, math.huge
+    for i, w in ipairs(widths) do
+      local d = math.abs(w - frac)
+      if d < best then best, idx = d, i end
+    end
+
+    hl.dispatch(hl.dsp.layout("colresize " .. widths[math.max(1, math.min(#widths, idx + delta))]))
+  end
+end
+
+hl.bind(mod .. " + comma", step_width(-1))
+hl.bind(mod .. " + period", step_width(1))
+
+-- modshift + S is hyprshot, so expel goes on ALT
+hl.bind(mod .. " + S", hl.dsp.layout("consume_or_expel next"))
+hl.bind(modalt .. " + S", hl.dsp.layout("consume_or_expel prev"))
+
+hl.bind(mod .. " + O", hl.dsp.layout("fit expand"))
+hl.bind(modshift .. " + O", hl.dsp.layout("fit active"))
+
+-- scroll the tape without moving focus. the wheel binds are unmodified, so
+-- apps no longer receive horizontal scroll.
+hl.bind(mod .. " + bracketleft", hl.dsp.layout("move -col"))
+hl.bind(mod .. " + bracketright", hl.dsp.layout("move +col"))
+hl.bind("mouse_left", hl.dsp.layout("move -col"))
+hl.bind("mouse_right", hl.dsp.layout("move +col"))
 
 --------------------------------------------------------------------------
 -- grouped (tabbed) windows
@@ -46,10 +100,10 @@ hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ prev = true }))
 hl.bind("ALT + SHIFT + Tab", hl.dsp.window.bring_to_top())
 
 --------------------------------------------------------------------------
--- move / resize windows -- arrows and hjkl
+-- focus / move / resize -- arrows and hjkl
 --------------------------------------------------------------------------
 
--- SUPER + <key> moves the window, SUPER + SHIFT + <key> resizes it,
+-- SUPER focuses, +SHIFT carries the window, +CTRL resizes it.
 local directions = {
   { key = "left",  vim = "h", dir = "l", resize = { -200, 0 } },
   { key = "right", vim = "l", dir = "r", resize = { 200, 0 } },
@@ -57,11 +111,22 @@ local directions = {
   { key = "down",  vim = "j", dir = "d", resize = { 0, 200 } },
 }
 
+-- horizontal focus goes through the layout so it wraps on the tape instead
+-- of falling through to a neighbouring monitor
+local function focus_dsp(dir)
+  if dir == "l" or dir == "r" then
+    return hl.dsp.layout("focus " .. dir)
+  end
+  return hl.dsp.focus({ direction = dir })
+end
+
 for _, d in ipairs(directions) do
   for _, key in ipairs({ d.key, d.vim }) do
-    hl.bind(mod .. " + " .. key, hl.dsp.window.move({ direction = d.dir }))
+    hl.bind(mod .. " + " .. key, focus_dsp(d.dir))
 
-    hl.bind(modshift .. " + " .. key,
+    hl.bind(modshift .. " + " .. key, hl.dsp.window.move({ direction = d.dir }))
+
+    hl.bind(modctrl .. " + " .. key,
       hl.dsp.window.resize({ x = d.resize[1], y = d.resize[2], relative = true }))
   end
 end
@@ -108,7 +173,8 @@ hl.bind(mod .. " + E", app("nautilus"))
 hl.bind(mod .. " + B", app(nix.browser))
 hl.bind(mod .. " + P", app("rofi-power"))
 hl.bind(mod .. " + R", app("whspr"))
-hl.bind(modshift .. " + L", app("hyprlock"))
+-- on SUPER+Escape, not SUPER+SHIFT+L: that is "move window right" now.
+hl.bind(mod .. " + Escape", app("hyprlock"))
 hl.bind(modshift .. " + S", app("hyprshot -z -m region --clipboard-only"))
 hl.bind(modshift .. " + E", app("bemoji"))
 
