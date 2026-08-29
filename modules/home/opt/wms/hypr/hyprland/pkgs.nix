@@ -193,7 +193,7 @@ in {
 
       bemoji # emoji picker
       clipse # clipboard manager
-      swww
+      awww
 
       wvkbd
 
@@ -218,7 +218,7 @@ in {
       wtype
       ydotool
       wlprop
-      xorg.xprop
+      xprop
     ];
   };
 }

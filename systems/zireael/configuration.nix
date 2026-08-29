@@ -88,10 +88,10 @@
   boot.resumeDevice = "/dev/mapper/crypted";
   boot.kernelParams = ["resume_offset=34700103"];
 
-  services.logind = lib.mkForce {
-    lidSwitch = "suspend-then-hibernate";
-    lidSwitchDocked = "ignore";
-    powerKey = "hibernate";
+  services.logind.settings.Login = {
+    HandleLidSwitch = lib.mkForce "suspend-then-hibernate";
+    HandleLidSwitchDocked = lib.mkForce "ignore";
+    HandlePowerKey = lib.mkForce "hibernate";
   };
 
   systemd.sleep.settings.Sleep = {
