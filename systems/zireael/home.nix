@@ -8,7 +8,7 @@
     sha256 = "sha256-Gv/2Ap8YS6F1S1RXlwQr71MMi+iRi9fgvZVVyZeCKvk=";
   };
 
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/eris.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
 
   impermanence.enable = true;
 
