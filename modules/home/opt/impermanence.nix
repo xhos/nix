@@ -39,6 +39,7 @@ in {
             # github/copilot
             ".copilot"
             ".config/gh"
+            ".codex"
 
             # --- state ---
             ".local/state/lazygit"
@@ -93,6 +94,10 @@ in {
             ".config/zsh"
             ".config/OpenRGB"
             ".config/claude"
+            ".config/Codex"
+            ".config/io.github.CyberTimon.RapidRAW"
+            ".local/share/io.github.CyberTimon.RapidRAW"
+            ".config/Claude"
             ".config/spotify"
             ".config/calibre"
             ".config/Code"
@@ -137,12 +142,6 @@ in {
         directories = [
           ".local/share/materialgram/tdata"
           ".cache/stylix-telegram-theme"
-        ];
-      })
-
-      (persistIf (moduleEnabled "discord") {
-        directories = [
-          ".config/discord"
         ];
       })
 

@@ -9,11 +9,10 @@
   options.modules.discord.enable = lib.mkEnableOption "discord with nixcord";
 
   config = lib.mkIf config.modules.discord.enable {
+    persist.dirs = [".config/vesktop"];
     programs.nixcord = {
       enable = true;
 
-      # nixpkgs `discord` is currently broken (installPhase tar failure on the
-      # electron tarball). Vesktop builds from source and takes the same config.
       discord.enable = false;
       vesktop.enable = true;
 

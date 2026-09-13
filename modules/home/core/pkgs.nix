@@ -115,6 +115,7 @@
     wireplumber
 
     # Desktop apps
+    teams-for-linux
     amnezia-vpn
     gimp
     calibre

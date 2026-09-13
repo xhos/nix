@@ -22,8 +22,9 @@
       img = "swayimg";
       go-cp-all = "find cmd/ internal/ -name \"*.go\" -exec sh -c 'echo \"--- {} ---\"; cat \"{}\"' \\; | wl-copy";
       b64 = "openssl rand -base64 64 | tr -d '\n' | tr -- '+/' '-_' | tr -d '\n=' | wl-copy";
-      clwd = "nix run github:numtide/llm-agents.nix#claude-code";
-      cplt = "nix run github:numtide/llm-agents.nix#copilot-cli";
+      clwd = "nix run github:numtide/llm-agents.nix#claude-code --accept-flake-config";
+      cdx = "nix run github:numtide/llm-agents.nix#codex --accept-flake-config";
+      cplt = "nix run github:numtide/llm-agents.nix#copilot-cli --accept-flake-config";
 
       nimp = "sudo ncdu -x /";
 

@@ -56,6 +56,11 @@
       flake = false;
     };
 
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nixcord.url = "github:kaylorben/nixcord";
     nxv.url = "github:xhos/nxv";
     zen-browser.url = "github:0xc000022070/zen-browser-flake";

@@ -4,8 +4,8 @@
   ...
 }: {
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/rd/wallhaven-rdwjj7.jpg";
-    sha256 = "sha256-Gv/2Ap8YS6F1S1RXlwQr71MMi+iRi9fgvZVVyZeCKvk=";
+    url = "https://i.imgur.com/w65iDl5.jpeg";
+    sha256 = "sha256-WvuZoZ6OBGa1R+zZAl6/YQAazpe8k2quJSWamTZl2Tc=";
   };
 
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
@@ -15,7 +15,7 @@
   modules = {
     rofi.enable = true;
     secrets.enable = true;
-    discord.enable = true; # TODO: re-enable — nixpkgs discord installPhase brotli-decompresses a now-gzip src
+    discord.enable = true;
     spicetify.enable = true;
     telegram.enable = true;
     fonts.enable = true;
