@@ -78,6 +78,8 @@ in {
             lib.nameValuePair "restic-dump-${name}" {
               enable = svc.databases != [];
               description = "Dump databases for ${name} backup";
+              requires = ["postgresql.service"];
+              after = ["postgresql.service"];
               serviceConfig = {
                 Type = "oneshot";
                 User = "postgres";

@@ -83,23 +83,21 @@ in {
         domain = "*.${domain}";
         extraDomainNames = [domain] ++ extraDomains domain;
         environmentFile = config.sops.secrets."api/cloudflare".path;
+        # ari breaks renewal of long-expired certs
+        extraLegoRenewFlags = ["--ari-disable"];
       };
     };
 
     systemd.services.caddy = {
       after = ["acme-${domain}.service"];
       wants = ["acme-${domain}.service"];
-      reloadTriggers = lib.mkForce [];
     };
 
     services.caddy = {
       enable = true;
       email = "lets-encrypt@xhos.dev";
 
-      globalConfig = ''
-        admin off
-      '';
-
+      # no `admin off`, caddy reload needs it for acme
       virtualHosts = mkLocalVhosts // mkPublicVhosts // catchAlls;
     };
   };

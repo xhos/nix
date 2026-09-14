@@ -128,19 +128,18 @@ in {
       domain = "*.${domain}";
       extraDomainNames = [domain];
       environmentFile = config.sops.secrets."api/cloudflare".path;
+      extraLegoRenewFlags = ["--ari-disable"];
     };
   };
 
   systemd.services.caddy = {
     after = ["acme-${domain}.service"];
     wants = ["acme-${domain}.service"];
-    reloadTriggers = lib.mkForce [];
   };
 
   services.caddy = {
     enable = true;
     globalConfig = ''
-      admin off
       https_port 8443
     '';
 

@@ -36,7 +36,7 @@
     atuin.enable = true;
     dawarich.enable = true;
     glance.enable = true;
-    immich.enable = false;
+    immich.enable = true;
     syncthing.enable = true;
     wakapi.enable = true;
     xray.enable = false;
