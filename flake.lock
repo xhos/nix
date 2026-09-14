@@ -200,11 +200,11 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1771295228,
-        "narHash": "sha256-lm9MqNson+sSLaUBPB8A/XXBzVQQ5aPDR/45oAmC5CY=",
+        "lastModified": 1789346244,
+        "narHash": "sha256-clqSUhKW49R9qcGJaBfBoStPIwQ7Y+lKroVWWLD141I=",
         "owner": "xhos",
         "repo": "declarr",
-        "rev": "c42ecc4313d5198209dffffd860e97ede836a143",
+        "rev": "d935435eced3754df577c75fc29579b8ea083053",
         "type": "github"
       },
       "original": {
