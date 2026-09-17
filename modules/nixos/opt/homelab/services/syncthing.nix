@@ -48,6 +48,8 @@
           "notes" = {
             path = "/home/xhos/Documents/notes";
             devices = ["pixel" "vyverne" "zireael"];
+            # shared with the leaf devices, see modules/nixos/opt/syncthing.nix
+            inherit (config.syncthing) ignorePatterns;
           };
         };
       };
