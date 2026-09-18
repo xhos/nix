@@ -35,7 +35,7 @@ three instances, all running NixOS via custom-built qcow2 images:
 | host    | shape      | specs            | role                                                                               |
 | ------- | ---------- | ---------------- | ---------------------------------------------------------------------------------- |
 | arashi  | A1.Flex    | 4 core ARM, 24GB | general purpose                                                                    |
-| mizore  | E2.1.Micro | 1 core x86, 1GB  | hosts [null](https://github.com/xhos/null-core)                                    |
+| mizore  | E2.1.Micro | 1 core x86, 1GB  | hosts [nagomi](https://github.com/xhos/nagomi-core)                                    |
 | proxy-1 | E2.1.Micro | 1 core x86, 1GB  | forwards traffic to enrai via [nix-wg-proxy](https://github.com/xhos/nix-wg-proxy) |
 
 infrastructure is fully declarative via [OpenTofu](https://opentofu.org).

@@ -39,17 +39,14 @@ jobs:
           purge-created: 0
           purge-primary-key: never
 
-      - name: Update null flake input
+      - name: Update nagomi flake input
         run: |
-          nix flake update null
-          if git diff --quiet flake.lock; then
-            echo "LOCK_CHANGED=false" >> "$GITHUB_ENV"
-          else
-            echo "LOCK_CHANGED=true" >> "$GITHUB_ENV"
+          nix flake update nagomi
+          if ! git diff --quiet flake.lock; then
             git config user.name "github-actions"
             git config user.email "actions@github.com"
             git add flake.lock
-            git commit -m "update null"
+            git commit -m "update nagomi"
             git push
           fi
 
@@ -58,23 +55,20 @@ jobs:
           authkey: ${{ secrets.TS_AUTHKEY }}
           args: "--login-server https://hs.xhos.dev --accept-dns"
           version: "1.76.6"
+          targets: 100.64.0.13 # systems/mizore/configuration.nix
 
       - name: Setup SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          NIX_SECRETS_SSH_KEY: ${{ secrets.NIX_SECRETS_SSH_KEY }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_mizore
-          echo "${{ secrets.NIX_SECRETS_SSH_KEY }}" > ~/.ssh/nix_secrets
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_mizore
+          printf '%s\n' "$NIX_SECRETS_SSH_KEY" > ~/.ssh/nix_secrets
           chmod 600 ~/.ssh/deploy_mizore ~/.ssh/nix_secrets
-          MIZORE_IP=$(tailscale status --json | jq -r '.Peer[] | select(.HostName == "mizore") | .TailscaleIPs[0]')
-          if [ -z "$MIZORE_IP" ] || [ "$MIZORE_IP" = "null" ]; then
-            echo "Could not find mizore in tailnet. Peers:"
-            tailscale status --json | jq -r '.Peer[] | "\(.HostName) \(.TailscaleIPs[0])"'
-            exit 1
-          fi
-          echo "mizore IP: $MIZORE_IP"
           cat >> ~/.ssh/config <<EOF
           Host mizore.ts.xhos.dev
-            HostName $MIZORE_IP
+            HostName 100.64.0.13
             User deploy
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null

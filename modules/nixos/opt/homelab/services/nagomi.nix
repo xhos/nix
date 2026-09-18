@@ -4,12 +4,12 @@
   inputs,
   ...
 }: {
-  options.homelab.null.enable = lib.mkEnableOption "null finance tracker";
+  options.homelab.nagomi.enable = lib.mkEnableOption "nagomi finance tracker";
 
-  imports = [inputs.null.nixosModules.default];
+  imports = [inputs.nagomi.nixosModules.default];
 
-  config = lib.mkIf config.homelab.null.enable {
-    services.null = {
+  config = lib.mkIf config.homelab.nagomi.enable {
+    services.nagomi = {
       enable = true;
       emailParser.enable = true;
       secretsFile = config.sops.secrets."env/null/shared".path;
@@ -34,11 +34,11 @@
     persist.dirs = ["/var/lib/null"];
 
     # homelab wiring — web frontend public, gateway public (API), SMTP forwarded
-    homelab.exposedServices.null.port = config.services.null.web.port;
-    homelab.exposedServices."api.null".port = config.services.null.gateway.port;
+    homelab.exposedServices.null.port = config.services.nagomi.web.port;
+    homelab.exposedServices."api.null".port = config.services.nagomi.gateway.port;
     homelab.tcpForwards.smtp = {
       listen = 25;
-      port = config.services.null.emailParser.smtpPort;
+      port = config.services.nagomi.emailParser.smtpPort;
     };
   };
 }

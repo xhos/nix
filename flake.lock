@@ -130,8 +130,8 @@
         "flake-parts": "flake-parts_5",
         "import-tree": "import-tree_2",
         "nixpkgs": [
-          "null",
-          "null-gateway",
+          "nagomi",
+          "nagomi-gateway",
           "nixpkgs"
         ],
         "systems": "systems_4",
@@ -156,8 +156,8 @@
         "flake-parts": "flake-parts_6",
         "import-tree": "import-tree_3",
         "nixpkgs": [
-          "null",
-          "null-web",
+          "nagomi",
+          "nagomi-web",
           "nixpkgs"
         ],
         "systems": "systems_5",
@@ -617,8 +617,8 @@
       "inputs": {
         "flake-compat": "flake-compat_3",
         "nixpkgs": [
-          "null",
-          "null-core",
+          "nagomi",
+          "nagomi-core",
           "nixpkgs"
         ]
       },
@@ -641,8 +641,8 @@
         "flake-compat": "flake-compat_4",
         "gitignore": "gitignore",
         "nixpkgs": [
-          "null",
-          "null-email-parser",
+          "nagomi",
+          "nagomi-email-parser",
           "nixpkgs"
         ]
       },
@@ -665,8 +665,8 @@
         "flake-compat": "flake-compat_5",
         "gitignore": "gitignore_2",
         "nixpkgs": [
-          "null",
-          "null-gateway",
+          "nagomi",
+          "nagomi-gateway",
           "nixpkgs"
         ]
       },
@@ -689,8 +689,8 @@
         "flake-compat": "flake-compat_6",
         "gitignore": "gitignore_3",
         "nixpkgs": [
-          "null",
-          "null-receipts",
+          "nagomi",
+          "nagomi-receipts",
           "nixpkgs"
         ]
       },
@@ -713,8 +713,8 @@
         "flake-compat": "flake-compat_7",
         "gitignore": "gitignore_4",
         "nixpkgs": [
-          "null",
-          "null-web",
+          "nagomi",
+          "nagomi-web",
           "nixpkgs"
         ]
       },
@@ -758,8 +758,8 @@
     "gitignore": {
       "inputs": {
         "nixpkgs": [
-          "null",
-          "null-email-parser",
+          "nagomi",
+          "nagomi-email-parser",
           "git-hooks",
           "nixpkgs"
         ]
@@ -781,8 +781,8 @@
     "gitignore_2": {
       "inputs": {
         "nixpkgs": [
-          "null",
-          "null-gateway",
+          "nagomi",
+          "nagomi-gateway",
           "git-hooks",
           "nixpkgs"
         ]
@@ -804,8 +804,8 @@
     "gitignore_3": {
       "inputs": {
         "nixpkgs": [
-          "null",
-          "null-receipts",
+          "nagomi",
+          "nagomi-receipts",
           "git-hooks",
           "nixpkgs"
         ]
@@ -827,8 +827,8 @@
     "gitignore_4": {
       "inputs": {
         "nixpkgs": [
-          "null",
-          "null-web",
+          "nagomi",
+          "nagomi-web",
           "git-hooks",
           "nixpkgs"
         ]
@@ -1698,34 +1698,34 @@
         "type": "gitlab"
       }
     },
-    "null": {
+    "nagomi": {
       "inputs": {
         "nixpkgs": "nixpkgs_7",
-        "null-core": "null-core",
-        "null-email-parser": "null-email-parser",
-        "null-gateway": "null-gateway",
-        "null-receipts": "null-receipts",
-        "null-web": "null-web"
+        "nagomi-core": "nagomi-core",
+        "nagomi-email-parser": "nagomi-email-parser",
+        "nagomi-gateway": "nagomi-gateway",
+        "nagomi-receipts": "nagomi-receipts",
+        "nagomi-web": "nagomi-web"
       },
       "locked": {
         "lastModified": 1788910158,
         "narHash": "sha256-2KD/ovd04QP1iYQnr4YldhVYG9pFSODMoyKk4+EqJT4=",
         "owner": "xhos",
-        "repo": "null",
+        "repo": "nagomi",
         "rev": "6bbe270ab4d746dc7e1aae372d83d0bc3623974f",
         "type": "github"
       },
       "original": {
         "owner": "xhos",
-        "repo": "null",
+        "repo": "nagomi",
         "type": "github"
       }
     },
-    "null-core": {
+    "nagomi-core": {
       "inputs": {
         "git-hooks": "git-hooks",
         "nixpkgs": [
-          "null",
+          "nagomi",
           "nixpkgs"
         ]
       },
@@ -1733,21 +1733,21 @@
         "lastModified": 1788909925,
         "narHash": "sha256-FiOleeqkbHcCjFI2x6kenipCIzITPrqd4OW1FI0kgeg=",
         "owner": "xhos",
-        "repo": "null-core",
+        "repo": "nagomi-core",
         "rev": "5af8d7110c96439fd02a48a9047261ac0831f2c2",
         "type": "github"
       },
       "original": {
         "owner": "xhos",
-        "repo": "null-core",
+        "repo": "nagomi-core",
         "type": "github"
       }
     },
-    "null-email-parser": {
+    "nagomi-email-parser": {
       "inputs": {
         "git-hooks": "git-hooks_2",
         "nixpkgs": [
-          "null",
+          "nagomi",
           "nixpkgs"
         ]
       },
@@ -1755,22 +1755,22 @@
         "lastModified": 1776645747,
         "narHash": "sha256-U7uFRvBdJj7qzLopW7Qz/Hnnwxi/xawkzpmX3S75hjw=",
         "owner": "xhos",
-        "repo": "arian-email-parser",
+        "repo": "nagomi-email-parser",
         "rev": "967b547d2ce9e54e87620665a98ef3715ed3876a",
         "type": "github"
       },
       "original": {
         "owner": "xhos",
-        "repo": "arian-email-parser",
+        "repo": "nagomi-email-parser",
         "type": "github"
       }
     },
-    "null-gateway": {
+    "nagomi-gateway": {
       "inputs": {
         "bun2nix": "bun2nix_2",
         "git-hooks": "git-hooks_3",
         "nixpkgs": [
-          "null",
+          "nagomi",
           "nixpkgs"
         ]
       },
@@ -1778,21 +1778,21 @@
         "lastModified": 1776471859,
         "narHash": "sha256-P++AL2/o8VglgJUKK7Rw6jO/R9JQF3oBZIsZD/DP/hI=",
         "owner": "xhos",
-        "repo": "null-gateway",
+        "repo": "nagomi-gateway",
         "rev": "9d55916543e71f2f931a1400fdf0f915104babe6",
         "type": "github"
       },
       "original": {
         "owner": "xhos",
-        "repo": "null-gateway",
+        "repo": "nagomi-gateway",
         "type": "github"
       }
     },
-    "null-receipts": {
+    "nagomi-receipts": {
       "inputs": {
         "git-hooks": "git-hooks_4",
         "nixpkgs": [
-          "null",
+          "nagomi",
           "nixpkgs"
         ]
       },
@@ -1800,22 +1800,22 @@
         "lastModified": 1776814637,
         "narHash": "sha256-Q1TVUY9rtvNhu1ZS14dd9vRRAmpUt1bG2NHOYxHutV8=",
         "owner": "xhos",
-        "repo": "arian-receipts",
+        "repo": "nagomi-receipts",
         "rev": "4a1bf1bce42c1de3a4ee52aeb009f106e920ec44",
         "type": "github"
       },
       "original": {
         "owner": "xhos",
-        "repo": "arian-receipts",
+        "repo": "nagomi-receipts",
         "type": "github"
       }
     },
-    "null-web": {
+    "nagomi-web": {
       "inputs": {
         "bun2nix": "bun2nix_3",
         "git-hooks": "git-hooks_5",
         "nixpkgs": [
-          "null",
+          "nagomi",
           "nixpkgs"
         ]
       },
@@ -1823,13 +1823,13 @@
         "lastModified": 1777223326,
         "narHash": "sha256-4syr8Jdh6bfJPwlG9jw1nDOiTKxEuS0/MFzh96m0E+o=",
         "owner": "xhos",
-        "repo": "arian-web",
+        "repo": "nagomi-web",
         "rev": "ffec63a3a94bdf35766882172c89f00680eab9d5",
         "type": "github"
       },
       "original": {
         "owner": "xhos",
-        "repo": "arian-web",
+        "repo": "nagomi-web",
         "type": "github"
       }
     },
@@ -1939,7 +1939,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs_6",
         "nixpkgs-stable": "nixpkgs-stable_2",
-        "null": "null",
+        "nagomi": "nagomi",
         "nxv": "nxv",
         "proxmox-nixos": "proxmox-nixos",
         "sops-nix": "sops-nix",
@@ -2307,8 +2307,8 @@
     "treefmt-nix_4": {
       "inputs": {
         "nixpkgs": [
-          "null",
-          "null-gateway",
+          "nagomi",
+          "nagomi-gateway",
           "bun2nix",
           "nixpkgs"
         ]
@@ -2330,8 +2330,8 @@
     "treefmt-nix_5": {
       "inputs": {
         "nixpkgs": [
-          "null",
-          "null-web",
+          "nagomi",
+          "nagomi-web",
           "bun2nix",
           "nixpkgs"
         ]
