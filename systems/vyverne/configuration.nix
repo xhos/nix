@@ -21,7 +21,7 @@
   games.enable = true;
   nvidia.enable = true;
   vm.enable = true;
-  ai.enable = false;
+  ai.enable = true;
   obs.enable = true;
   davinci.enable = true;
   syncthing.enable = true;
@@ -56,6 +56,17 @@
   ];
 
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
+
+  systemd.network.networks."05-enp4s0" = {
+    matchConfig.Name = "enp4s0";
+    address = ["10.0.0.11/24"];
+    gateway = ["10.0.0.1"];
+    networkConfig = {
+      DHCP = "no";
+      IPv6AcceptRA = true;
+    };
+    linkConfig.RequiredForOnline = "no";
+  };
 
   # fix fn keys not working on infi75
   boot.kernelParams = ["hid_apple.fnmode=2"];

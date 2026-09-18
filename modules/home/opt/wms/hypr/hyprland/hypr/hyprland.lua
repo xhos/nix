@@ -22,7 +22,7 @@ hl.config({
     gaps_in     = 5,
     gaps_out    = 10,
     border_size = 1,
-    layout      = "scrolling",
+    layout      = nix.hostname == "vyverne" and "dwindle" or "scrolling",
 
     col         = {
       active_border   = "rgba(262626aa)",
@@ -81,7 +81,7 @@ hl.config({
   },
 
   -- 300 (the default) throttles the wheel tape binds to ~3/sec
-  binds      = { scroll_event_delay = 150 },
+  binds      = { scroll_event_delay = nix.hostname == "vyverne" and 300 or 150 },
 
   ecosystem  = { no_update_news = true },
   cursor     = { no_hardware_cursors = true },
@@ -124,7 +124,9 @@ hl.config({
 
 hl.gesture({ fingers = 3, direction = "vertical", action = "workspace" })
 
-hl.gesture({ fingers = 3, direction = "horizontal", action = "scroll_move" })
+if nix.hostname ~= "vyverne" then
+  hl.gesture({ fingers = 3, direction = "horizontal", action = "scroll_move" })
+end
 
 hl.device({ name = "znt0001:00-14e5:650e-touchpad", sensitivity = 0.2 })
 hl.device({ name = "razer-razer-mamba-elite-1", sensitivity = -0.3, accel_profile = "flat" })

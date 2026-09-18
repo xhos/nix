@@ -1,8 +1,7 @@
-# following is taken from https://github.com/alper-han/ZyNixOS/blob/d8de8e20822486022e870987ca088b98e79a392d/modules/programs/media/davinci-resolve-studio/default.nix
-# also inspired by https://github.com/loystonpais/nixconfig/blob/4d8b5f2ecb3801be7cd7fa7e1ec2d1e7927f9b4e/packages/davinci-resolve-20-0-crack.nix
-# Tested on Davinci 20.2.3 It works for loading videos and exporting in H264/5 & AV1
-# Even if following this guide https://www.reddit.com/r/LinuxCrackSupport/comments/1nfqhld/davinci_resolve_studio_202_fix_linux_crack_guide/
-# nixpkgs rev used for this tests: 4652ba995a945108fb891191c1e910b9a6ed9064
+# from https://github.com/alper-han/ZyNixOS/blob/d8de8e20822486022e870987ca088b98e79a392d/modules/programs/media/davinci-resolve-studio/default.nix
+# and https://github.com/loystonpais/nixconfig/blob/4d8b5f2ecb3801be7cd7fa7e1ec2d1e7927f9b4e/packages/davinci-resolve-20-0-crack.nix
+# crack guide: https://www.reddit.com/r/LinuxCrackSupport/comments/1nfqhld/davinci_resolve_studio_202_fix_linux_crack_guide/
+# tested on 20.2.3, nixpkgs rev 4652ba995a945108fb891191c1e910b9a6ed9064
 {
   lib,
   pkgs,

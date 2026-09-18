@@ -14,6 +14,7 @@
         "docker"
         "input"
         "adbusers"
+        "dialout"
         "kvm"
       ];
     };

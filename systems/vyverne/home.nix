@@ -1,9 +1,13 @@
 {pkgs, ...}: {
+  # stylix.image = pkgs.fetchurl {
+  #   url = "https://realmafricasafaris.com/wp-content/uploads/2020/02/The-Shoebill-Stork.jpg";
+  #   sha256 = "sha256-/kIfVH281mZ8YfITslwQEwuje0aPDNsEkgQwsb6X0no=";
+  # };
+  #
   stylix.image = pkgs.fetchurl {
-    url = "https://realmafricasafaris.com/wp-content/uploads/2020/02/The-Shoebill-Stork.jpg";
-    sha256 = "sha256-/kIfVH281mZ8YfITslwQEwuje0aPDNsEkgQwsb6X0no=";
+    url = "https://w.wallhaven.cc/full/5g/wallhaven-5g1ep5.jpg";
+    sha256 = "sha256-0r+WD32FdoXAwqg+5t4F9JLmIAtA0DO9t3hnafjRnaI=";
   };
-
   # stylix.base16Scheme = ./min-dark.yaml;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
 
@@ -44,6 +48,6 @@
     jetbrains.idea
     teams-for-linux
     # whspr # broken: ctranslate2 build failure
-    android-studio-full
+    # android-studio-full
   ];
 }

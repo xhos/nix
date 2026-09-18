@@ -133,6 +133,8 @@
       ];
 
       "hyprland/workspaces" = {
+        "all-outputs" = true;
+        "sort-by" = "id";
         "format" = "{icon}";
         "format-icons" = {
           "1" = "一";

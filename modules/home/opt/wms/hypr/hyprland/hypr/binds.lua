@@ -5,8 +5,7 @@ local modshift = mod .. " + SHIFT"
 local modalt = mod .. " + ALT"
 local modctrl = mod .. " + CTRL"
 
--- TUI helpers that open in a floating terminal of their own class
--- rules.lua floats anything matching nix.terminal.class_prefix .. ".<app>".
+-- opens a TUI in its own floating terminal class (floated by rules.lua)
 local function popup(app)
   return string.format(
     "uwsm-app -- %s --gtk-single-instance=false --class=%s.%s -e %s",
@@ -18,6 +17,9 @@ local function app(cmd)
   return hl.dsp.exec_cmd("uwsm-app -- " .. cmd)
 end
 
+-- vyverne kept dwindle, everyone else moved to scrolling
+local dwindle = nix.hostname == "vyverne"
+
 --------------------------------------------------------------------------
 -- compositor
 --------------------------------------------------------------------------
@@ -27,59 +29,64 @@ hl.bind(mod .. " + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = 
 hl.bind(mod .. " + D", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(modshift .. " + P", hl.dsp.window.pin())
 
+if dwindle then
+  hl.bind(mod .. " + S", hl.dsp.layout("togglesplit"))
+end
+
 --------------------------------------------------------------------------
 -- layout
 --------------------------------------------------------------------------
 
-hl.bind(modshift .. " + comma", hl.dsp.layout("swapcol l"))
-hl.bind(modshift .. " + period", hl.dsp.layout("swapcol r"))
+if not dwindle then
+  hl.bind(modshift .. " + comma", hl.dsp.layout("swapcol l"))
+  hl.bind(modshift .. " + period", hl.dsp.layout("swapcol r"))
 
--- colresize +/-conf wraps around at the ends; this clamps instead.
-local function column_widths()
-  local out = {}
-  for n in tostring(hl.get_config("scrolling.explicit_column_widths")):gmatch("[%d.]+") do
-    out[#out + 1] = tonumber(n)
-  end
-  table.sort(out)
-  return out
-end
-
-local function step_width(delta)
-  return function()
-    local win, mon = hl.get_active_window(), hl.get_active_monitor()
-    if not win or not mon then return end
-
-    local widths = column_widths()
-    if #widths == 0 then return end
-
-    -- rendered width is the column minus gaps, so snap to the nearest preset
-    local frac = win.size.x / (mon.width / mon.scale)
-    local idx, best = 1, math.huge
-    for i, w in ipairs(widths) do
-      local d = math.abs(w - frac)
-      if d < best then best, idx = d, i end
+  -- colresize +/-conf wraps around at the ends; this clamps instead.
+  local function column_widths()
+    local out = {}
+    for n in tostring(hl.get_config("scrolling.explicit_column_widths")):gmatch("[%d.]+") do
+      out[#out + 1] = tonumber(n)
     end
-
-    hl.dispatch(hl.dsp.layout("colresize " .. widths[math.max(1, math.min(#widths, idx + delta))]))
+    table.sort(out)
+    return out
   end
+
+  local function step_width(delta)
+    return function()
+      local win, mon = hl.get_active_window(), hl.get_active_monitor()
+      if not win or not mon then return end
+
+      local widths = column_widths()
+      if #widths == 0 then return end
+
+      -- rendered width is the column minus gaps, so snap to the nearest preset
+      local frac = win.size.x / (mon.width / mon.scale)
+      local idx, best = 1, math.huge
+      for i, w in ipairs(widths) do
+        local d = math.abs(w - frac)
+        if d < best then best, idx = d, i end
+      end
+
+      hl.dispatch(hl.dsp.layout("colresize " .. widths[math.max(1, math.min(#widths, idx + delta))]))
+    end
+  end
+
+  hl.bind(mod .. " + comma", step_width(-1))
+  hl.bind(mod .. " + period", step_width(1))
+
+  -- modshift + S is hyprshot, so expel goes on ALT
+  hl.bind(mod .. " + S", hl.dsp.layout("consume_or_expel next"))
+  hl.bind(modalt .. " + S", hl.dsp.layout("consume_or_expel prev"))
+
+  hl.bind(mod .. " + O", hl.dsp.layout("fit expand"))
+  hl.bind(modshift .. " + O", hl.dsp.layout("fit active"))
+
+  -- scroll the tape without moving focus (steals horizontal scroll from apps)
+  hl.bind(mod .. " + bracketleft", hl.dsp.layout("move -col"))
+  hl.bind(mod .. " + bracketright", hl.dsp.layout("move +col"))
+  hl.bind("mouse_left", hl.dsp.layout("move -col"))
+  hl.bind("mouse_right", hl.dsp.layout("move +col"))
 end
-
-hl.bind(mod .. " + comma", step_width(-1))
-hl.bind(mod .. " + period", step_width(1))
-
--- modshift + S is hyprshot, so expel goes on ALT
-hl.bind(mod .. " + S", hl.dsp.layout("consume_or_expel next"))
-hl.bind(modalt .. " + S", hl.dsp.layout("consume_or_expel prev"))
-
-hl.bind(mod .. " + O", hl.dsp.layout("fit expand"))
-hl.bind(modshift .. " + O", hl.dsp.layout("fit active"))
-
--- scroll the tape without moving focus. the wheel binds are unmodified, so
--- apps no longer receive horizontal scroll.
-hl.bind(mod .. " + bracketleft", hl.dsp.layout("move -col"))
-hl.bind(mod .. " + bracketright", hl.dsp.layout("move +col"))
-hl.bind("mouse_left", hl.dsp.layout("move -col"))
-hl.bind("mouse_right", hl.dsp.layout("move +col"))
 
 --------------------------------------------------------------------------
 -- grouped (tabbed) windows
@@ -100,10 +107,9 @@ hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ prev = true }))
 hl.bind("ALT + SHIFT + Tab", hl.dsp.window.bring_to_top())
 
 --------------------------------------------------------------------------
--- focus / move / resize -- arrows and hjkl
+-- move / resize windows -- arrows and hjkl
 --------------------------------------------------------------------------
 
--- SUPER focuses, +SHIFT carries the window, +CTRL resizes it.
 local directions = {
   { key = "left",  vim = "h", dir = "l", resize = { -200, 0 } },
   { key = "right", vim = "l", dir = "r", resize = { 200, 0 } },
@@ -111,23 +117,36 @@ local directions = {
   { key = "down",  vim = "j", dir = "d", resize = { 0, 200 } },
 }
 
--- horizontal focus goes through the layout so it wraps on the tape instead
--- of falling through to a neighbouring monitor
-local function focus_dsp(dir)
-  if dir == "l" or dir == "r" then
-    return hl.dsp.layout("focus " .. dir)
+if dwindle then
+  -- SUPER + <key> moves the window, SUPER + SHIFT + <key> resizes it,
+  for _, d in ipairs(directions) do
+    for _, key in ipairs({ d.key, d.vim }) do
+      hl.bind(mod .. " + " .. key, hl.dsp.window.move({ direction = d.dir }))
+
+      hl.bind(modshift .. " + " .. key,
+        hl.dsp.window.resize({ x = d.resize[1], y = d.resize[2], relative = true }))
+    end
   end
-  return hl.dsp.focus({ direction = dir })
-end
+else
+  -- SUPER focuses, +SHIFT carries the window, +CTRL resizes it.
 
-for _, d in ipairs(directions) do
-  for _, key in ipairs({ d.key, d.vim }) do
-    hl.bind(mod .. " + " .. key, focus_dsp(d.dir))
+  -- horizontal focus wraps on the tape instead of jumping monitors
+  local function focus_dsp(dir)
+    if dir == "l" or dir == "r" then
+      return hl.dsp.layout("focus " .. dir)
+    end
+    return hl.dsp.focus({ direction = dir })
+  end
 
-    hl.bind(modshift .. " + " .. key, hl.dsp.window.move({ direction = d.dir }))
+  for _, d in ipairs(directions) do
+    for _, key in ipairs({ d.key, d.vim }) do
+      hl.bind(mod .. " + " .. key, focus_dsp(d.dir))
 
-    hl.bind(modctrl .. " + " .. key,
-      hl.dsp.window.resize({ x = d.resize[1], y = d.resize[2], relative = true }))
+      hl.bind(modshift .. " + " .. key, hl.dsp.window.move({ direction = d.dir }))
+
+      hl.bind(modctrl .. " + " .. key,
+        hl.dsp.window.resize({ x = d.resize[1], y = d.resize[2], relative = true }))
+    end
   end
 end
 
@@ -135,12 +154,30 @@ end
 -- workspaces
 --------------------------------------------------------------------------
 
--- SUPER + [1..9,0] focuses workspace 1..10; adding SHIFT moves the window there.
+-- per-monitor workspaces: real id = monitor id * 10 + n
+local function monitor_workspace(n)
+  local mon = hl.get_active_monitor()
+  return (mon and mon.id or 0) * 10 + n
+end
+
 for i = 1, 10 do
   local key = i % 10
-  hl.bind(mod .. " + " .. key, hl.dsp.focus({ workspace = i }))
-  hl.bind(modshift .. " + " .. key, hl.dsp.window.move({ workspace = i }))
+
+  hl.bind(mod .. " + " .. key, function()
+    hl.dispatch(hl.dsp.focus({ workspace = monitor_workspace(i) }))
+  end)
+
+  hl.bind(modshift .. " + " .. key, function()
+    hl.dispatch(hl.dsp.window.move({ workspace = monitor_workspace(i) }))
+  end)
 end
+
+-- hyprland defaults monitor 2 to workspace 2, not 11 -- fix on startup
+hl.on("hyprland.start", function()
+  for _, mon in ipairs(hl.get_monitors()) do
+    mon:set_workspace({ workspace = mon.id * 10 + 1 })
+  end
+end)
 
 -- special workspace
 hl.bind(mod .. " + grave", hl.dsp.workspace.toggle_special(""))
@@ -173,8 +210,12 @@ hl.bind(mod .. " + E", app("nautilus"))
 hl.bind(mod .. " + B", app(nix.browser))
 hl.bind(mod .. " + P", app("rofi-power"))
 hl.bind(mod .. " + R", app("whspr"))
--- on SUPER+Escape, not SUPER+SHIFT+L: that is "move window right" now.
-hl.bind(mod .. " + Escape", app("hyprlock"))
+if dwindle then
+  hl.bind(modshift .. " + L", app("hyprlock"))
+else
+  -- on SUPER+Escape, not SUPER+SHIFT+L: that is "move window right" now.
+  hl.bind(mod .. " + Escape", app("hyprlock"))
+end
 hl.bind(modshift .. " + S", app("hyprshot -z -m region --clipboard-only"))
 hl.bind(modshift .. " + E", app("bemoji"))
 

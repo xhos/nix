@@ -4,11 +4,7 @@
   pkgs,
   ...
 }: let
-  # iwd's TLS layer (ell) only accepts pure PEM. NixOS ships the labelled
-  # trust-bundle format instead — a plaintext certificate name on the line
-  # before each -----BEGIN CERTIFICATE----- — and ell rejects the whole file
-  # with "Failed to load", which breaks every 802.1X (PEAP/TTLS/TLS) network.
-  # Both bundles nss-cacert provides have the labels, so strip them once here.
+  # iwd's TLS lib rejects nixos's labelled cert bundle, breaks 802.1X. strip to pure PEM.
   caBundlePem = pkgs.runCommand "iwd-ca-certificates.pem" {} ''
     sed -n "/-----BEGIN CERTIFICATE-----/,/-----END CERTIFICATE-----/p" \
       ${config.security.pki.caBundle} > $out

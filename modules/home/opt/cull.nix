@@ -5,8 +5,7 @@
 }: let
   colors = config.lib.stylix.colors;
 
-  # glamour style for `cull help`, so gum's markdown matches the system theme
-  # instead of charm's default pink
+  # glamour theme so `cull help` matches the system colors, not charm's pink
   helpTheme = pkgs.writeText "cull-help-theme.json" (builtins.toJSON {
     document = {
       margin = 1;
@@ -243,8 +242,7 @@
       export CULL_QUEUE
       mkfifo "$CULL_QUEUE"
 
-      # hold the queue open read-write so marks never block on an absent reader
-      # and the worker never sees EOF between keypresses
+      # keep fifo open read-write so it never blocks or hits EOF
       exec 8<>"$CULL_QUEUE"
 
       copy_one() {
@@ -255,8 +253,7 @@
         mv -f "$d.part" "$d"
       }
 
-      # one worker drains the queue in order: decisions on the same file can
-      # never race, and a burst of keypresses cannot pile up parallel copies
+      # single worker: no races, no parallel copies from keypress bursts
       worker() {
         local action file base stem raw
         while IFS=$'\t' read -r action file; do

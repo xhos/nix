@@ -77,9 +77,7 @@ pkgs.mkWindowsAppNoCC rec {
       exit 1
     fi
 
-    # acrobat reads DPI at startup, so this has to land before the exec. it
-    # writes into the persisted runtime layer, hence no reinstall on retune —
-    # but changing this file at all does rebuild the app layer, see below.
+    # dpi must be set before exec; writes to the persisted layer so no reinstall needed
     $WINE reg add "HKCU\Control Panel\Desktop" /v LogPixels /t REG_DWORD /d "''${ACROREAD_DPI:-${toString dpi}}" /f
 
     if ${

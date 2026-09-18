@@ -15,8 +15,7 @@
     then 1.0
     else 0.75; # Larger scale for login section on 1080p
 
-  # Center of blurred section: w/4 / 2 = w/8
-  # For 4K (3840): center at 480px, for 1080p (1920): center at 240px
+  # center of blurred section = w/8: 480px on 4k, 240px on 1080p
   loginOffsetX =
     if is4K
     then 0
@@ -86,8 +85,7 @@ in
         }
 
         --------------------- AUTH ----------------------
-        # Fingerprint goes through fprintd's D-Bus directly (not PAM), so
-        # it scans in parallel with password input — no blocking either way.
+        # fingerprint uses fprintd's dbus directly, not PAM -- scans alongside password
         auth {
           fingerprint {
             enabled         = true

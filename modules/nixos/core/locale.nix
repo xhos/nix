@@ -15,8 +15,7 @@
   };
 
   time.timeZone = "America/Toronto";
-  # keep the RTC in UTC; local-time RTC + hibernation leaves the clock wrong
-  # on resume until NTP syncs, which breaks TLS on fresh networks. Windows
-  # dual-boot hosts (vyverne) override this back to true.
+  # RTC in UTC; local-time RTC + hibernation = wrong clock breaks TLS until NTP catches up.
+  # windows dual-boot hosts (vyverne) override this to true.
   time.hardwareClockInLocalTime = lib.mkDefault false;
 }

@@ -80,6 +80,14 @@
         color: @color7;
       }
 
+      /* divider between workspace groups from different monitors */
+      #workspaces button.hosting-monitor + button:not(.hosting-monitor),
+      #workspaces button:not(.hosting-monitor) + button.hosting-monitor {
+        margin-top: 6px;
+        padding-top: 9px;
+        border-top: 1px solid alpha(@inactive, 0.4);
+      }
+
       #network.disabled,
       #network.disconnected {
         color: @inactive;
