@@ -54,7 +54,7 @@ jobs:
         with:
           authkey: ${{ secrets.TS_AUTHKEY }}
           args: "--login-server https://hs.xhos.dev --accept-dns"
-          version: "1.76.6"
+          version: "1.102.4"
           targets: 100.64.0.13 # systems/mizore/configuration.nix
 
       - name: Setup SSH
