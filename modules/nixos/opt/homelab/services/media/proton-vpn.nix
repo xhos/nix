@@ -23,14 +23,6 @@
           to = 8080;
         }
       ];
-
-      openVPNPorts = [
-        {
-          # default torrent port
-          port = 6881;
-          protocol = "both";
-        }
-      ];
     };
   };
 }

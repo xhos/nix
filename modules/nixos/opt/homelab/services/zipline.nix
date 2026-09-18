@@ -6,6 +6,16 @@
   options.homelab.zipline.enable = lib.mkEnableOption "zipline file upload service";
 
   config = lib.mkIf config.homelab.zipline.enable {
+    homelab.exposedServices.pics = {
+      port = 3334;
+      exposed = true;
+      name = "zipline";
+      dashboard = {
+        group = "personal";
+        icon = "https://cdn.jsdelivr.net/gh/selfhst/icons/png/zipline.png";
+      };
+    };
+
     sops.secrets."env/zipline" = {};
 
     # # unset dynamic user stuff which makes it difficult to persist

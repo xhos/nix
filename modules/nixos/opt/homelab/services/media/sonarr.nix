@@ -26,7 +26,12 @@
 
       services.sonarr.enable = true;
       services.sonarr.apiKeyFile = secret "api/sonarr";
-      homelab.exposedServices.sonarr.port = config.services.sonarr.settings.server.port;
+      homelab.exposedServices.sonarr = {
+        port = config.services.sonarr.settings.server.port;
+        dashboard.group = "media";
+      };
+
+      systemd.services.sonarr.unitConfig.RequiresMountsFor = ["/media"];
 
       systemd.services.sonarr.environment = {
         SONARR__AUTH__METHOD = "Forms";
@@ -34,7 +39,8 @@
       };
 
       systemd.tmpfiles.rules = [
-        "d /storage/media/anime 0775 root media -"
+        "d /media/anime 0775 root media -"
+        "d /media/tv 0775 root media -"
       ];
 
       services.declarr.config.sonarr = {
@@ -116,9 +122,66 @@
           };
         };
 
-        rootFolder = ["/storage/media/anime"];
+        rootFolder = ["/media/anime" "/media/tv"];
 
+        # Declarr owns the Connect list; declare any other connections here too.
+        notification =
+          if config.homelab.media.jellyfin.enable
+          then {
+            Jellyfin = {
+              implementation = "MediaBrowser";
+              onDownload = true;
+              onUpgrade = true;
+              onImportComplete = true;
+              onRename = true;
+              onSeriesDelete = true;
+              onEpisodeFileDelete = true;
+              onEpisodeFileDeleteForUpgrade = false;
+              fields = {
+                host = "127.0.0.1";
+                port = 8096;
+                useSsl = false;
+                apiKey = secret "api/jellyfin";
+                notify = false;
+                updateLibrary = true;
+              };
+            };
+          }
+          else null;
+
+        qualityProfile."1080p TV" = {
+          upgradesAllowed = true;
+          upgrade_until = {
+            id = -1;
+            name = "WEB 1080p";
+          };
+          qualities = [
+            {
+              id = -1;
+              name = "WEB 1080p";
+              qualities = [
+                {name = "WEBDL-1080p";}
+                {name = "WEBRip-1080p";}
+              ];
+            }
+            {name = "HDTV-1080p";}
+            {
+              id = -2;
+              name = "WEB 720p";
+              qualities = [
+                {name = "WEBDL-720p";}
+                {name = "WEBRip-720p";}
+              ];
+            }
+            {name = "HDTV-720p";}
+          ];
+          minCustomFormatScore = 0;
+          custom_formats = [];
+        };
+
+        # Keep the database template key while giving the profile a clearer name.
         qualityProfile."1080p Balanced" = {
+          name = "1080p Anime";
           upgradesAllowed = true;
           upgradeUntilScore = 10000;
           minCustomFormatScore = 0;

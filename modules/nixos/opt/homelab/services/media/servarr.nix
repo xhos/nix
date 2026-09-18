@@ -11,7 +11,7 @@
   config = lib.mkIf config.homelab.media.servarr.enable {
     # shared media directory
     systemd.tmpfiles.rules = [
-      "d /storage/media 0775 root media -"
+      "d /media 0775 root media -"
     ];
 
     # declarr global config
@@ -27,10 +27,14 @@
           "$.*.config.host.passwordConfirmation"
           "$.*.downloadClient.*.fields.password"
           "$.*.applications.*.fields.apiKey"
+          "$.*.notification.*.fields.apiKey"
           "$.*.indexer.*.fields.password"
         ];
       };
     };
+
+    # External indexers can be temporarily unavailable; avoid rapid retries.
+    systemd.services.declarr.serviceConfig.RestartSec = "60s";
 
     # shared secrets
     sops.secrets."media/password/qbit" = {
@@ -54,6 +58,9 @@
 
     # services without their own file
     services.flaresolverr.enable = true;
-    homelab.exposedServices.flaresolverr.port = config.services.flaresolverr.port;
+    homelab.exposedServices.flaresolverr = {
+      port = config.services.flaresolverr.port;
+      dashboard.group = null;
+    };
   };
 }

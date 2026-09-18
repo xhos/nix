@@ -19,6 +19,7 @@
     homelab.exposedServices.wakapi = {
       port = 3333;
       exposed = true;
+      dashboard.group = "personal";
     };
 
     services.wakapi = {

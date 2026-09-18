@@ -6,7 +6,13 @@
   options.homelab.glance.enable = lib.mkEnableOption "glance dashboard";
 
   config = lib.mkIf config.homelab.glance.enable {
-    homelab.exposedServices.glance.port = config.services.glance.settings.server.port;
+    homelab.exposedServices.glance = {
+      port = config.services.glance.settings.server.port;
+      dashboard = {
+        group = null;
+        monitor = false;
+      };
+    };
 
     # unset dynamic user stuff which makes it difficult to persist
     systemd.services.glance.serviceConfig = {
@@ -22,14 +28,42 @@
     };
     users.groups.glance = {};
 
-    # TODO: generete bookmarks from homelab config
     services.glance = {
       enable = true;
       openFirewall = true;
 
       settings = let
-        serverIP = config.homelab.config.homelabLocalIP;
         domain = config.homelab.config.domain;
+
+        services = lib.attrValues (lib.mapAttrs (name: svc:
+          svc
+          // {
+            title =
+              if svc.name != ""
+              then svc.name
+              else name;
+            url = "https://${
+              if svc.subdomain != ""
+              then svc.subdomain
+              else name
+            }.${domain}";
+            icon =
+              if svc.dashboard.icon != ""
+              then svc.dashboard.icon
+              else "sh:${name}";
+          })
+        config.homelab.exposedServices);
+
+        bookmarked = lib.filter (s: s.dashboard.group != null) services;
+        groups = lib.unique (["media" "personal" "home"] ++ map (s: s.dashboard.group) bookmarked);
+
+        bookmarks = lib.filter (g: g.links != []) (map (group: {
+            title = group;
+            links = map (s: {inherit (s) title url icon;}) (lib.filter (s: s.dashboard.group == group) bookmarked);
+          })
+          groups);
+
+        monitored = map (s: {inherit (s) title url;}) (lib.filter (s: s.dashboard.monitor) services);
       in {
         pages = [
           {
@@ -116,73 +150,7 @@
                   {
                     type = "bookmarks";
                     hide-header = true;
-                    groups = [
-                      {
-                        title = "stuff i need";
-                        links = [
-                          {
-                            title = "jellyfin";
-                            url = "https://jellyfin.${domain}";
-                            icon = "sh:jellyfin";
-                          }
-                          {
-                            title = "sonarr";
-                            url = "http://${serverIP}:8989";
-                            icon = "sh:sonarr";
-                          }
-                          {
-                            title = "radarr";
-                            url = "http://${serverIP}:7878";
-                            icon = "sh:radarr";
-                          }
-                          {
-                            title = "wakapi";
-                            url = "https://wakapi.xhos.dev";
-                            icon = "sh:wakapi";
-                          }
-                          {
-                            title = "zipline";
-                            url = "https://pics.xhos.dev";
-                            icon = "https://cdn.jsdelivr.net/gh/selfhst/icons/png/zipline.png";
-                          }
-                          {
-                            title = "home assistant";
-                            url = "http://${serverIP}:8123";
-                            icon = "sh:home-assistant";
-                          }
-                          {
-                            title = "syncthing";
-                            url = "http://${serverIP}:8384";
-                            icon = "sh:syncthing";
-                          }
-                          {
-                            title = "immich";
-                            url = "http://photos.${domain}";
-                            icon = "sh:immich";
-                          }
-                        ];
-                      }
-                      {
-                        title = "other stuff";
-                        links = [
-                          {
-                            title = "qbittorrent";
-                            url = "http://${serverIP}:8080";
-                            icon = "sh:qbittorrent";
-                          }
-                          {
-                            title = "prowlarr";
-                            url = "http://${serverIP}:9696";
-                            icon = "sh:prowlarr";
-                          }
-                          {
-                            title = "Proxmox";
-                            url = "http://${serverIP}:8006";
-                            icon = "sh:proxmox";
-                          }
-                        ];
-                      }
-                    ];
+                    groups = bookmarks;
                   }
                 ];
               }
@@ -237,53 +205,7 @@
                     style = "compact";
                     hide-header = true;
                     title = "service status";
-                    sites = [
-                      {
-                        title = "jellyfin";
-                        url = "http://${serverIP}:8096";
-                      }
-                      {
-                        title = "qbittorrent";
-                        url = "http://192.168.15.1:8080/";
-                      }
-                      {
-                        title = "sonarr";
-                        url = "http://${serverIP}:8989";
-                      }
-                      {
-                        title = "radarr";
-                        url = "http://${serverIP}:7878";
-                      }
-                      {
-                        title = "prowlarr";
-                        url = "http://${serverIP}:9696";
-                      }
-
-                      {
-                        title = "flaresolverr";
-                        url = "http://${serverIP}:8191";
-                      }
-                      {
-                        title = "home assistant";
-                        url = "http://${serverIP}:8123";
-                      }
-                      {
-                        title = "wakapi";
-                        url = "https://wakapi.xhos.dev";
-                      }
-                      {
-                        title = "zipline";
-                        url = "https://pics.xhos.dev";
-                      }
-                      {
-                        title = "proxmox";
-                        url = "https://${serverIP}:8006";
-                      }
-                      {
-                        title = "syncthing";
-                        url = "https://${serverIP}:8384";
-                      }
-                    ];
+                    sites = monitored;
                   }
                   {
                     type = "server-stats";

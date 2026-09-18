@@ -27,7 +27,10 @@
 
       services.prowlarr.enable = true;
       services.prowlarr.apiKeyFile = secret "api/prowlarr";
-      homelab.exposedServices.prowlarr.port = config.services.prowlarr.settings.server.port;
+      homelab.exposedServices.prowlarr = {
+        port = config.services.prowlarr.settings.server.port;
+        dashboard.group = "media";
+      };
 
       # unset dynamic user stuff which makes it difficult to persist
       systemd.services.prowlarr.serviceConfig = {
@@ -59,7 +62,7 @@
           enableRss = true;
           enableAutomaticSearch = true;
           enableInteractiveSearch = true;
-          minimumSeeders = 1;
+          minimumSeeders = 5;
         };
 
         applications = {
@@ -88,9 +91,24 @@
             appProfileId = "Standard";
             fields.definitionFile = "nyaasi";
           };
+          "EZTV" = {
+            indexerName = "EZTV";
+            implementation = "Cardigann";
+            appProfileId = "Standard";
+            fields.definitionFile = "eztv";
+            tags = ["FlareSolverr"];
+          };
+          "1337x" = {
+            indexerName = "1337x";
+            implementation = "Cardigann";
+            appProfileId = "Standard";
+            fields.definitionFile = "1337x";
+            tags = ["FlareSolverr"];
+          };
           "RuTracker.org" = {
             indexerName = "RuTracker.org";
             appProfileId = "Standard";
+            priority = 40;
             fields = {
               username = "xhos";
               password = secret "password/rutracker";

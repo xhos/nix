@@ -12,7 +12,11 @@
       owner = "hass";
     };
 
-    homelab.exposedServices.home-assistant.port = 8123;
+    homelab.exposedServices.home-assistant = {
+      port = 8123;
+      name = "home assistant";
+      dashboard.group = "home";
+    };
 
     # mdns for homekit discovery
     homelab.firewall.extraInputRules = ''

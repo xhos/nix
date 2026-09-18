@@ -37,6 +37,23 @@ in {
           default = "";
           description = "Subdomain for the service (defaults to attribute name)";
         };
+        dashboard = {
+          group = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = "other";
+            description = "Glance bookmark group, null to hide";
+          };
+          icon = lib.mkOption {
+            type = lib.types.str;
+            default = "";
+            description = "Glance icon (defaults to sh:<attribute name>)";
+          };
+          monitor = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "Show in glance service status monitor";
+          };
+        };
       };
     });
     default = {};

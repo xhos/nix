@@ -9,6 +9,7 @@
     homelab.exposedServices.atuin = {
       port = config.services.atuin.port;
       exposed = true;
+      dashboard.group = null;
     };
 
     services.atuin.enable = true;

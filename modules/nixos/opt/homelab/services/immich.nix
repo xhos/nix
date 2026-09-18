@@ -6,7 +6,14 @@
   options.homelab.immich.enable = lib.mkEnableOption "enable immich";
 
   config = lib.mkIf config.homelab.immich.enable {
-    homelab.exposedServices.photos.port = config.services.immich.port;
+    homelab.exposedServices.photos = {
+      port = config.services.immich.port;
+      name = "immich";
+      dashboard = {
+        group = "personal";
+        icon = "sh:immich";
+      };
+    };
     homelab.backup.services.immich = {
       paths = ["${config.services.immich.mediaLocation}"];
       databases = ["immich"];

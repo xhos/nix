@@ -23,7 +23,12 @@
 
       services.radarr.enable = true;
       services.radarr.apiKeyFile = secret "api/radarr";
-      homelab.exposedServices.radarr.port = config.services.radarr.settings.server.port;
+      homelab.exposedServices.radarr = {
+        port = config.services.radarr.settings.server.port;
+        dashboard.group = "media";
+      };
+
+      systemd.services.radarr.unitConfig.RequiresMountsFor = ["/media"];
 
       systemd.services.radarr.environment = {
         RADARR__AUTH__METHOD = "Forms";
@@ -31,7 +36,7 @@
       };
 
       systemd.tmpfiles.rules = [
-        "d /storage/media/movies 0775 root media -"
+        "d /media/movies 0775 root media -"
       ];
 
       services.declarr.config.radarr = {
@@ -112,7 +117,30 @@
           };
         };
 
-        rootFolder = ["/storage/media/movies"];
+        rootFolder = ["/media/movies"];
+
+        notification =
+          if config.homelab.media.jellyfin.enable
+          then {
+            Jellyfin = {
+              implementation = "MediaBrowser";
+              onDownload = true;
+              onUpgrade = true;
+              onRename = true;
+              onMovieDelete = true;
+              onMovieFileDelete = true;
+              onMovieFileDeleteForUpgrade = false;
+              fields = {
+                host = "127.0.0.1";
+                port = 8096;
+                useSsl = false;
+                apiKey = secret "api/jellyfin";
+                notify = false;
+                updateLibrary = true;
+              };
+            };
+          }
+          else null;
 
         qualityProfile."1080p Balanced" = {
           upgradesAllowed = true;

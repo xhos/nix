@@ -6,7 +6,14 @@
   options.homelab.dawarich.enable = lib.mkEnableOption "enable dawarich";
 
   config = lib.mkIf config.homelab.dawarich.enable {
-    homelab.exposedServices.timeline.port = config.services.dawarich.webPort;
+    homelab.exposedServices.timeline = {
+      port = config.services.dawarich.webPort;
+      name = "dawarich";
+      dashboard = {
+        group = "personal";
+        icon = "sh:dawarich";
+      };
+    };
 
     sops.secrets."passwords/dawarich" = {};
 

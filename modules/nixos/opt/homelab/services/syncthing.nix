@@ -22,7 +22,11 @@
       };
     };
 
-    homelab.exposedServices.syncthing.port = 8384;
+    homelab.exposedServices.syncthing = {
+      port = 8384;
+      upstream = config.homelab.config.homelabLocalIP;
+      dashboard.group = "personal";
+    };
 
     services.syncthing = {
       enable = true;
