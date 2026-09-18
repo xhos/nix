@@ -1207,11 +1207,11 @@
       "flake": false,
       "locked": {
         "allRefs": true,
-        "lastModified": 1789656259,
-        "narHash": "sha256-mLhc114Jnz+6bcLFEXzJnK2w8WlCQzBI00uY3qQ/i/8=",
+        "lastModified": 1789696501,
+        "narHash": "sha256-VRzEVsZcANSIV+dcc8DKT10gXEp8SRz0p8gorzCV6wc=",
         "ref": "main",
-        "rev": "059228c3c05b2f6a34da3be02fc300b008679ea4",
-        "revCount": 74,
+        "rev": "0d789d561f699057b891923bcf5b62e9bd774708",
+        "revCount": 75,
         "type": "git",
         "url": "ssh://git@github.com/xhos/nix-secrets"
       },
