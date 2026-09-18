@@ -81,13 +81,6 @@ jobs:
       - name: Build system closure
         run: nix build .#nixosConfigurations.mizore.config.system.build.toplevel
 
-      - name: Push to cache
-        continue-on-error: true
-        run: |
-          nix run github:zhaofengli/attic#attic -- \
-            login ci https://cache.xhos.dev "${{ secrets.ATTIC_TOKEN }}"
-          nix run github:zhaofengli/attic#attic -- push main ./result
-
       - name: Clear stale switch-to-configuration unit
         run: |
           ssh deploy@mizore.ts.xhos.dev "
