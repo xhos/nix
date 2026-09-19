@@ -1,15 +1,10 @@
-{
-  inputs,
-  config,
-  ...
-}: {
+{inputs, ...}: {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
   ];
 
   profile = "minimal";
   homelab.enable = true;
-  homelab.nagomi.enable = true;
   homelab.trek.enable = true;
   homelab.config.tailscaleIP = "100.64.0.13";
 
@@ -19,29 +14,7 @@
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./mizore.pub];
 
-  # CI deploy user — can only run nixos-rebuild switch
-  users.users.deploy = {
-    isSystemUser = true;
-    group = "deploy";
-    shell = "/bin/sh";
-    openssh.authorizedKeys.keyFiles = [./deploy.pub];
-  };
-  users.groups.deploy = {};
-
-  security.sudo.extraRules = [
-    {
-      users = ["deploy"];
-      commands = [
-        {
-          command = "ALL";
-          options = ["NOPASSWD"];
-        }
-      ];
-    }
-  ];
-
   nix.settings = {
-    trusted-users = ["deploy"];
     substituters = ["https://cache.xhos.dev/main"];
     trusted-public-keys = ["main:sD+aH0XOgkp432O05lkkl1x7XipgELXk+1mQmuDch0U="];
   };

@@ -37,6 +37,7 @@
     dawarich.enable = true;
     glance.enable = true;
     immich.enable = true;
+    nagomi.enable = true;
     syncthing.enable = true;
     wakapi.enable = true;
     xray.enable = false;

@@ -12,30 +12,30 @@
     services.nagomi = {
       enable = true;
       emailParser.enable = true;
-      secretsFile = config.sops.secrets."env/null/shared".path;
-      core.secretsFile = config.sops.secrets."env/null/core".path;
-      gateway.secretsFile = config.sops.secrets."env/null/gateway".path;
-      gateway.url = "https://api.null.${config.homelab.config.domain}";
-      gateway.trustedOrigins = ["https://null.${config.homelab.config.domain}"];
+      secretsFile = config.sops.secrets."env/nagomi/shared".path;
+      core.secretsFile = config.sops.secrets."env/nagomi/core".path;
+      gateway.secretsFile = config.sops.secrets."env/nagomi/gateway".path;
+      gateway.url = "https://api.nagomi.${config.homelab.config.domain}";
+      gateway.trustedOrigins = ["https://nagomi.${config.homelab.config.domain}"];
       gateway.cookieDomain = ".${config.homelab.config.domain}";
-      emailParser.domain = "mail.null.${config.homelab.config.domain}";
+      emailParser.domain = "mail.nagomi.${config.homelab.config.domain}";
       # TLS for SMTP — reuse the ACME wildcard cert
       # emailParser.tls.certFile = "/path/to/fullchain.pem";
       # emailParser.tls.keyFile = "/path/to/privkey.pem";
       receipts.provider = "gemini";
-      receipts.secretsFile = config.sops.secrets."env/null/receipts".path;
+      receipts.secretsFile = config.sops.secrets."env/nagomi/receipts".path;
     };
 
-    sops.secrets."env/null/shared" = {}; # API_KEY (loaded by core + email-parser)
-    sops.secrets."env/null/core" = {}; # CREDENTIALS_KEY
-    sops.secrets."env/null/gateway" = {}; # BETTER_AUTH_SECRET
-    sops.secrets."env/null/receipts" = {}; # GOOGLE_API_KEY
+    sops.secrets."env/nagomi/shared" = {}; # API_KEY (loaded by core + email-parser)
+    sops.secrets."env/nagomi/core" = {}; # CREDENTIALS_KEY
+    sops.secrets."env/nagomi/gateway" = {}; # BETTER_AUTH_SECRET
+    sops.secrets."env/nagomi/receipts" = {}; # GOOGLE_API_KEY
 
-    persist.dirs = ["/var/lib/null"];
+    persist.dirs = ["/var/lib/nagomi"];
 
     # homelab wiring — web frontend public, gateway public (API), SMTP forwarded
-    homelab.exposedServices.null.port = config.services.nagomi.web.port;
-    homelab.exposedServices."api.null".port = config.services.nagomi.gateway.port;
+    homelab.exposedServices.nagomi.port = config.services.nagomi.web.port;
+    homelab.exposedServices."api.nagomi".port = config.services.nagomi.gateway.port;
     homelab.tcpForwards.smtp = {
       listen = 25;
       port = config.services.nagomi.emailParser.smtpPort;

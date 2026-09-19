@@ -1031,11 +1031,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1789770915,
-        "narHash": "sha256-O24x58dlg3TIun5ZGeFCZCQVR4o8/Oomz62C1LRaZ50=",
+        "lastModified": 1789776968,
+        "narHash": "sha256-oe0y1u5p0nN0n8fqikP9Sm7IV0KPcTZI02BEOJZMGSQ=",
         "owner": "xhos",
         "repo": "nagomi",
-        "rev": "17b2f3862cb9435237c4c70f451d4e1cd061f89f",
+        "rev": "cd47431fdcb95aa1001cc23421c5fa4e2c07f28e",
         "type": "github"
       },
       "original": {
@@ -1248,11 +1248,11 @@
       "flake": false,
       "locked": {
         "allRefs": true,
-        "lastModified": 1789698563,
-        "narHash": "sha256-RW3CUoxwFY1C1GhGilk1tHDyIUYZR2VLLYkxYtWD7tE=",
+        "lastModified": 1789776218,
+        "narHash": "sha256-XL458YlMEbw+4bxehsrIOctiRnWE0/m6pMdyb3/KcOw=",
         "ref": "main",
-        "rev": "217b3b7b3b768c419dd9950c5e635b9fb0904894",
-        "revCount": 77,
+        "rev": "d06edc7ed6b08c39eb12750a4f2081b37db15a31",
+        "revCount": 78,
         "type": "git",
         "url": "ssh://git@github.com/xhos/nix-secrets"
       },
