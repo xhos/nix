@@ -1031,11 +1031,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1789776968,
-        "narHash": "sha256-oe0y1u5p0nN0n8fqikP9Sm7IV0KPcTZI02BEOJZMGSQ=",
+        "lastModified": 1789777679,
+        "narHash": "sha256-2qtaUfLgNTPG7aMDiFAwc6OfLynl7iUS72N/rP4BTPw=",
         "owner": "xhos",
         "repo": "nagomi",
-        "rev": "cd47431fdcb95aa1001cc23421c5fa4e2c07f28e",
+        "rev": "a17ec9d277f40125aec8da78402f3b0570d0ae3c",
         "type": "github"
       },
       "original": {

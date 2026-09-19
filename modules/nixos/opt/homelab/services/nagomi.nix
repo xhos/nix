@@ -19,6 +19,8 @@
       gateway.trustedOrigins = ["https://nagomi.${config.homelab.config.domain}"];
       gateway.cookieDomain = ".${config.homelab.config.domain}";
       emailParser.domain = "mail.nagomi.${config.homelab.config.domain}";
+      # proxy-1 DNATs :25 here over tailscale, so loopback is not enough
+      emailParser.smtpAddress = "0.0.0.0";
       # TLS for SMTP — reuse the ACME wildcard cert
       # emailParser.tls.certFile = "/path/to/fullchain.pem";
       # emailParser.tls.keyFile = "/path/to/privkey.pem";
