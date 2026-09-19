@@ -9,10 +9,6 @@
   tgNotify = config.homelab.tg-notify.package;
 in {
   options.homelab.backup = {
-    defaultRepository = lib.mkOption {
-      type = lib.types.str;
-      default = "rclone:onedrive:restic-backups";
-    };
     services = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule {
         options = {
@@ -37,16 +33,24 @@ in {
 
   config = lib.mkIf (serviceBackups != {}) {
     systemd.tmpfiles.rules = [
-      "d /var/lib/restic 0700 root root -"
-      "C /var/lib/restic/rclone.conf 0600 root root - ${config.sops.secrets."rclone".path}"
       "d /var/backup/postgresql 0750 postgres postgres -"
     ];
 
     persist.dirs = ["/var/backup/postgresql"];
 
     sops.secrets = {
-      "passwords/restic".mode = "0444";
-      "rclone".mode = "0444";
+      "passwords/restic" = {};
+      "api/backblaze/id" = {};
+      "api/backblaze/key" = {};
+      "api/backblaze/name" = {};
+    };
+
+    sops.templates = {
+      restic-b2-env.content = ''
+        B2_ACCOUNT_ID=${config.sops.placeholder."api/backblaze/id"}
+        B2_ACCOUNT_KEY=${config.sops.placeholder."api/backblaze/key"}
+      '';
+      restic-repo.content = "b2:${config.sops.placeholder."api/backblaze/name"}:";
     };
 
     services.restic.backups =
@@ -54,9 +58,9 @@ in {
         paths = svc.paths ++ lib.optionals (svc.databases != []) ["/var/backup/postgresql"];
         inherit (svc) exclude;
         user = "root";
-        repository = cfg.defaultRepository;
+        repositoryFile = config.sops.templates.restic-repo.path;
         passwordFile = config.sops.secrets."passwords/restic".path;
-        rcloneConfigFile = "/var/lib/restic/rclone.conf";
+        environmentFile = config.sops.templates.restic-b2-env.path;
         initialize = true;
         createWrapper = true;
         timerConfig = {
