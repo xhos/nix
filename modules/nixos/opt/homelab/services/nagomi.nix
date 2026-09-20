@@ -26,18 +26,24 @@
       # emailParser.tls.keyFile = "/path/to/privkey.pem";
       receipts.provider = "gemini";
       receipts.secretsFile = config.sops.secrets."env/nagomi/receipts".path;
+      monitoring.enable = true;
+      monitoring.url = "https://monitor.nagomi.${config.homelab.config.domain}";
+      monitoring.secretsFile = config.sops.secrets."env/nagomi/monitoring".path;
     };
 
     sops.secrets."env/nagomi/shared" = {}; # API_KEY (loaded by core + email-parser)
     sops.secrets."env/nagomi/core" = {}; # CREDENTIALS_KEY
     sops.secrets."env/nagomi/gateway" = {}; # BETTER_AUTH_SECRET
     sops.secrets."env/nagomi/receipts" = {}; # GOOGLE_API_KEY
+    sops.secrets."env/nagomi/monitoring" = {}; # GF_SECURITY_ADMIN_PASSWORD, GF_SECURITY_SECRET_KEY
 
-    persist.dirs = ["/var/lib/nagomi"];
+    # loki and grafana keep their stock nixos state dirs
+    persist.dirs = ["/var/lib/nagomi" "/var/lib/loki" "/var/lib/grafana"];
 
     # homelab wiring — web frontend public, gateway public (API), SMTP forwarded
     homelab.exposedServices.nagomi.port = config.services.nagomi.web.port;
     homelab.exposedServices."api.nagomi".port = config.services.nagomi.gateway.port;
+    homelab.exposedServices."monitor.nagomi".port = config.services.nagomi.monitoring.port;
     homelab.tcpForwards.smtp = {
       listen = 25;
       port = config.services.nagomi.emailParser.smtpPort;
