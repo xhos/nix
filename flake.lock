@@ -1031,11 +1031,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1789777679,
-        "narHash": "sha256-2qtaUfLgNTPG7aMDiFAwc6OfLynl7iUS72N/rP4BTPw=",
+        "lastModified": 1789864688,
+        "narHash": "sha256-9c3b0H6P33o5wzMXUowsOS2eHnGNGc6IIZkEDMSTyYU=",
         "owner": "xhos",
         "repo": "nagomi",
-        "rev": "a17ec9d277f40125aec8da78402f3b0570d0ae3c",
+        "rev": "5191a98f39d81ea48e38148d7df8ea6d48a93457",
         "type": "github"
       },
       "original": {
@@ -1143,11 +1143,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789437788,
-        "narHash": "sha256-y1p4NbKTyDNgsgxmK7QxZQWf6OsNm1NncEGfzfG17oI=",
+        "lastModified": 1789862649,
+        "narHash": "sha256-TKbrUrn6Fm1zP9ixMgU3aCpDi1PtHaIDXVuGjPFhdd8=",
         "owner": "xhos",
         "repo": "nagomi-web",
-        "rev": "e662fdf66fdbd90b6ee265048d32b328f9c4bc78",
+        "rev": "60a46d8bd72aac7adf60c700c92ccbcac2ff523c",
         "type": "github"
       },
       "original": {
