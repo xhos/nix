@@ -16,6 +16,14 @@
               mountOptions = ["umask=0077"];
             };
           };
+          # empty slot for windows to install itself into. disko only sets
+          # the gpt type code (0700 = microsoft basic data) and leaves the
+          # partition unformatted -- the windows installer deletes it and
+          # recreates its own layout (msr + ntfs + recovery) in the gap.
+          windows = {
+            size = "100G";
+            type = "0700";
+          };
           luks = {
             size = "100%";
             content = {
