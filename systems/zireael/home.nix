@@ -21,7 +21,7 @@
     fonts.enable = true;
     rclone.enable = true;
     kdeconnect.enable = false;
-    adobe-reader.enable = true;
+    adobe-reader.enable = false;
   };
 
   wm = osConfig.wm;
