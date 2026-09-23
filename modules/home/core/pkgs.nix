@@ -116,6 +116,7 @@
 
     # Desktop apps
     teams-for-linux
+    libfido2
     amnezia-vpn
     gimp
     calibre
@@ -134,6 +135,12 @@
     rustdesk
   ];
 in {
+  xdg.configFile."teams-for-linux/config.json" = lib.mkIf (config.profile == "desktop") {
+    text = builtins.toJSON {
+      auth.webauthn.enabled = true;
+    };
+  };
+
   home = {
     username = "xhos";
     homeDirectory = "/home/xhos";
