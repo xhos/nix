@@ -33,6 +33,44 @@
     tg-notify.enable = true;
     sops-sync.enable = true;
 
+    assetto-server.contentOwner = "xhos";
+    assetto-server.instances.srp = {
+      enable = true;
+      public = true;
+      contentDir = "/storage/assetto/content";
+      track = "shutoko_revival_project_094_ptb1";
+      trackLayout = "main_layout";
+      trafficSpline = "/storage/assetto/splines/srp-094ptb1-plot3sale-v6.aip";
+      maxPlayers = 8;
+      downloadSpeedLimit = 0;
+
+      playerCars = lib.genAttrs [
+        "bksy_nissan_skyline_r34_vspec"
+        "srp_bcnr33_wangan"
+        "ddm_nissan_silvia_s15"
+        "lk_nissan_180sx_96"
+        "bati_fd3s_rx7"
+        "ddm_toyota_supra_ma70"
+        "p3_mitsubishi_evo8"
+        "ddm_honda_s2000_ap1"
+        "j8_ae86_tuned_coupe"
+        "wm_nissan_fairlady_z_s30"
+      ] (_: 2);
+
+      trafficCars = lib.genAttrs [
+        "traffic_aegis_toyota_prius"
+        "traffic_aegis_toyota_markii_taxi"
+        "traffic_aegis_suzuki_alto_works"
+        "traffic_aegis_toyota_vellfire"
+        "traffic_aegis_izuzu_npr_box"
+        "traffic_aegis_ud_quon"
+        "traffic_isuzu_tanker"
+        "traffic_toyota_camry"
+        "traffic_nissan_leaf"
+        "traffic_volvo_v70jp"
+      ] (_: 4);
+    };
+
     atuin.enable = true;
     dawarich.enable = true;
     glance.enable = true;
