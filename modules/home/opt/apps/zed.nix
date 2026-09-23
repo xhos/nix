@@ -57,7 +57,7 @@
         else "Min Dark (Solid)";
       icon_theme = "Material Icon Theme";
 
-      ui_font_size = 18.0;
+      ui_font_size = 16.0;
       buffer_font_family = "FiraCode Nerd Font Mono";
       buffer_font_size = 14.0;
       buffer_font_weight = 400.0;
