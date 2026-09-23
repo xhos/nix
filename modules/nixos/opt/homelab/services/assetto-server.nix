@@ -284,13 +284,14 @@
 
         # CM direct-download archives, rebuilt when the source changes
         pack() { # <zip> <parent dir> <folder>
-          if [ -f "$1" ] && [ -z "$(find -L "$2/$3" -newer "$1" -print -quit)" ]; then
+          local out="$PWD/$1"
+          if [ -f "$out" ] && [ -z "$(find -L "$2/$3" -newer "$out" -print -quit)" ]; then
             return
           fi
           echo "packing $3"
-          rm -f "$1.tmp"
-          (cd "$2" && zip -qr -6 "$1.tmp" "$3")
-          mv "$1.tmp" "$1"
+          rm -f "$out.tmp"
+          (cd "$2" && zip -qr -6 "$out.tmp" "$3")
+          mv "$out.tmp" "$out"
         }
         mkdir -p ${f.downloads}/cars
         for car in ${lib.escapeShellArgs f.cars}; do
