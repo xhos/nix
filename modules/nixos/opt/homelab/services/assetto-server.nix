@@ -237,6 +237,10 @@
         track=${lib.escapeShellArg inst.track}
         cd ${stateDir name}
 
+        for s in ${secret name "password"} ${secret name "admin-password"}; do
+          [ -r "$s" ] || { echo "missing secret: $s" >&2; exit 78; }
+        done
+
         # managed files are overwritten; the server keeps its own caches in cfg/
         mkdir -p cfg/cm_content
         install -m 600 ${f.serverCfg} cfg/server_cfg.ini
