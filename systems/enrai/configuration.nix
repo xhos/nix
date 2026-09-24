@@ -45,49 +45,21 @@
       downloadSpeedLimit = 0;
 
       playerCars = lib.genAttrs [
-        # rx-7
+        # what people actually drove
         "bati_fd3s_rx7"
         "art_mazda_fd3s_rx7_black_eagle"
-        "rize_efini_rx7_fd3s_keisuke_1"
-        "wm_mazda_rx7_fd_rgo"
-        "ddm_mazda_fc3s_re"
-        "ddm_mazda_rx7_infini_fc3s"
-        # supra
-        "ddm_toyota_supra_ma70"
-        "naz_jza80_ridox_modern"
         "sl_toyota_supra_mkiv_ridox"
-        "gmp_abflug_s900"
-        "srp_toyota_supra_mkiv_interceptor"
-        # gt-r
-        "art_skyline_r32_gtr"
-        "ddm_nissan_skyline_bnr32"
-        "art_nissan_gtr_bcnr33_600r"
-        "srp_bcnr33_wangan"
-        "bksy_nissan_skyline_r34_vspec"
-        "bksy_nissan_skyline_r34_vspec_ii_nur"
-        "nissan_skyline_r34_omori_factory_s1"
-        "nissan_skyline_r34_v-specperformance"
-        "ks_nissan_gtr_boss"
-        "ks_nissan_gtr_boss_MAIN"
-        # everything else
         "ddm_nissan_silvia_s15"
         "wm_nissan_s15"
-        "pear_nissan_silvia_s13_wangan"
-        "lk_nissan_180sx_96"
         "wm_nissan_fairlady_z_s30"
-        "p3_mitsubishi_evo8"
-        "srp_mitsubishi_evo_5_kai"
+        "art_nissan_gtr_bcnr33_600r"
+        "ks_nissan_gtr_boss_MAIN"
         "aegis_mitsubishi_lancer_evolution_v_gsr" # evo v "aeroblitz"
-        "j8_mitsubishi_gto_twin_turbo_91_haru_spec"
-        "ddm_honda_s2000_ap1"
-        "j8_ae86_tuned_coupe"
-        "ddm_toyota_mr2_sw20_shuto"
-        "arch_ruf_ctr_1987"
+        # something different
         "slang_ferrari_f40"
-        "art_diablo_gtr"
-        "spear_lamborghini_lp640_veilside"
+        "ddm_subaru_22b"
+        "j8_ae86_tuned_coupe"
         "honda_acty_ha3"
-        "snp_zhonghua_zidantou_wangan_spec"
       ] (_: 1);
 
       # ks_nissan_gtr_boss_MAIN ships unpacked data/ instead of data.acd, so the
