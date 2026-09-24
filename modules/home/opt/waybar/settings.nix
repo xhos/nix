@@ -129,7 +129,6 @@
         "network"
         "pulseaudio#microphone"
         "pulseaudio"
-        "battery"
       ];
 
       "hyprland/workspaces" = {

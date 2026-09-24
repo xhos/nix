@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   osConfig,
   ...
@@ -26,6 +27,7 @@
 
   wm = osConfig.wm;
   bar = "waybar";
+  programs.waybar.settings.main."modules-right" = lib.mkAfter ["battery"];
   shell = "zsh";
   prompt = "starship";
   browser = "zen";
