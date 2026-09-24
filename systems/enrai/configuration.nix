@@ -82,14 +82,13 @@
         "ddm_honda_s2000_ap1"
         "j8_ae86_tuned_coupe"
         "ddm_toyota_mr2_sw20_shuto"
-        "wm_porsche_911_930"
         "arch_ruf_ctr_1987"
         "slang_ferrari_f40"
         "art_diablo_gtr"
         "spear_lamborghini_lp640_veilside"
         "honda_acty_ha3"
         "snp_zhonghua_zidantou_wangan_spec"
-      ] (_: 2);
+      ] (_: 1);
 
       # ks_nissan_gtr_boss_MAIN ships unpacked data/ instead of data.acd, so the
       # server can't checksum its physics; all other cars are still checked
