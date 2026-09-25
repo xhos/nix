@@ -154,10 +154,13 @@ end
 -- workspaces
 --------------------------------------------------------------------------
 
--- per-monitor workspaces: real id = monitor id * 10 + n
+-- Use the configured main display, since Hyprland monitor IDs can change at startup.
 local function monitor_workspace(n)
   local mon = hl.get_active_monitor()
-  return (mon and mon.id or 0) * 10 + n
+  if not mon or mon.name == nix.main_monitor or mon.description == nix.main_monitor then
+    return n
+  end
+  return n + 10
 end
 
 for i = 1, 10 do
