@@ -172,13 +172,6 @@ for i = 1, 10 do
   end)
 end
 
--- hyprland defaults monitor 2 to workspace 2, not 11 -- fix on startup
-hl.on("hyprland.start", function()
-  for _, mon in ipairs(hl.get_monitors()) do
-    mon:set_workspace({ workspace = mon.id * 10 + 1 })
-  end
-end)
-
 -- special workspace
 hl.bind(mod .. " + grave", hl.dsp.workspace.toggle_special(""))
 hl.bind(modshift .. " + grave", hl.dsp.window.move({ workspace = "special" }))
