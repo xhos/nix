@@ -1,2 +1,2 @@
 {pkgs}:
-pkgs.wf-recorder.override {ffmpeg = pkgs.ffmpeg_7;}
+pkgs.wf-recorder.override {ffmpeg_8 = pkgs.ffmpeg_7;}

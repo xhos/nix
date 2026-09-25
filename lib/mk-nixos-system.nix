@@ -32,7 +32,7 @@ in
     lib.nixosSystem {
       specialArgs = {inherit inputs import-tree;} // extraSpecialArgs;
       modules =
-        lib.optionals (!minimal) [../modules/nixos]
+        lib.optionals (!minimal) [../modules/nixos/default.nix]
         ++ [
           ../systems/${hostname}/configuration.nix
           {nixpkgs.overlays = [erosanixOverlay pkgsOverlay];}
@@ -46,7 +46,7 @@ in
                 extraSpecialArgs = {inherit inputs import-tree hostname;};
                 backupFileExtension = ".b";
                 users.${homeUser}.imports = [
-                  ../modules/home
+                  ../modules/home/default.nix
                   ../systems/${hostname}/home.nix
                 ];
               };

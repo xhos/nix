@@ -44,5 +44,5 @@
     };
   };
   services.gnome.gnome-keyring.enable = true;
-  services.dbus.packages = [pkgs.gnome-keyring pkgs.gcr];
+  services.dbus.packages = [pkgs.gnome-keyring pkgs.gcr_3];
 }
