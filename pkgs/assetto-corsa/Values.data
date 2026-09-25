@@ -1,0 +1,7 @@
+version: 2
+_ac_root	D:\\
+Settings.CommonSettings.UpdatePeriod	00:00:00
+Settings.CommonSettings.UpdateToNontestedVersions	False
+Settings.CommonSettings.LaunchSteamAtStart	False
+Settings.IntegratedSettings.DiscordIntegration	False
+Settings.IntegratedSettings.SteamIntegration	False

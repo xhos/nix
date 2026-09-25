@@ -45,9 +45,68 @@
   ];
 
   home.packages = with pkgs; [
+    assetto-corsa-env
     jetbrains.idea
     teams-for-linux
     # whspr # broken: ctranslate2 build failure
     # android-studio-full
   ];
+
+  xdg.desktopEntries.assetto-corsa-cm = {
+    name = "Assetto Corsa Content Manager";
+    exec = "${pkgs.assetto-corsa-env}/bin/assetto-corsa-env cm %u";
+    icon = "steam_icon_244210";
+    categories = ["Game"];
+    mimeType = ["x-scheme-handler/acmanager"];
+    terminal = false;
+  };
+
+  xdg.desktopEntries.assetto-corsa-installer = {
+    name = "Run in Assetto Corsa";
+    exec = "${pkgs.assetto-corsa-env}/bin/assetto-corsa-env run %f";
+    icon = "steam_icon_244210";
+    categories = ["Game"];
+    mimeType = ["application/x-ms-dos-executable" "application/vnd.microsoft.portable-executable"];
+    noDisplay = true;
+    terminal = false;
+  };
+
+  xdg.mimeApps.defaultApplications."x-scheme-handler/acmanager" = ["assetto-corsa-cm.desktop"];
+
+  wayland.windowManager.hyprland.extraLuaFiles."assetto-corsa" = {
+    autoLoad = true;
+    content = ''
+      -- CM dropdowns share the shell's class/title. Tag only a verified
+      -- explorer.exe /desktop process with the observed tiny window shape.
+      local function hide_ac_shell(w)
+        if w.class ~= "steam_app_244210" or w.title ~= "" or not w.floating then return end
+        if w.size.x <= 0 or w.size.x > 200 or w.size.y <= 0 or w.size.y > 32 then return end
+        local proc = "/proc/" .. tostring(w.pid)
+        local f = io.open(proc .. "/comm", "r")
+        if not f then return end
+        local comm = f:read("*l")
+        f:close()
+        if comm ~= "explorer.exe" then return end
+        f = io.open(proc .. "/cmdline", "r")
+        if not f then return end
+        local cmd = f:read("*a"):gsub("%z", " "):lower()
+        f:close()
+        if not cmd:match("/desktop%s*$") then return end
+        hl.dispatch(hl.dsp.window.tag({ window = w, tag = "+ac-explorer-desktop" }))
+      end
+
+      hl.window_rule({
+        name = "assetto-corsa-explorer-only",
+        match = { tag = "ac-explorer-desktop" },
+        opacity = "0.0 override 0.0 override 0.0 override",
+        no_focus = true,
+        no_anim = true,
+        no_blur = true,
+        no_shadow = true,
+        decorate = false,
+      })
+      hl.on("window.open", hide_ac_shell)
+      for _, w in ipairs(hl.get_windows()) do hide_ac_shell(w) end
+    '';
+  };
 }
