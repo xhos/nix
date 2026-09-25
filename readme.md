@@ -116,6 +116,10 @@ fonts used are:
 - spotify:  [text](https://github.com/spicetify/spicetify-themes/tree/master/text)
 - and more that i'm forgetting...
 
+## setup notes
+
+- [Assetto Corsa and Content Manager on vyverne](misc/assetto-corsa.md)
+
 ## acknowledgments
 
 - [@joshuagrisham](https://github.com/joshuagrisham) for his work on [the galaxy book driver](https://github.com/joshuagrisham/samsung-galaxybook-extras)

@@ -37,6 +37,8 @@
     assetto-server.instances.srp = {
       enable = true;
       public = true;
+      # friends whose ISP won't do UDP to proxy-1 join over zerotier instead
+      allowedInterfaces = ["zt*"];
       contentDir = "/storage/assetto/content";
       track = "shutoko_revival_project_094_ptb1";
       trackLayout = "main_layout";
@@ -114,6 +116,16 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # gaming lan with friends (assetto corsa server)
+  services.zerotierone = {
+    enable = true;
+    joinNetworks = ["abfd31bd47fb27ef"];
+  };
+  persist.dirs = ["/var/lib/zerotier-one"];
+  homelab.firewall.extraInputRules = ''
+    udp dport 9993 accept
+  '';
 
   zramSwap = {
     enable = true;

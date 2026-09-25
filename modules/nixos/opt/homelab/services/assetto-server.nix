@@ -89,6 +89,13 @@
         description = "Forward the game and HTTP ports from proxy-1";
       };
 
+      allowedInterfaces = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+        example = ["zt*"];
+        description = "Extra interfaces (nftables iifname patterns) allowed to reach the game and HTTP ports";
+      };
+
       downloadSpeedLimit = lib.mkOption {
         type = lib.types.ints.unsigned;
         default = 4 * 1024 * 1024;
@@ -354,6 +361,14 @@ in {
         "assetto-server/${name}/admin-password".owner = "assetto-server";
       })
       enabled);
+
+    homelab.firewall.extraInputRules = lib.concatStrings (lib.mapAttrsToList (_: i:
+      lib.concatMapStrings (iface: ''
+        iifname "${iface}" tcp dport { ${toString i.port}, ${toString i.httpPort} } accept
+        iifname "${iface}" udp dport ${toString i.port} accept
+      '')
+      i.allowedInterfaces)
+    enabled);
 
     homelab.tcpForwards = lib.mkMerge (lib.mapAttrsToList (name: i:
       lib.mkIf i.public {
