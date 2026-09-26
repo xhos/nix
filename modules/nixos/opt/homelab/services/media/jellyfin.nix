@@ -10,6 +10,17 @@
   options.homelab.media.jellyfin.enable = lib.mkEnableOption "enable jellyfin";
 
   config = lib.mkIf config.homelab.media.jellyfin.enable {
+    # upstream pnpm deps hash is stale against our nixpkgs pnpm
+    nixpkgs.overlays = [
+      (final: prev: {
+        fetchPnpmDeps = args:
+          prev.fetchPnpmDeps (args
+            // lib.optionalAttrs (args.pname or "" == "jellarr") {
+              hash = "sha256-qNVnhHjTFPhJxJ8oZPBSfJs2OjNSlbmS31okZuSGWMU=";
+            });
+      })
+    ];
+
     homelab.exposedServices.jellyfin = {
       exposed = true;
       port = 8096;
