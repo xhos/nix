@@ -42,6 +42,10 @@
       contentDir = "/storage/assetto/content";
       track = "shutoko_revival_project_094_ptb1";
       trackLayout = "main_layout";
+      pitBoxes = 170;
+      # SRP 0.9.4 PTB1 srp_pits_main.kn5: Yoyogi is AC_PIT_41..61.
+      # Keep main_layout for traffic capacity; player cars occupy slots 41..53.
+      playerSlotOffset = 41;
       trafficSpline = "/storage/assetto/splines/srp-094ptb1-plot3sale-v6.aip";
       maxPlayers = 8;
       downloadSpeedLimit = 0;
@@ -67,6 +71,29 @@
       # ks_nissan_gtr_boss_MAIN ships unpacked data/ instead of data.acd, so the
       # server can't checksum its physics; all other cars are still checked
       extraCfg.IgnoreConfigurationErrors.MissingCarChecksums = true;
+      extraCfg.AiParams = {
+        MinAiSafetyDistanceMeters = 15;
+        MaxAiSafetyDistanceMeters = 30;
+        # Override the wider default spacing on one- and two-lane roads too.
+        LaneCountSpecificOverrides = {
+          "1" = {
+            MinAiSafetyDistanceMeters = 20;
+            MaxAiSafetyDistanceMeters = 35;
+          };
+          "2" = {
+            MinAiSafetyDistanceMeters = 15;
+            MaxAiSafetyDistanceMeters = 30;
+          };
+        };
+      };
+      # Freeroam: suppress false wrong-way penalties and control lockouts.
+      serverCfg.SERVER.PENALTIES = false;
+      cspExtraOptions.EXTRA_RULES = {
+        ALLOW_WRONG_WAY = true;
+        ENFORCE_BACK_TO_PITS_PENALTY = false;
+        LIMIT_LOCK_CONTROLS_TIME = 0;
+        LIMIT_LOCK_CONTROLS_TOTAL_TIME = 0;
+      };
 
       trafficCars = lib.genAttrs [
         "traffic_aegis_toyota_prius"
@@ -79,7 +106,7 @@
         "traffic_toyota_camry"
         "traffic_nissan_leaf"
         "traffic_volvo_v70jp"
-      ] (_: 4);
+      ] (_: 6);
     };
 
     atuin.enable = true;

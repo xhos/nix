@@ -5,6 +5,30 @@ Handoff notes, last updated 2026-09-23. Client-side setup on vyverne is in
 
 ## Status
 
+Prepared configuration update (2026-09-25; not yet deployed):
+
+- Keep `main_layout` (170 pits), move the 13 player entries to indices 41–53
+  at Yoyogi PA. Verified directly against `AC_PIT_*` coordinates in the installed
+  `srp_pits_main.kn5`: Yoyogi is 41–61 in 0.9.4 PTB1, not 40–61 as the
+  AssettoServer FAQ says. Traffic fills indices 0–40 and 54–72, with no gaps.
+- Increase traffic from 40 to 60 entries (same ten models), 73 total entries,
+  still at most eight players. Safety spacing is 15–30 m, or 20–35 m on
+  single-lane roads. Leave spawn distances, slot overbooking and TrafficDensity
+  at upstream defaults. More entries increase client load; check FPS in-game.
+- Generate `cfg/csp_extra_options.ini`: allow wrong-way driving, disable
+  enforced back-to-pits penalties and cap control-lock time at zero. Also set
+  `PENALTIES=0`; track-cut/contact penalties were already disabled. No
+  AutoModerationPlugin is enabled on the live server.
+- If pit teleports persist, rename the affected layout's **client-side** `ai`
+  folder to `ai_off` (disables offline AI for that layout). Keep the server's
+  `.aip` spline intact. This is the upstream workaround for client spline
+  penalties; the server-only spline is already excluded from our downloads.
+
+References: [AssettoServer FAQ](https://assettoserver.org/docs/next/faq/),
+[CSP server options](https://github.com/ac-custom-shaders-patch/acc-extension-config/wiki/Misc-%E2%80%93-Server-extra-options).
+
+Last verified live deployment (before the prepared update):
+
 - `assetto-server-srp.service` on enrai is live and reachable from the
   internet via proxy-1. Deployed config: commit `c04cd14` (trimmed car list,
   53 entry-list slots).

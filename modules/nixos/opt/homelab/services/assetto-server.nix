@@ -71,6 +71,24 @@
         description = "Soft player limit, keeps the remaining slots for traffic (0 = no limit)";
       };
 
+      playerSlotOffset = lib.mkOption {
+        type = lib.types.ints.unsigned;
+        default = 0;
+        description = "Number of traffic entries placed before player entries to select their pit positions";
+      };
+
+      pitBoxes = lib.mkOption {
+        type = lib.types.nullOr lib.types.ints.positive;
+        default = null;
+        description = "Layout pit capacity, checked against all player and traffic entries";
+      };
+
+      cspExtraOptions = lib.mkOption {
+        type = lib.types.attrsOf (lib.types.attrsOf lib.types.anything);
+        default = {};
+        description = "CSP extra server options (csp_extra_options.ini)";
+      };
+
       port = lib.mkOption {
         type = lib.types.port;
         default = 9600;
@@ -175,9 +193,12 @@
     }
     inst.serverCfg;
 
-    entries =
-      lib.concatLists (lib.mapAttrsToList (model: n: lib.replicate n {inherit model; ai = false;}) inst.playerCars)
-      ++ lib.concatLists (lib.mapAttrsToList (model: n: lib.replicate n {inherit model; ai = true;}) inst.trafficCars);
+    playerEntries = lib.concatLists (lib.mapAttrsToList (model: n: lib.replicate n {inherit model; ai = false;}) inst.playerCars);
+    trafficEntries = lib.concatLists (lib.mapAttrsToList (model: n: lib.replicate n {inherit model; ai = true;}) inst.trafficCars);
+    # Indices must remain contiguous; reuse real traffic slots as the prefix.
+    entries = lib.take inst.playerSlotOffset trafficEntries
+      ++ playerEntries
+      ++ lib.drop inst.playerSlotOffset trafficEntries;
 
     entryList = lib.listToAttrs (lib.imap0 (i: e:
       lib.nameValuePair "CAR_${toString i}" ({
@@ -218,6 +239,7 @@
     serverCfg = pkgs.writeText "server_cfg.ini" (toINI serverCfg);
     entryList = pkgs.writeText "entry_list.ini" (toINI entryList);
     extraCfg = yaml.generate "extra_cfg.yml" extraCfg;
+    cspExtraOptions = pkgs.writeText "csp_extra_options.ini" (toINI inst.cspExtraOptions);
     wrapperParams = json.generate "cm_wrapper_params.json" {
       downloadSpeedLimit = inst.downloadSpeedLimit;
       downloadPasswordOnly = true;
@@ -255,6 +277,7 @@
         replace-secret @ADMIN_PASSWORD@ ${secret name "admin-password"} cfg/server_cfg.ini
         install -m 644 ${f.entryList} cfg/entry_list.ini
         install -m 644 ${f.extraCfg} cfg/extra_cfg.yml
+        install -m 644 ${f.cspExtraOptions} cfg/csp_extra_options.ini
         install -m 644 ${f.wrapperParams} cfg/cm_wrapper_params.json
         install -m 644 ${f.content} cfg/cm_content/content.json
 
@@ -330,12 +353,26 @@ in {
   config = lib.mkIf (enabled != {}) {
     assertions = let
       ports = lib.concatLists (lib.mapAttrsToList (_: i: [i.port i.httpPort]) enabled);
-    in [
-      {
-        assertion = lib.allUnique ports;
-        message = "homelab.assetto-server: instances must use distinct ports";
-      }
-    ];
+    in
+      [
+        {
+          assertion = lib.allUnique ports;
+          message = "homelab.assetto-server: instances must use distinct ports";
+        }
+      ]
+      ++ lib.concatLists (lib.mapAttrsToList (name: inst: let
+          count = cars: lib.foldl' (a: b: a + b) 0 (lib.attrValues cars);
+        in [
+          {
+            assertion = inst.playerSlotOffset <= count inst.trafficCars;
+            message = "assetto-server ${name}: playerSlotOffset requires enough traffic entries to fill preceding slots";
+          }
+          {
+            assertion = inst.pitBoxes == null || count inst.playerCars + count inst.trafficCars <= inst.pitBoxes;
+            message = "assetto-server ${name}: player and traffic entries exceed layout pit capacity";
+          }
+        ])
+        enabled);
 
     users.users.assetto-server = {
       isSystemUser = true;
