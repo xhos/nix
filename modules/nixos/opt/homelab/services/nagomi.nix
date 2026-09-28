@@ -12,6 +12,7 @@
     services.nagomi = {
       enable = true;
       emailParser.enable = true;
+      statements.enable = true;
       logLevel = "debug";
       secretsFile = config.sops.secrets."env/nagomi/shared".path;
       core.secretsFile = config.sops.secrets."env/nagomi/core".path;
