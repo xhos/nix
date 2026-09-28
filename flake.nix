@@ -79,7 +79,10 @@
     vscode-server.url = "github:nix-community/nixos-vscode-server";
     attic.url = "github:zhaofengli/attic";
     nagomi.url = "github:xhos/nagomi";
-    # wled-album-sync.url = "github:xhos/wled-album-sync";
+    wled-album-sync = {
+      url = "github:xhos/wled-album-sync";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # --- utilities ------------------------------------------------------
     import-tree.url = "github:vic/import-tree";
@@ -102,7 +105,6 @@
       home-manager.nixosModules.home-manager
       inputs.stylix.nixosModules.stylix
       inputs.impermanence.nixosModules.impermanence
-      # inputs.wled-album-sync.nixosModules.default
       inputs.vpn-confinement.nixosModules.default
     ];
 

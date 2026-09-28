@@ -1,14 +1,17 @@
 {
   config,
+  inputs,
   lib,
   ...
 }: {
+  imports = [inputs.wled-album-sync.nixosModules.default];
+
   config = lib.mkIf config.homelab.home-assistant.enable {
-    sops.secrets."env/wled-album-sync" = {};
+    sops.secrets."env/wled-album-sync".restartUnits = ["wled-album-sync.service"];
 
     services.wled-album-sync = {
       enable = true;
-      wledUrl = "http://10.0.0.31";
+      wledUrl = "http://10.0.0.32";
       port = 9123;
 
       homeAssistant = {

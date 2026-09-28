@@ -49,6 +49,14 @@
           apiKey = secret "api/radarr";
           authenticationMethod = "forms";
           authenticationRequired = "disabledForLocalAddresses";
+          allowedHosts = lib.concatStringsSep "," [
+            "localhost"
+            "127.0.0.1"
+            config.networking.hostName
+            config.homelab.config.homelabLocalIP
+            config.homelab.config.tailscaleIP
+            "radarr.${config.homelab.config.domain}"
+          ];
           username = "xhos";
           password = secret "password/radarr";
           passwordConfirmation = secret "password/radarr";

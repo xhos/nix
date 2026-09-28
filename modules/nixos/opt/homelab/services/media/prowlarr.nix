@@ -53,6 +53,14 @@
           apiKey = secret "api/prowlarr";
           authenticationMethod = "forms";
           authenticationRequired = "disabledForLocalAddresses";
+          allowedHosts = lib.concatStringsSep "," [
+            "localhost"
+            "127.0.0.1"
+            config.networking.hostName
+            config.homelab.config.homelabLocalIP
+            config.homelab.config.tailscaleIP
+            "prowlarr.${config.homelab.config.domain}"
+          ];
           username = "xhos";
           password = secret "password/prowlarr";
           passwordConfirmation = secret "password/prowlarr";

@@ -7,11 +7,13 @@ Handoff notes, last updated 2026-09-23. Client-side setup on vyverne is in
 
 Prepared configuration update (2026-09-25; not yet deployed):
 
-- Keep `main_layout` (170 pits), move the 13 player entries to indices 41–53
-  at Yoyogi PA. Verified directly against `AC_PIT_*` coordinates in the installed
-  `srp_pits_main.kn5`: Yoyogi is 41–61 in 0.9.4 PTB1, not 40–61 as the
-  AssettoServer FAQ says. Traffic fills indices 0–40 and 54–72, with no gaps.
-- Increase traffic from 40 to 60 entries (same ten models), 73 total entries,
+- Keep `main_layout` (170 pits); players use the default spawn (entries 0–12,
+  traffic after). Pit indices in `srp_pits_main.kn5` (0.9.4 PTB1): Yoyogi is
+  41–61 (not 40–61 as the AssettoServer FAQ says), Shibaura is 174–189, 197–208
+  and 215–218, so Shibaura would need 174 traffic entries in front of the players
+  (the `shibaura_pa` layout has only 32 pits). Set `playerSlotOffset` to move
+  players.
+- 45 traffic entries (same ten models, 5 or 4 each), 58 total entries,
   still at most eight players. Safety spacing is 15–30 m, or 20–35 m on
   single-lane roads. Leave spawn distances, slot overbooking and TrafficDensity
   at upstream defaults. More entries increase client load; check FPS in-game.
@@ -120,7 +122,8 @@ list already allows all TCP/UDP.
 
 A car without `data.acd` (unpacked `data/` folder) makes the server refuse to
 start unless `extraCfg.IgnoreConfigurationErrors.MissingCarChecksums = true`
-(currently on, for `ks_nissan_gtr_boss_MAIN`). That only skips the check for
+(currently on, for `ks_nissan_gtr_boss_MAIN`, `Arf_GR_86` and
+`acme_toyota_yaris_rally1_22_gravel`). That only skips the check for
 cars lacking `data.acd`; others are still verified. Packing the data in CM
 (car page → Pack data) is the cleaner fix.
 
@@ -134,10 +137,10 @@ Keep the list short: every client loads **every entry-list car model** at join
 Player (1 slot each): bati_fd3s_rx7, art_mazda_fd3s_rx7_black_eagle,
 sl_toyota_supra_mkiv_ridox, ddm_nissan_silvia_s15, wm_nissan_s15,
 wm_nissan_fairlady_z_s30, art_nissan_gtr_bcnr33_600r, ks_nissan_gtr_boss_MAIN,
-aegis_mitsubishi_lancer_evolution_v_gsr (Evo V "Aeroblitz", not from the SRP
-pack), slang_ferrari_f40, ddm_subaru_22b, j8_ae86_tuned_coupe, honda_acty_ha3.
+dodge_viper17, Arf_GR_86, axis_s15_garagemak, TRR_GT3_porsche_992_gt3_r,
+acme_toyota_yaris_rally1_22_gravel.
 
-Traffic: 10 models × 4 slots from the SRP car pack 3.6 (`traffic_*`).
+Traffic: 10 models, 45 slots (5 or 4 each) from the SRP car pack 3.6 (`traffic_*`).
 
 ### Admin / weather (in-game chat)
 

@@ -2026,6 +2026,7 @@
         "stylix": "stylix",
         "vpn-confinement": "vpn-confinement",
         "vscode-server": "vscode-server",
+        "wled-album-sync": "wled-album-sync",
         "yawn": "yawn",
         "zen-browser": "zen-browser"
       }
@@ -2492,6 +2493,26 @@
       "original": {
         "owner": "nix-community",
         "repo": "nixos-vscode-server",
+        "type": "github"
+      }
+    },
+    "wled-album-sync": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790636152,
+        "narHash": "sha256-tjXpxQ5mHPVECqw66TG/JeQXqDo6Q2G4ypSBQXvP2vQ=",
+        "owner": "xhos",
+        "repo": "wled-album-sync",
+        "rev": "7af1f80155a4f4ccd3f1d81cfe9f7e564af37757",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xhos",
+        "repo": "wled-album-sync",
         "type": "github"
       }
     },

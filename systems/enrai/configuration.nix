@@ -43,9 +43,6 @@
       track = "shutoko_revival_project_094_ptb1";
       trackLayout = "main_layout";
       pitBoxes = 170;
-      # SRP 0.9.4 PTB1 srp_pits_main.kn5: Yoyogi is AC_PIT_41..61.
-      # Keep main_layout for traffic capacity; player cars occupy slots 41..53.
-      playerSlotOffset = 41;
       trafficSpline = "/storage/assetto/splines/srp-094ptb1-plot3sale-v6.aip";
       maxPlayers = 8;
       downloadSpeedLimit = 0;
@@ -60,16 +57,17 @@
         "wm_nissan_fairlady_z_s30"
         "art_nissan_gtr_bcnr33_600r"
         "ks_nissan_gtr_boss_MAIN"
-        "aegis_mitsubishi_lancer_evolution_v_gsr" # evo v "aeroblitz"
-        # something different
-        "slang_ferrari_f40"
-        "ddm_subaru_22b"
-        "j8_ae86_tuned_coupe"
-        "honda_acty_ha3"
+        # added 2026-09-28
+        "dodge_viper17"
+        "Arf_GR_86"
+        "axis_s15_garagemak"
+        "TRR_GT3_porsche_992_gt3_r"
+        "acme_toyota_yaris_rally1_22_gravel"
       ] (_: 1);
 
-      # ks_nissan_gtr_boss_MAIN ships unpacked data/ instead of data.acd, so the
-      # server can't checksum its physics; all other cars are still checked
+      # ks_nissan_gtr_boss_MAIN, Arf_GR_86 and acme_toyota_yaris_rally1_22_gravel
+      # ship unpacked data/ instead of data.acd, so the server can't checksum
+      # their physics; all other cars are still checked
       extraCfg.IgnoreConfigurationErrors.MissingCarChecksums = true;
       extraCfg.AiParams = {
         MinAiSafetyDistanceMeters = 15;
@@ -106,7 +104,15 @@
         "traffic_toyota_camry"
         "traffic_nissan_leaf"
         "traffic_volvo_v70jp"
-      ] (_: 6);
+      ] (_: 4)
+      # 45 entries: one extra slot for the five most common models
+      // lib.genAttrs [
+        "traffic_aegis_toyota_prius"
+        "traffic_aegis_toyota_markii_taxi"
+        "traffic_aegis_suzuki_alto_works"
+        "traffic_toyota_camry"
+        "traffic_nissan_leaf"
+      ] (_: 5);
     };
 
     atuin.enable = true;

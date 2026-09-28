@@ -31,6 +31,7 @@
       enable = true;
       extraComponents = [
         "wled"
+        "rest"
         "upnp"
         "met"
         "homekit_controller"
@@ -66,6 +67,10 @@
                   {
                     entity = "light.wled";
                     name = "WLED";
+                  }
+                  {
+                    entity = "switch.wled_album_sync";
+                    name = "Album sync";
                   }
                 ];
               }
@@ -150,6 +155,7 @@
                 type = "entities";
                 title = "Switches";
                 entities = [
+                  "switch.wled_album_sync"
                   "switch.wled_nightlight"
                   "switch.wled_sync_send"
                   "switch.wled_sync_receive"
@@ -347,10 +353,20 @@
           shutdown_vyverne = "${pkgs.openssh}/bin/ssh -i ${
             config.sops.secrets."ssh/vyverne".path
           } -o StrictHostKeyChecking=no -p 22 xhos@10.0.0.11 sudo shutdown -h now";
-          toggle_wled_sync = "${pkgs.curl}/bin/curl -X POST http://localhost:9123/toggle";
         };
 
         switch = [
+          {
+            platform = "rest";
+            name = "WLED Album Sync";
+            resource = "http://127.0.0.1:9123/state";
+            state_resource = "http://127.0.0.1:9123/status";
+            body_on = builtins.toJSON {enabled = true;};
+            body_off = builtins.toJSON {enabled = false;};
+            headers.Content-Type = "application/json";
+            is_on_template = "{{ value_json.enabled }}";
+            icon = "mdi:album";
+          }
           {
             platform = "wake_on_lan";
             mac = "c8:fe:0f:d0:3c:68";
@@ -536,7 +552,8 @@
             ];
             action = [
               {
-                service = "shell_command.toggle_wled_sync";
+                service = "switch.toggle";
+                target.entity_id = "switch.wled_album_sync";
               }
               {
                 service = "media_player.play_media";

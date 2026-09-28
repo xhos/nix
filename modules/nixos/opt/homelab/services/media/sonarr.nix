@@ -53,6 +53,14 @@
           apiKey = secret "api/sonarr";
           authenticationMethod = "forms";
           authenticationRequired = "disabledForLocalAddresses";
+          allowedHosts = lib.concatStringsSep "," [
+            "localhost"
+            "127.0.0.1"
+            config.networking.hostName
+            config.homelab.config.homelabLocalIP
+            config.homelab.config.tailscaleIP
+            "sonarr.${config.homelab.config.domain}"
+          ];
           username = "xhos";
           password = secret "password/sonarr";
           passwordConfirmation = secret "password/sonarr";

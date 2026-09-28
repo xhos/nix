@@ -49,6 +49,7 @@
     sops.templates.jellarr-env.content = ''
       JELLARR_API_KEY=${config.sops.placeholder."media/api/jellyfin"}
     '';
+    sops.templates.jellarr-env.restartUnits = ["jellarr.service"];
 
     services.jellarr = {
       enable = true;
@@ -100,7 +101,11 @@
                   base_url + path,
                   data=None if body is None else json.dumps(body).encode(),
                   headers={
-                      "X-Emby-Token": os.environ["JELLARR_API_KEY"],
+                      "Authorization": (
+                          'MediaBrowser Client="Jellarr", Device="enrai", '
+                          'DeviceId="jellarr", Version="1", '
+                          f'Token="{os.environ["JELLARR_API_KEY"]}"'
+                      ),
                       "Content-Type": "application/json",
                   },
               )
