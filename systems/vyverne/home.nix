@@ -46,6 +46,7 @@
 
   home.packages = with pkgs; [
     assetto-corsa-env
+    r2modman
     jetbrains.idea
     teams-for-linux
     # whspr # broken: ctranslate2 build failure

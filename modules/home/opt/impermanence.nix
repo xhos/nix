@@ -111,6 +111,7 @@ in {
             # should techically be only enabled when steam is but oh well
             ".config/r2modmanPlus-local"
             ".config/r2modman"
+            ".config/unity3d"
 
             ".zen"
             ".ssh"
