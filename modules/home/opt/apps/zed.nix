@@ -201,7 +201,6 @@
         ".git"
         ".envrc"
         ".claude"
-        "CLAUDE.md"
       ];
 
       lsp = {
