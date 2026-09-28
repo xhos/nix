@@ -19,12 +19,12 @@
           TRN_FLAG="$DIR/transcribing.flag"
 
           if [[ -f "$TRN_FLAG" ]]; then
-            echo '{"text":"💾 TXT","tooltip":"Transcribing…","class":"transcribing-active"}'
+            echo '{"text":"文","tooltip":"Transcribing…","class":"transcribing-active"}'
             exit 0
           fi
 
           if [[ -f "$REC_PID" ]] && kill -0 "$(cat "$REC_PID")" 2>/dev/null; then
-            echo '{"text":"🎙️ REC","tooltip":"Recording…","class":"recording-active"}'
+            echo '{"text":"録","tooltip":"Recording…","class":"recording-active"}'
             exit 0
           fi
 
@@ -37,7 +37,7 @@
         runtimeInputs = with pkgs; [procps];
         text = ''
           if pgrep -x "wf-recorder" > /dev/null; then
-            echo '{"text": "🔴 REC", "tooltip": "Recording active", "class": "recording-active"}'
+            echo '{"text": "録", "tooltip": "Screen recording active", "class": "recording-active"}'
           else
             echo '{"text": "", "tooltip": "", "class": "recording-inactive"}'
           fi
@@ -98,7 +98,7 @@
           value=$(cat "$ATTR_FILE" 2>/dev/null)
 
           if [ "$value" = "0" ]; then
-              echo '{"text": "🔴", "tooltip": "Camera cover open", "class": "camera-open"}'
+              echo '{"text": "●", "tooltip": "Camera cover open", "class": "camera-open"}'
           else
               echo '{"text": "", "tooltip": "Camera cover closed", "class": "camera-closed"}'
           fi
@@ -109,6 +109,7 @@
       position = "left";
       layer = "top";
       width = 34;
+      spacing = 2;
 
       "modules-left" = [
         "hyprland/workspaces"
@@ -173,6 +174,11 @@
           "9" = "九";
           "10" = "十";
         };
+      };
+
+      "tray" = {
+        "icon-size" = 14;
+        "spacing" = 6;
       };
 
       "clock" = {
