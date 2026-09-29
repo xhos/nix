@@ -33,6 +33,13 @@
     tg-notify.enable = true;
     sops-sync.enable = true;
 
+    valheim = {
+      enable = true;
+      code = "01a0ea13-a907-cf31-43bd-524e6e33ff36";
+      hash = "sha256-oLRpoRl7ISK1Ze0yHZauSxIiBFB/UkBNaoWgKmdVKOE=";
+      allowedInterfaces = ["zt*" "enp0s31f6"];
+    };
+
     assetto-server.contentOwner = "xhos";
     assetto-server.instances.srp = {
       enable = true;
