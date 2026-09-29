@@ -40,6 +40,12 @@
       fi
     ''}
 
+    ${lib.optionalString (cfg.admins != []) ''
+      # managed: overwritten on every start
+      mkdir -p ${saves}
+      printf '%s\n' ${lib.escapeShellArgs (["//List admin players ID ONE per line"] ++ cfg.admins)} > ${saves}/adminlist.txt
+    ''}
+
     # managed mod dirs are replaced wholesale; config files from the profile are
     # overwritten, configs that mods generate on first start are left alone
     cd ${game}
@@ -130,6 +136,13 @@ in {
       default = [];
       example = ["zt*"];
       description = "Extra interfaces (nftables iifname patterns) allowed to reach the game ports; tailscale is always allowed";
+    };
+
+    admins = lib.mkOption {
+      type = lib.types.listOf (lib.types.strMatching "[0-9]{17}");
+      default = [];
+      example = ["76561198866784053"];
+      description = "SteamID64s allowed to use devcommands. Replaces adminlist.txt on every start when non-empty";
     };
 
     modifiers = lib.mkOption {

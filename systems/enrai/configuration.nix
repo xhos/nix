@@ -40,6 +40,11 @@
       hash = "sha256-MPXRLilfOw904r99aBaqm/WbAsRwrSdnaLnaugHWvnA=";
       allowedInterfaces = ["zt*" "enp0s31f6"];
       modifiers.resources = "more"; # 1.5x
+      admins = [
+        "76561198866784053"
+        "76561198174117583"
+        "76561198246931306"
+      ];
     };
 
     assetto-server.contentOwner = "xhos";
