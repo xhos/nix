@@ -83,6 +83,10 @@
       url = "github:xhos/wled-album-sync";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    kodama = {
+      url = "git+ssh://git@github.com/xhos/kodama?ref=main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # --- utilities ------------------------------------------------------
     import-tree.url = "github:vic/import-tree";

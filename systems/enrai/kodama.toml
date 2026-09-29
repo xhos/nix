@@ -1,0 +1,42 @@
+listen = "0.0.0.0:7777"
+data_dir = "/var/lib/kodama"
+prompt_files = ["@APARTMENT@"]
+
+[[ladder]]
+name = "lite"
+base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
+api_key_env = "GEMINI_API_KEY"
+model = "gemini-3.5-flash-lite"
+reasoning_effort = "low"
+tools = ["pc", "ha_HassTurnOn", "ha_HassTurnOff", "ha_HassLightSet", "ha_HassSetVolume", "ha_HassMediaPause", "ha_HassMediaUnpause", "schedule"]
+start_words_at_most = 6
+max_tokens = 2048
+
+[[ladder]]
+name = "flash"
+base_url = "https://generativelanguage.googleapis.com/v1beta/openai/"
+api_key_env = "GEMINI_API_KEY"
+model = "gemini-3.6-flash"
+reasoning_effort = "low"
+max_tokens = 8192
+
+[[mcp]]
+name = "ha"
+url = "http://127.0.0.1:8123/api/mcp"
+transport = "http"
+token_env = "HA_TOKEN"
+
+[permissions]
+confirm = ["shell", "ha_HassMediaPlay*", "ha_*Lock*", "ha_*Alarm*"]
+event_deny = ["pc"]
+
+[history]
+max_messages = 120
+keep_recent = 40
+image_turns = 3
+
+[escalation]
+max_iters = 12
+max_tool_errors = 3
+top_retries = 4
+top_retry_delay_seconds = 15

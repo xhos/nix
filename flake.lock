@@ -1112,6 +1112,27 @@
         "type": "github"
       }
     },
+    "kodama": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1790646912,
+        "narHash": "sha256-jeDaqtJUkkp4lDmNp7wHtVFOHO+FwsN2dQNHwQ1mxfo=",
+        "ref": "main",
+        "rev": "b6042d0c84669f2ee348116669d9a1000044b327",
+        "revCount": 40,
+        "type": "git",
+        "url": "ssh://git@github.com/xhos/kodama"
+      },
+      "original": {
+        "ref": "main",
+        "type": "git",
+        "url": "ssh://git@github.com/xhos/kodama"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -1465,11 +1486,11 @@
       "flake": false,
       "locked": {
         "allRefs": true,
-        "lastModified": 1790191171,
-        "narHash": "sha256-NwuC4vWjstKR8YrWzw886qQ9Bp0byk16XRxYvO5lA3A=",
+        "lastModified": 1790647564,
+        "narHash": "sha256-X5LkYMXTQa3OmsThpqYN4ZP2jn8BUK/eSDWmkB+U5Gw=",
         "ref": "main",
-        "rev": "94e538ed40bf5b8330d1c09eb588066bf2ade19d",
-        "revCount": 81,
+        "rev": "ffd8b9037d3a8c2259f293f9b3dc21d2f66f3127",
+        "revCount": 86,
         "type": "git",
         "url": "ssh://git@github.com/xhos/nix-secrets"
       },
@@ -2010,6 +2031,7 @@
         "impermanence": "impermanence",
         "import-tree": "import-tree",
         "jellarr": "jellarr",
+        "kodama": "kodama",
         "llm-agents": "llm-agents",
         "logi-hypr": "logi-hypr",
         "nagomi": "nagomi",

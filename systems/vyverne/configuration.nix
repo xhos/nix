@@ -8,12 +8,31 @@
     ./disko.nix
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
+    inputs.kodama.nixosModules.default
   ];
 
   profile = "desktop";
 
   networking.hostName = "vyverne";
   networking.hostId = "9a7bef04";
+
+  sops.secrets."api/kodama/token" = {};
+  sops.templates."kodama-agent.env" = {
+    owner = "xhos";
+    mode = "0400";
+    content = ''
+      KODAMA_TOKEN=${config.sops.placeholder."api/kodama/token"}
+    '';
+  };
+  services.kodama.agent = {
+    enable = true;
+    url = "ws://enrai.ts.xhos.dev:7777/ws";
+    environmentFile = config.sops.templates."kodama-agent.env".path;
+    user = "xhos";
+    description = ''
+      Desk PC. The Schiit sink is the headphones; HDMI is the speakers.
+    '';
+  };
 
   impermanence.enable = true;
   audio.enable = true;
