@@ -9,6 +9,7 @@
     inputs.vscode-server.nixosModules.default
     ./hardware-configuration.nix
     ./disko.nix
+    ./kodama.nix
   ];
 
   users.users.root.initialHashedPassword = "$y$j9T$iDTgP1si33HTwRpAPY2r1/$y1LJRFAgrqAgXhCH/Y/pvYu.X0snt306UZmoGksWhR4";
@@ -35,9 +36,10 @@
 
     valheim = {
       enable = true;
-      code = "01a0ea13-a907-cf31-43bd-524e6e33ff36";
-      hash = "sha256-oLRpoRl7ISK1Ze0yHZauSxIiBFB/UkBNaoWgKmdVKOE=";
+      code = "01a0eaad-f376-7679-b95a-5536cc172d15";
+      hash = "sha256-MPXRLilfOw904r99aBaqm/WbAsRwrSdnaLnaugHWvnA=";
       allowedInterfaces = ["zt*" "enp0s31f6"];
+      modifiers.resources = "more"; # 1.5x
     };
 
     assetto-server.contentOwner = "xhos";

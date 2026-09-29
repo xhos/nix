@@ -68,7 +68,7 @@
       -password "$password" \
       -savedir ${saves} \
       -public 0 \
-      ${lib.escapeShellArgs cfg.extraArgs}
+      ${lib.concatStrings (lib.mapAttrsToList (k: v: "-modifier ${lib.escapeShellArg k} ${lib.escapeShellArg v} \\\n      ") cfg.modifiers)}${lib.escapeShellArgs cfg.extraArgs}
   '';
 
   ports = "{ ${toString cfg.port}, ${toString (cfg.port + 1)} }";
@@ -130,6 +130,23 @@ in {
       default = [];
       example = ["zt*"];
       description = "Extra interfaces (nftables iifname patterns) allowed to reach the game ports; tailscale is always allowed";
+    };
+
+    modifiers = lib.mkOption {
+      type = lib.types.attrsOf lib.types.str;
+      default = {};
+      example = {
+        resources = "more";
+        raids = "less";
+      };
+      description = ''
+        World modifiers, applied to the world on every start.
+        combat: veryeasy, easy, hard, veryhard;
+        deathpenalty: casual, veryeasy, easy, hard, hardcore;
+        resources: muchless, less, more, muchmore, most;
+        raids: none, muchless, less, more, muchmore;
+        portals: casual, hard, veryhard
+      '';
     };
 
     extraArgs = lib.mkOption {
