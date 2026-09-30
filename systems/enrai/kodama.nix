@@ -32,7 +32,7 @@
   };
 
   services.kodama = {
-    enable = true;
+    enable = false;
     configFile = pkgs.writeText "kodama.toml" (
       builtins.replaceStrings ["@APARTMENT@"] ["${inputs.kodama}/APARTMENT.md"]
       (builtins.readFile ./kodama.toml)
