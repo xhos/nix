@@ -41,7 +41,7 @@
   hyprland.execOnce = [
     "spotify"
     "materialgram"
-    "discord"
+    "vesktop"
   ];
 
   home.packages = with pkgs; [
