@@ -66,11 +66,14 @@ in {
         timerConfig = {
           OnCalendar = "daily";
           Persistent = true;
+          RandomizedDelaySec = "1h";
         };
+        extraBackupArgs = ["--retry-lock 30m"];
         pruneOpts = [
           "--keep-daily 7"
           "--keep-weekly 4"
           "--keep-monthly 6"
+          "--retry-lock 30m"
         ];
       })
       serviceBackups;
