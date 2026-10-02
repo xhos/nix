@@ -6,6 +6,21 @@
 }: {
   config = lib.mkIf (config.bar == "waybar") {
     programs.waybar.settings.main = let
+      ai-limits-script = pkgs.writeShellApplication {
+        name = "waybar-ai-limits";
+        runtimeInputs = with pkgs; [python3 codex];
+        text = ''
+          exec python3 ${./ai-limits.py} "$@"
+        '';
+      };
+      aiColors = with config.lib.stylix.colors;
+        lib.escapeShellArgs ["#${base05}" "#${base03}" "#${base0B}" "#${base0A}" "#${base08}"];
+      aiIndicator = provider: {
+        exec = "${ai-limits-script}/bin/waybar-ai-limits ${provider} --colors ${aiColors}";
+        size = 28;
+        interval = 30;
+        tooltip = true;
+      };
       wifiClick =
         if config.terminal == "ghostty"
         then "uwsm-app -- ghostty --gtk-single-instance=false --class=com.mitchellh.ghostty.impala -e impala"
@@ -124,6 +139,8 @@
       ];
 
       "modules-right" = [
+        "image#claude"
+        "image#codex"
         "tray"
         "hyprland/language"
         "niri/language"
@@ -131,6 +148,9 @@
         "pulseaudio#microphone"
         "pulseaudio"
       ];
+
+      "image#claude" = aiIndicator "claude";
+      "image#codex" = aiIndicator "codex";
 
       "hyprland/workspaces" = {
         "all-outputs" = true;
