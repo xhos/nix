@@ -36,8 +36,9 @@
 
     valheim = {
       enable = true;
-      code = "01a0eaad-f376-7679-b95a-5536cc172d15";
-      hash = "sha256-MPXRLilfOw904r99aBaqm/WbAsRwrSdnaLnaugHWvnA=";
+      code = "01a1049a-233b-0de3-cd1e-601abfbfa21b";
+      hash = "";
+      requirePassword = false;
       allowedInterfaces = ["zt*" "enp0s31f6"];
       modifiers.resources = "more"; # 1.5x
       admins = [

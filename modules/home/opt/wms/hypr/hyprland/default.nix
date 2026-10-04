@@ -103,6 +103,16 @@ in {
 
     services.hyprpaper.enable = true;
 
+    # Avoid failed DMA-BUF negotiation in NVIDIA screenshare sessions.
+    xdg.configFile."hypr/xdph.conf" = lib.mkIf osConfig.nvidia.enable {
+      text = ''
+        screencopy {
+          force_shm = true
+          max_fps = 60
+        }
+      '';
+    };
+
     xdg.portal = {
       enable = true;
       xdgOpenUsePortal = true;

@@ -48,6 +48,7 @@
     assetto-corsa-env
     r2modman
     jetbrains.idea
+    discord
     teams-for-linux
     # whspr # broken: ctranslate2 build failure
     # android-studio-full

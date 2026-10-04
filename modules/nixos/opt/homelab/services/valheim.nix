@@ -34,7 +34,7 @@
 
   prepare = pkgs.writeShellScript "valheim-prepare" ''
     set -euo pipefail
-    ${lib.optionalString (cfg.passwordFile == null) ''
+    ${lib.optionalString (cfg.requirePassword && cfg.passwordFile == null) ''
       if [ ! -s ${generatedPassword} ]; then
         (umask 027; ${lib.getExe pkgs.openssl} rand -hex 8 > ${generatedPassword})
       fi
@@ -55,11 +55,15 @@
 
   run = pkgs.writeShellScript "valheim-run" ''
     set -euo pipefail
-    password="$(cat ${
-      if cfg.passwordFile == null
-      then generatedPassword
-      else "\"$CREDENTIALS_DIRECTORY/password\""
-    })"
+    ${
+      if !cfg.requirePassword
+      then ''password=""''
+      else ''password="$(cat ${
+          if cfg.passwordFile == null
+          then generatedPassword
+          else "\"$CREDENTIALS_DIRECTORY/password\""
+        })"''
+    }
     exec ${lib.getExe pkgs.steam-run} env \
       DOORSTOP_ENABLED=1 \
       DOORSTOP_TARGET_ASSEMBLY=./BepInEx/core/BepInEx.Preloader.dll \
@@ -117,6 +121,12 @@ in {
       type = lib.types.port;
       default = 2456;
       description = "Game port; port + 1 is used for the Steam query port";
+    };
+
+    requirePassword = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Set false for an empty password (only sensible while the server is not public)";
     };
 
     passwordFile = lib.mkOption {
@@ -224,7 +234,7 @@ in {
         StateDirectory = "valheim";
         StateDirectoryMode = "0750";
         WorkingDirectory = game;
-        LoadCredential = lib.optional (cfg.passwordFile != null) "password:${cfg.passwordFile}";
+        LoadCredential = lib.optional (cfg.requirePassword && cfg.passwordFile != null) "password:${cfg.passwordFile}";
         ExecStartPre = prepare;
         ExecStart = run;
         Restart = "on-failure";
