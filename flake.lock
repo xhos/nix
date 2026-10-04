@@ -1202,11 +1202,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1790980665,
-        "narHash": "sha256-W/t/jERZ2Ks9akAJMGN5Ms+rKtyL8UzTihbQqvyw1f8=",
+        "lastModified": 1790984463,
+        "narHash": "sha256-pYlS34bJu4hslD4AMQjzHRWkau6Q1o5R7Tr7un3efps=",
         "owner": "xhos",
         "repo": "nagomi",
-        "rev": "bb4f0c5fcf6348d427b2cee20abb256c8fc5a767",
+        "rev": "d5acb48d0c66fb837a30e231a13e1ef8da2104bf",
         "type": "github"
       },
       "original": {
@@ -1246,11 +1246,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790980169,
-        "narHash": "sha256-5o2e+NBpQoOwuELSxvf570A+u48K4Qv9u3e89bE5N0U=",
+        "lastModified": 1790982681,
+        "narHash": "sha256-l8bcTI0mtvSEcHtos+WLQfGCv6taC/M80exooTghKTc=",
         "owner": "xhos",
         "repo": "nagomi-core",
-        "rev": "0191534dfb678f4b4968ec1ab00c3eb40ac5fe22",
+        "rev": "2b4d01f829f5f51e6802edfc670dfa5fbbfe1292",
         "type": "github"
       },
       "original": {
@@ -1359,11 +1359,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790975470,
-        "narHash": "sha256-/DdKiCjIHvmvrPW/FrbIQ1LDRtvk0eRICeDiJLMMWKA=",
+        "lastModified": 1790984110,
+        "narHash": "sha256-hSrU2mk7iCMf1s3sht5nf2f1sLrjeyAnlU76DaE6nbY=",
         "owner": "xhos",
         "repo": "nagomi-web",
-        "rev": "142dfcd4f84d9b1ce2412b1e11922284c5a82bc8",
+        "rev": "6b001aae4cc69de60559b78b11bbbe56220ed909",
         "type": "github"
       },
       "original": {
