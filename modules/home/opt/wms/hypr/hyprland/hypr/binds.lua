@@ -228,7 +228,7 @@ hl.bind(mod .. " + F9", hl.dsp.exec_cmd("pkill -USR1 wlsunset"))
 hl.bind("insert", app("volume-script --toggle-mic"))
 
 --------------------------------------------------------------------------
--- media and brightness keys -- repeat while held, work while locked
+-- media and brightness keys -- work while locked
 --------------------------------------------------------------------------
 
 local held = { repeating = true, locked = true }
@@ -236,5 +236,14 @@ local held = { repeating = true, locked = true }
 hl.bind("XF86AudioRaiseVolume", app("volume-script --inc"), held)
 hl.bind("XF86AudioLowerVolume", app("volume-script --dec"), held)
 hl.bind("XF86AudioMute", app("volume-script --toggle"), held)
+
+-- Prefer Spotify when browser media players are also registered.
+-- Playback actions must not repeat while a headphone gesture is held.
+local media = { locked = true }
+hl.bind("XF86AudioPlay", app("playerctl --player=spotify,%any play-pause"), media)
+hl.bind("XF86AudioPause", app("playerctl --player=spotify,%any pause"), media)
+hl.bind("XF86AudioNext", app("playerctl --player=spotify,%any next"), media)
+hl.bind("XF86AudioPrev", app("playerctl --player=spotify,%any previous"), media)
+
 hl.bind("XF86MonBrightnessUp", app("brightness-script --inc"), held)
 hl.bind("XF86MonBrightnessDown", app("brightness-script --dec"), held)
