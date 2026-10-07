@@ -95,7 +95,6 @@
     # Media
     lollypop
     jellyfin-desktop
-    mpv
     ffmpeg-full
     playerctl
     loupe
