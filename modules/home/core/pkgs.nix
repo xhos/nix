@@ -75,7 +75,6 @@
     proton-vpn-cli
     wakatime-cli
     figlet
-    gitmoji-cli
     imagemagick
     ghostscript
     onefetch
