@@ -136,7 +136,7 @@
             librsvg
             libtool
             libuuid
-            libxcrypt
+            libxcrypt-legacy # Resolve requires the libcrypt.so.1 ABI.
             libxkbcommon
             nspr
             ocl-icd
