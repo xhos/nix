@@ -14,7 +14,10 @@
       enable = true;
 
       discord.enable = false;
-      vesktop.enable = true;
+      vesktop = {
+        enable = true;
+        useSystemVencord = true;
+      };
 
       config = {
         # themeLinks = ["https://raw.githubusercontent.com/refact0r/system24/refs/heads/main/theme/system24.theme.css"];
@@ -22,7 +25,6 @@
         frameless = true;
 
         plugins = {
-          biggerStreamPreview.enable = true;
           callTimer.enable = true;
           decor.enable = true;
           fixSpotifyEmbeds.enable = true;
