@@ -68,6 +68,7 @@
   ];
   textTypes = [
     "text/plain"
+    "text/csv"
     "text/markdown"
     "text/x-markdown"
     "application/json"
