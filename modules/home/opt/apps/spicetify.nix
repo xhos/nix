@@ -36,7 +36,7 @@
         allOfArtist
         catJamSynced
         coverAmbience
-        beautifulLyrics
+        spicyLyrics
       ];
       enabledSnippets = with spicePkgs.snippets; [
         hideSidebarScrollbar
