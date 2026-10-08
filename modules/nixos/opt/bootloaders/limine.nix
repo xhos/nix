@@ -17,6 +17,7 @@
         efi.canTouchEfiVariables = true;
         limine = {
           enable = true;
+          maxGenerations = 5;
 
           extraEntries = lib.mkIf config.bootloader.limine.dualboot ''
             /Windows
