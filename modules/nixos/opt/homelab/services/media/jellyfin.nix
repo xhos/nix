@@ -16,7 +16,7 @@
         fetchPnpmDeps = args:
           prev.fetchPnpmDeps (args
             // lib.optionalAttrs (args.pname or "" == "jellarr") {
-              hash = "sha256-qNVnhHjTFPhJxJ8oZPBSfJs2OjNSlbmS31okZuSGWMU=";
+              hash = "sha256-7VXyltKa602y4vdmLYyLHFYbcwc8DKQ/dMzEKOYPHT0=";
             });
       })
     ];
