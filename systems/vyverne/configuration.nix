@@ -36,6 +36,29 @@
 
   impermanence.enable = true;
   audio.enable = true;
+  services.pipewire.wireplumber.extraConfig."51-disable-unused" = {
+    "monitor.alsa.rules" = [
+      # whole cards: no output or input wanted
+      {
+        matches = [
+          {"device.name" = "alsa_card.pci-0000_02_00.1";} # HDA NVidia
+          {"device.name" = "alsa_card.pci-0000_00_1f.3";} # HDA Intel PCH
+          {"device.name" = "~alsa_card.usb-Sony_Interactive_Entertainment_DualSense.*";}
+        ];
+        actions.update-props."device.disabled" = true;
+      }
+      # single nodes: USB PnP is mic-only, Arctis 7 is output-only
+      {
+        matches = [
+          {"node.name" = "~alsa_output.usb-0c76_USB_PnP_Audio_Device-00.*";}
+          {"node.name" = "~alsa_input.usb-SteelSeries_SteelSeries_Arctis_7-00.*";}
+        ];
+        actions.update-props."node.disabled" = true;
+      }
+    ];
+    # no HFP/HSP, so the XM5 never exposes a mic and never drops out of LDAC
+    "monitor.bluez.properties"."bluez5.roles" = ["a2dp_source"];
+  };
   bluetooth.enable = true;
   games.enable = true;
   nvidia.enable = true;
