@@ -17,9 +17,22 @@
       '';
   });
 
+  # BeamNG's embedded CEF needs libs the stock steam-run FHS env lacks
+  steam-run =
+    (pkgs.steam.override {
+      extraLibraries = ps:
+        with ps; [
+          nspr
+          nss
+          at-spi2-atk
+          at-spi2-core
+          xorg.libXcomposite
+        ];
+    }).run;
+
   beammp = pkgs.writeShellApplication {
     name = "beammp";
-    runtimeInputs = [pkgs.steam-run];
+    runtimeInputs = [steam-run];
     text = ''
       state="''${XDG_DATA_HOME:-$HOME/.local/share}/BeamMP"
       mkdir -p "$state"
