@@ -97,10 +97,10 @@
     "d /games 0755 xhos users - -"
   ];
 
-  networking.interfaces.enp4s0.wakeOnLan.enable = true;
+  networking.interfaces.enp5s0.wakeOnLan.enable = true;
 
-  systemd.network.networks."05-enp4s0" = {
-    matchConfig.Name = "enp4s0";
+  systemd.network.networks."05-enp5s0" = {
+    matchConfig.MACAddress = "c8:fe:0f:d0:3c:68";
     address = ["10.0.0.11/24"];
     gateway = ["10.0.0.1"];
     networkConfig = {
