@@ -70,6 +70,11 @@
     buildInputs = with pkgs; [ffmpeg];
     runtimeDependencies = with pkgs; [ffmpeg];
 
+    # ffmpeg 9 headers require this macro when included from C++
+    postPatch = ''
+      sed -i '/^project(/a add_compile_definitions(__STDC_CONSTANT_MACROS)' CMakeLists.txt
+    '';
+
     installPhase = ''
       runHook preInstall
       mkdir -p $out/IOPlugins/ffmpeg_encoder_plugin.dvcp.bundle/Contents/Linux-x86-64/
