@@ -4,13 +4,6 @@
   ...
 }: let
   persistIf = condition: persistConfig: lib.mkIf condition persistConfig;
-
-  userDir = path: {
-    directory = "/home/xhos/${path}";
-    user = "xhos";
-    group = "users";
-    mode = "0755";
-  };
 in {
   options.impermanence.enable = lib.mkEnableOption "wipe root filesystem on reboot, persist selected directories";
 
@@ -75,10 +68,12 @@ in {
       })
 
       (persistIf config.games.enable {
-        directories = [
-          (userDir ".steam")
-          (userDir ".local/share/Steam")
-          "/var/lib/zerotier-one"
+        directories = ["/var/lib/zerotier-one"];
+        # home paths must go through users.<name> so parent dirs (.local, .local/share)
+        # are created owned by xhos, not root
+        users.xhos.directories = [
+          ".steam"
+          ".local/share/Steam"
         ];
       })
 
@@ -102,10 +97,9 @@ in {
           "/var/lib/qBittorrent"
           "/var/lib/hass"
           "/var/lib/wakapi"
-
-          # TODO: why here
-          "/home/xhos/.local/share/syncthing"
         ];
+        # TODO: why here
+        users.xhos.directories = [".local/share/syncthing"];
       })
     ];
   };
