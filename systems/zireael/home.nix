@@ -4,11 +4,16 @@
   osConfig,
   ...
 }: {
-  stylix.image = pkgs.fetchurl {
-    url = "https://i.imgur.com/w65iDl5.jpeg";
-    sha256 = "sha256-WvuZoZ6OBGa1R+zZAl6/YQAazpe8k2quJSWamTZl2Tc=";
-  };
+  # stylix.image = pkgs.fetchurl {
+  #   url = "https://i.imgur.com/w65iDl5.jpeg";
+  #   sha256 = "sha256-WvuZoZ6OBGa1R+zZAl6/YQAazpe8k2quJSWamTZl2Tc=";
+  # };
 
+  stylix.image = pkgs.fetchurl {
+    url = "https://w.wallhaven.cc/full/21/wallhaven-216d1g.png";
+    sha256 = "sha256-0sSJ5dJzIAke3nW56b52N9w5Vyp5TAU1VopYg/mx4+4=";
+  };
+ 
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
 
   impermanence.enable = true;
