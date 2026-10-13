@@ -129,8 +129,6 @@
     qbittorrent
     inkscape
     (obsidian.override {commandLineArgs = ["--no-sandbox"];})
-
-    rustdesk
   ];
 in {
   xdg.configFile."teams-for-linux/config.json" = lib.mkIf (config.profile == "desktop") {

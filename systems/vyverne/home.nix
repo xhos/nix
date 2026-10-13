@@ -52,6 +52,7 @@
   home.packages = with pkgs; [
     r2modman
     teams-for-linux
+    rustdesk
     # whspr # broken: ctranslate2 build failure
     # android-studio-full
   ];
