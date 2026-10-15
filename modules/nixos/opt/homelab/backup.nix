@@ -68,12 +68,12 @@ in {
           Persistent = true;
           RandomizedDelaySec = "1h";
         };
-        extraBackupArgs = ["--retry-lock 30m"];
+        extraBackupArgs = ["--retry-lock 3h"];
         pruneOpts = [
           "--keep-daily 7"
           "--keep-weekly 4"
           "--keep-monthly 6"
-          "--retry-lock 30m"
+          "--retry-lock 3h"
         ];
       })
       serviceBackups;
