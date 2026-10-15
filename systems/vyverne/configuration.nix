@@ -1,6 +1,7 @@
 {
   inputs,
   config,
+  pkgs,
   ...
 }: {
   imports = [
@@ -67,6 +68,7 @@
   obs.enable = true;
   davinci.enable = true;
   syncthing.enable = true;
+  sunshine.enable = true;
 
   wm = "hyprland";
   greeter = "yawn";
@@ -86,12 +88,33 @@
   services.hardware.openrgb.enable = true;
   programs.kdeconnect.enable = true;
 
-  # use android phone as a webcam
+  # use android phone (/dev/video0) and fuji x-t4 (/dev/video10) as webcams
   boot.kernelModules = ["v4l2loopback"];
   boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
   boot.extraModprobeConfig = ''
-    options v4l2loopback exclusive_caps=1 card_label="Phone Cam"
+    options v4l2loopback devices=2 video_nr=0,10 exclusive_caps=1,1 card_label="Phone Cam,X-T4"
   '';
+
+  # x-t4 needs PC Connection Mode = USB Tether Shooting and the still/movie lever on still
+  environment.systemPackages = [
+    pkgs.gphoto2
+    pkgs.v4l-utils
+    (pkgs.writeShellApplication {
+      name = "xt4-webcam";
+      runtimeInputs = [pkgs.gphoto2 pkgs.ffmpeg];
+      text = ''
+        # bail before touching the camera, killing gphoto2 mid-liveview wedges it (PTP Device Busy)
+        if [ ! -e /dev/video10 ]; then
+          echo "/dev/video10 missing, run: sudo modprobe v4l2loopback" >&2
+          exit 1
+        fi
+        gphoto2 --set-config /main/capturesettings/liveviewsize=0 # XGA, 1024x768
+        gphoto2 --stdout --capture-movie \
+          | ffmpeg -hide_banner -loglevel warning -f mjpeg -i - \
+              -vcodec rawvideo -pix_fmt yuv420p -f v4l2 /dev/video10
+      '';
+    })
+  ];
 
   systemd.tmpfiles.rules = [
     "d /games 0755 xhos users - -"

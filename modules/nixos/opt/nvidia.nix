@@ -14,7 +14,8 @@
     };
 
     services.xserver.videoDrivers = ["nvidia"];
-    boot.initrd.kernelModules = ["nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm"];
+    # not in boot.initrd: the module + GSP firmware add ~180MB to every initrd and fill the ESP
+    boot.kernelModules = ["nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm"];
 
     hardware.graphics = {
       enable = true;
