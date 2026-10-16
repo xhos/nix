@@ -150,6 +150,9 @@
         installer = import ./pkgs/installer.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };
+        pcinfo = import ./pkgs/pcinfo.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         e2-micro-image = self.nixosConfigurations.e2-micro.config.system.build.OCIImage;
       })
       // {

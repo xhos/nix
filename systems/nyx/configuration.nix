@@ -75,11 +75,6 @@
     (writeShellScriptBin "ds" ''exec pcinfo -s 120'')
   ];
 
-  # autologin on tty1 → report shows up with zero typing
-  programs.bash.loginShellInit = ''
-    [ "$(tty)" = /dev/tty1 ] && pcinfo
-  '';
-
   # insecure, but i want to ssh to not fiddle with the laptop when installing
   services.openssh = {
     enable = true;
