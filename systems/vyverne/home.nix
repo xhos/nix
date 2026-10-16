@@ -1,14 +1,8 @@
 {pkgs, ...}: {
-  # stylix.image = pkgs.fetchurl {
-  #   url = "https://realmafricasafaris.com/wp-content/uploads/2020/02/The-Shoebill-Stork.jpg";
-  #   sha256 = "sha256-/kIfVH281mZ8YfITslwQEwuje0aPDNsEkgQwsb6X0no=";
-  # };
-  #
   stylix.image = pkgs.fetchurl {
-    url = "https://w.wallhaven.cc/full/po/wallhaven-pomle9.jpg";
-    sha256 = "sha256-sIqGwDJd+yrLBXw8/pFy1rOubc8HdAdgzN8q89B+Jvc=";
+    url = "https://w.wallhaven.cc/full/o5/wallhaven-o5kq3l.png";
+    sha256 = "sha256-opBSe0bkBImbz9ALwwqDCCUBOqS1YcgOLuP+WfTk70k=";
   };
-  # stylix.base16Scheme = ./min-dark.yaml;
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
 
   impermanence.enable = true;
@@ -56,7 +50,6 @@
     r2modman
     teams-for-linux
     rustdesk
-    # whspr # broken: ctranslate2 build failure
-    # android-studio-full
+    whspr
   ];
 }

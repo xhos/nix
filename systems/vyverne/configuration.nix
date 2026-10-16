@@ -12,31 +12,92 @@
     inputs.kodama.nixosModules.default
   ];
 
+  # ── identity ──────────────────────────────────────────────────────────
   profile = "desktop";
-
   networking.hostName = "vyverne";
   networking.hostId = "9a7bef04";
+  system.stateVersion = "25.05";
 
-  sops.secrets."api/kodama/token" = {};
-  sops.templates."kodama-agent.env" = {
-    owner = "xhos";
-    mode = "0400";
-    content = ''
-      KODAMA_TOKEN=${config.sops.placeholder."api/kodama/token"}
-    '';
-  };
-  services.kodama.agent = {
-    enable = true;
-    url = "ws://enrai.ts.xhos.dev:7777/ws";
-    environmentFile = config.sops.templates."kodama-agent.env".path;
-    user = "xhos";
-    description = ''
-      Desk PC. The Schiit sink is the headphones; HDMI is the speakers.
-    '';
-  };
-
-  impermanence.enable = true;
+  # ── feature modules ───────────────────────────────────────────────────
   audio.enable = true;
+  bluetooth.enable = true;
+  games.enable = true;
+  nvidia.enable = true;
+  vm.enable = true;
+  ai.enable = true;
+  obs.enable = true;
+  davinci.enable = true;
+  syncthing.enable = true;
+  sunshine.enable = true;
+  impermanence.enable = true;
+
+  wm = "hyprland";
+  greeter = "yawn";
+  terminal = "ghostty";
+
+  # ── boot ──────────────────────────────────────────────────────────────
+  bootloader.limine = {
+    enable = true;
+    dualboot = true;
+    secureboot = true;
+  };
+
+  # dual-boots Windows, which wants the RTC in local time
+  time.hardwareClockInLocalTime = true;
+
+  boot.supportedFilesystems = ["zfs"];
+  boot.kernelParams = ["hid_apple.fnmode=2"]; # fix fn keys on infi75
+  boot.binfmt.emulatedSystems = ["aarch64-linux"]; # to build the OCI arm image
+
+  # ── filesystems ───────────────────────────────────────────────────────
+  # TODO: use disko nodev on next install
+  fileSystems."/" = {
+    device = "none";
+    fsType = "tmpfs";
+    options = ["defaults" "size=25%" "mode=755"];
+  };
+
+  systemd.tmpfiles.rules = ["d /games 0755 xhos users - -"];
+
+  services.gvfs.enable = true;
+  services.udisks2.enable = true;
+
+  # downloading ram
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50; # up to 50% of RAM as compressed swap
+  };
+
+  # ── networking ────────────────────────────────────────────────────────
+  networking.interfaces.enp5s0.wakeOnLan.enable = true;
+
+  systemd.network.networks."05-enp5s0" = {
+    matchConfig.MACAddress = "c8:fe:0f:d0:3c:68";
+    address = ["10.0.0.11/24"];
+    gateway = ["10.0.0.1"];
+    networkConfig = {
+      DHCP = "no";
+      IPv6AcceptRA = true;
+    };
+    linkConfig.RequiredForOnline = "no";
+  };
+
+  # ── access ────────────────────────────────────────────────────────────
+  users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
+
+  # allow poweroff/reboot over ssh without sudo
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if ((action.id == "org.freedesktop.login1.power-off" ||
+           action.id == "org.freedesktop.login1.reboot") &&
+          subject.user == "xhos") {
+        return polkit.Result.YES;
+      }
+    });
+  '';
+
+  # ── audio routing ─────────────────────────────────────────────────────
   services.pipewire.wireplumber.extraConfig."51-disable-unused" = {
     "monitor.alsa.rules" = [
       # whole cards: no output or input wanted
@@ -60,95 +121,22 @@
     # no HFP/HSP, so the XM5 never exposes a mic and never drops out of LDAC
     "monitor.bluez.properties"."bluez5.roles" = ["a2dp_source"];
   };
-  bluetooth.enable = true;
-  games.enable = true;
-  nvidia.enable = true;
-  vm.enable = true;
-  ai.enable = true;
-  obs.enable = true;
-  davinci.enable = true;
-  syncthing.enable = true;
-  sunshine.enable = true;
 
-  wm = "hyprland";
-  greeter = "yawn";
-  terminal = "ghostty";
-
-  bootloader.limine = {
-    enable = true;
-    dualboot = true;
-    secureboot = true;
-  };
-
-  # dual-boots Windows, which wants the RTC in local time
-  time.hardwareClockInLocalTime = true;
-
-  users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
-
+  # ── peripherals & phone ───────────────────────────────────────────────
   services.hardware.openrgb.enable = true;
   programs.kdeconnect.enable = true;
 
-  # use android phone (/dev/video0) and fuji x-t4 (/dev/video10) as webcams
+  # android phone as a webcam: scrcpy --video-source=camera --v4l2-sink=/dev/video0
+  # (adb / scrcpy come from the shared pkgs modules, user is in adbusers)
   boot.kernelModules = ["v4l2loopback"];
   boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
   boot.extraModprobeConfig = ''
-    options v4l2loopback devices=2 video_nr=0,10 exclusive_caps=1,1 card_label="Phone Cam,X-T4"
+    options v4l2loopback devices=1 video_nr=0 exclusive_caps=1 card_label="Phone Cam"
   '';
+  environment.systemPackages = [pkgs.v4l-utils];
 
-  # x-t4 needs PC Connection Mode = USB Tether Shooting and the still/movie lever on still
-  environment.systemPackages = [
-    pkgs.gphoto2
-    pkgs.v4l-utils
-    (pkgs.writeShellApplication {
-      name = "xt4-webcam";
-      runtimeInputs = [pkgs.gphoto2 pkgs.ffmpeg];
-      text = ''
-        # bail before touching the camera, killing gphoto2 mid-liveview wedges it (PTP Device Busy)
-        if [ ! -e /dev/video10 ]; then
-          echo "/dev/video10 missing, run: sudo modprobe v4l2loopback" >&2
-          exit 1
-        fi
-        gphoto2 --set-config /main/capturesettings/liveviewsize=0 # XGA, 1024x768
-        gphoto2 --stdout --capture-movie \
-          | ffmpeg -hide_banner -loglevel warning -f mjpeg -i - \
-              -vcodec rawvideo -pix_fmt yuv420p -f v4l2 /dev/video10
-      '';
-    })
-  ];
-
-  systemd.tmpfiles.rules = [
-    "d /games 0755 xhos users - -"
-  ];
-
-  networking.interfaces.enp5s0.wakeOnLan.enable = true;
-
-  systemd.network.networks."05-enp5s0" = {
-    matchConfig.MACAddress = "c8:fe:0f:d0:3c:68";
-    address = ["10.0.0.11/24"];
-    gateway = ["10.0.0.1"];
-    networkConfig = {
-      DHCP = "no";
-      IPv6AcceptRA = true;
-    };
-    linkConfig.RequiredForOnline = "no";
-  };
-
-  # fix fn keys not working on infi75
-  boot.kernelParams = ["hid_apple.fnmode=2"];
-  boot.supportedFilesystems = ["zfs"];
-  services.gvfs.enable = true;
-  services.udisks2.enable = true;
-
-  # allow poweroff/reboot over ssh without sudo
-  security.polkit.extraConfig = ''
-    polkit.addRule(function(action, subject) {
-      if ((action.id == "org.freedesktop.login1.power-off" ||
-           action.id == "org.freedesktop.login1.reboot") &&
-          subject.user == "xhos") {
-        return polkit.Result.YES;
-      }
-    });
-  '';
+  # ── misc ──────────────────────────────────────────────────────────────
+  programs.nix-ld.enable = true;
 
   nixpkgs.overlays = [
     (final: prev: {
@@ -159,28 +147,22 @@
     })
   ];
 
-  # downloading ram
-  zramSwap = {
+  # ── kodama agent ──────────────────────────────────────────────────────
+  sops.secrets."api/kodama/token" = {};
+  sops.templates."kodama-agent.env" = {
+    owner = "xhos";
+    mode = "0400";
+    content = ''
+      KODAMA_TOKEN=${config.sops.placeholder."api/kodama/token"}
+    '';
+  };
+  services.kodama.agent = {
     enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50; # up to 50% of RAM as compressed swap
+    url = "ws://enrai.ts.xhos.dev:7777/ws";
+    environmentFile = config.sops.templates."kodama-agent.env".path;
+    user = "xhos";
+    description = ''
+      Desk PC. The Schiit sink is the headphones; HDMI is the speakers.
+    '';
   };
-
-  programs.nix-ld.enable = true;
-
-  # TODO: use disko nodev on next install
-  fileSystems."/" = {
-    device = "none";
-    fsType = "tmpfs";
-    options = [
-      "defaults"
-      "size=25%"
-      "mode=755"
-    ];
-  };
-
-  # to be able to build the OCI arm image
-  boot.binfmt.emulatedSystems = ["aarch64-linux"];
-
-  system.stateVersion = "25.05";
 }

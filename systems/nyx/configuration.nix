@@ -17,6 +17,10 @@
   boot.zfs.forceImportAll = false;
   networking.hostId = "12345678";
 
+  # minimal ISO ships wpa_supplicant, not NetworkManager — `w` needs NM running
+  networking.wireless.enable = lib.mkForce false;
+  networking.networkmanager.enable = true;
+
   nix.settings = {
     substituters = [
       "https://cache.nixos.org"
@@ -33,8 +37,8 @@
 
   environment.systemPackages = with pkgs; [
     git
-    networkmanager
     zfs
+    pcinfo
     (writeShellApplication {
       name = "i";
       text = ''
@@ -66,7 +70,15 @@
         nmcli dev wifi connect "$ssid" password "$pass"
       '';
     })
+    # d = diagnostics, ds = diagnostics + 2 min stress test
+    (writeShellScriptBin "d" ''exec pcinfo "$@"'')
+    (writeShellScriptBin "ds" ''exec pcinfo -s 120'')
   ];
+
+  # autologin on tty1 → report shows up with zero typing
+  programs.bash.loginShellInit = ''
+    [ "$(tty)" = /dev/tty1 ] && pcinfo
+  '';
 
   # insecure, but i want to ssh to not fiddle with the laptop when installing
   services.openssh = {

@@ -1,4 +1,3 @@
-# hosts/proxy-1/default.nix
 {
   inputs,
   config,

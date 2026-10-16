@@ -61,6 +61,18 @@
       accent = "#${colors.base0D}";
     };
   };
+
+  # skip the xdph picker dialog and always share the main monitor
+  # (mainMonitor may be a connector name or a monitor description)
+  screensharePicker = pkgs.writeShellApplication {
+    name = "xdph-main-monitor-picker";
+    runtimeInputs = [osConfig.programs.hyprland.package pkgs.jq];
+    text = ''
+      name=$(hyprctl monitors -j | jq -r --arg m ${lib.escapeShellArg config.mainMonitor} '
+        (map(select(.name == $m or .description == $m)) + map(select(.focused)))[0].name')
+      echo "[SELECTION]r/screen:$name"
+    '';
+  };
 in {
   config = lib.mkIf (config.wm == "hyprland") {
     wayland.windowManager.hyprland = {
@@ -103,15 +115,16 @@ in {
 
     services.hyprpaper.enable = true;
 
-    # Avoid failed DMA-BUF negotiation in NVIDIA screenshare sessions.
-    xdg.configFile."hypr/xdph.conf" = lib.mkIf osConfig.nvidia.enable {
-      text = ''
-        screencopy {
-          force_shm = true
-          max_fps = 60
-        }
-      '';
-    };
+    xdg.configFile."hypr/xdph.conf".text = ''
+      screencopy {
+        custom_picker_binary = ${screensharePicker}/bin/xdph-main-monitor-picker
+        allow_token_by_default = true
+      ${lib.optionalString osConfig.nvidia.enable ''
+        # avoid failed DMA-BUF negotiation in NVIDIA screenshare sessions
+        force_shm = true
+        max_fps = 60
+      ''}}
+    '';
 
     xdg.portal = {
       enable = true;

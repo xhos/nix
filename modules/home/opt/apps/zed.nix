@@ -53,14 +53,15 @@
       vim_mode = false;
       theme =
         if config.wm == "hyprland"
-        then "Min Dark (Blurred)"
-        else "Min Dark (Solid)";
+        then "Catppuccin Mocha (Blur)"
+        else "Catppuccin Mocha (Blur) [Heavy]";
       icon_theme = "Material Icon Theme";
 
       ui_font_size = 16.0;
       buffer_font_family = "FiraCode Nerd Font Mono";
       buffer_font_size = 14.0;
-      buffer_font_weight = 400.0;
+      buffer_font_weight = 450.0;
+      buffer_line_height.custom = 1.4;
       tab_size = 2;
 
       auto_update = false;
@@ -69,6 +70,7 @@
       formatter = "language_server";
       relative_line_numbers = false;
       show_wrap_guides = true;
+      colorize_brackets = true;
 
       telemetry = {
         diagnostics = false;
@@ -103,9 +105,9 @@
         sticky_scroll = false;
         button = true;
         dock = "left";
-        indent_size = 12;
+        indent_size = 16;
         entry_spacing = "standard";
-        indent_guides.show = "never";
+        indent_guides.show = "always";
         scrollbar.show = "never";
       };
 
@@ -115,10 +117,10 @@
       };
 
       tabs = {
-        show_close_button = "hidden";
+        show_close_button = "hover";
         show_diagnostics = "all";
-        file_icons = false;
-        git_status = false;
+        file_icons = true;
+        git_status = true;
       };
 
       title_bar = {
@@ -154,7 +156,7 @@
         folds = false;
       };
 
-      scrollbar.show = "never";
+      scrollbar.show = "auto";
 
       minimap = {
         show = "always";
@@ -185,6 +187,7 @@
       features.edit_prediction_provider = "copilot";
 
       agent = {
+        dock = "right";
         default_profile = "ask";
         default_model = {
           provider = "copilot_chat";
@@ -194,6 +197,22 @@
       };
 
       agent_ui_font_size = 14.0;
+
+      # ACP agents, fetched from zed's agent registry into ~/.local/share/zed/external_agents
+      agent_servers = {
+        claude-acp = {
+          type = "registry";
+          default_config_options = {
+            mode = "auto";
+            model = "sonnet";
+            fast = false;
+          };
+        };
+        antigravity-acp = {
+          type = "registry";
+          default_config_options.model = "claude-opus-4-6-thinking";
+        };
+      };
 
       file_scan_exclusions = [
         ".pre-commit-config.yaml"

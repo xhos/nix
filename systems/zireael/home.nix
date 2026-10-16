@@ -4,16 +4,11 @@
   osConfig,
   ...
 }: {
-  # stylix.image = pkgs.fetchurl {
-  #   url = "https://i.imgur.com/w65iDl5.jpeg";
-  #   sha256 = "sha256-WvuZoZ6OBGa1R+zZAl6/YQAazpe8k2quJSWamTZl2Tc=";
-  # };
-
   stylix.image = pkgs.fetchurl {
     url = "https://w.wallhaven.cc/full/21/wallhaven-216d1g.png";
     sha256 = "sha256-0sSJ5dJzIAke3nW56b52N9w5Vyp5TAU1VopYg/mx4+4=";
   };
- 
+
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
 
   impermanence.enable = true;
@@ -26,8 +21,6 @@
     telegram.enable = true;
     fonts.enable = true;
     rclone.enable = true;
-    kdeconnect.enable = false;
-    adobe-reader.enable = false;
   };
 
   wm = osConfig.wm;
@@ -48,9 +41,7 @@
   mainMonitor = "eDP-1";
 
   hyprland.execOnce = [
-    "iio-hyprland"
-
-    # close camera shut on boot
-    "echo 1 > /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value"
+    "iio-hyprland" # start the rotation thingy
+    "echo 1 > /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value" # close camera shut on boot
   ];
 }

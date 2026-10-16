@@ -108,26 +108,27 @@
         LIMIT_LOCK_CONTROLS_TOTAL_TIME = 0;
       };
 
-      trafficCars = lib.genAttrs [
-        "traffic_aegis_toyota_prius"
-        "traffic_aegis_toyota_markii_taxi"
-        "traffic_aegis_suzuki_alto_works"
-        "traffic_aegis_toyota_vellfire"
-        "traffic_aegis_izuzu_npr_box"
-        "traffic_aegis_ud_quon"
-        "traffic_isuzu_tanker"
-        "traffic_toyota_camry"
-        "traffic_nissan_leaf"
-        "traffic_volvo_v70jp"
-      ] (_: 4)
-      # 45 entries: one extra slot for the five most common models
-      // lib.genAttrs [
-        "traffic_aegis_toyota_prius"
-        "traffic_aegis_toyota_markii_taxi"
-        "traffic_aegis_suzuki_alto_works"
-        "traffic_toyota_camry"
-        "traffic_nissan_leaf"
-      ] (_: 5);
+      trafficCars =
+        lib.genAttrs [
+          "traffic_aegis_toyota_prius"
+          "traffic_aegis_toyota_markii_taxi"
+          "traffic_aegis_suzuki_alto_works"
+          "traffic_aegis_toyota_vellfire"
+          "traffic_aegis_izuzu_npr_box"
+          "traffic_aegis_ud_quon"
+          "traffic_isuzu_tanker"
+          "traffic_toyota_camry"
+          "traffic_nissan_leaf"
+          "traffic_volvo_v70jp"
+        ] (_: 4)
+        # 45 entries: one extra slot for the five most common models
+        // lib.genAttrs [
+          "traffic_aegis_toyota_prius"
+          "traffic_aegis_toyota_markii_taxi"
+          "traffic_aegis_suzuki_alto_works"
+          "traffic_toyota_camry"
+          "traffic_nissan_leaf"
+        ] (_: 5);
     };
 
     atuin.enable = true;
@@ -138,7 +139,7 @@
     syncthing.enable = true;
     wakapi.enable = true;
     xray.enable = false;
-    zipline.enable = false;
+    zipline.enable = true;
     home-assistant.enable = true;
 
     media = {
