@@ -35,8 +35,8 @@
 
     valheim = {
       enable = true;
-      code = "01a112f4-bb4e-33d8-a4b2-e55a815cac2f";
-      hash = "sha256-bQcddpcShSrJVLhBLgNvLRyD5UbRApQ5q2oOUBN1fAo=";
+      code = "01a14ae8-13a3-18b3-c9c5-1a1d2418b204";
+      hash = "sha256-999hdb4n6qY/lCkJ0KtsuP2T2D0P3pKTd2oiI5l9+FQ=";
       requirePassword = false;
       allowedInterfaces = ["zt*" "lan0"];
       modifiers.resources = "more"; # 1.5x
