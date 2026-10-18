@@ -178,7 +178,23 @@ pkgs.writeShellApplication {
         line=$(printf '%-8s %-24s %6s %-5s %s %s' "$d" "''${model:-?}" "''${size:-?}" "''${tran:-?}" "$h" "$extra")
         if [ $first -eq 1 ]; then row DISK "$line"; first=0; else sub "$line"; fi
       done
-      [ $first -eq 1 ] && row DISK "$(warn "none found")"
+      [ $first -eq 1 ] && row DISK "$(warn "none found")" && disk_why
+    }
+
+    # no disks usually means the firmware is hiding them, not that there are none
+    disk_why() {
+      local ctl
+      if t 3 dmesg | grep -qi 'remapped nvme'; then
+        sub "$(bad "Intel RST is hiding an NVMe drive") — BIOS: SATA operation → AHCI"
+      elif t 3 lspci | grep -qi 'RAID bus controller'; then
+        sub "$(warn "storage controller in RAID mode") — BIOS: SATA operation → AHCI"
+      fi
+      ctl=$(t 3 lspci | grep -Ei 'SATA|AHCI|RAID|Non-Volatile|NVMe|SCSI|IDE interface' | pciname | cut -c1-60)
+      if [ -n "$ctl" ]; then
+        while read -r c; do sub "''${D}controller: $c''${N}"; done <<<"$ctl"
+      else
+        sub "$(warn "no storage controller visible")"
+      fi
     }
 
     s_gpu() {
@@ -220,6 +236,12 @@ pkgs.writeShellApplication {
 
     # ── report ──────────────────────────────────────────────
     clear 2>/dev/null || printf '\e[H\e[2J'
+
+    # dell fan/temp sensors live behind a module that isn't always autoloaded;
+    # it refuses unsupported models on its own, so trying is harmless
+    case "$(dmi sys_vendor)" in
+      Dell*) t 5 modprobe -q dell_smm_hwmon ;;
+    esac
 
     section HOST 8  s_header
     section CPU  15 s_cpu

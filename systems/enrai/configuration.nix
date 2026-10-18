@@ -26,7 +26,6 @@
     enable = true;
     baremetal = {
       enable = true;
-      interface = "enp0s31f6";
       gateway = "10.0.0.1";
     };
 
@@ -39,7 +38,7 @@
       code = "01a112f4-bb4e-33d8-a4b2-e55a815cac2f";
       hash = "sha256-bQcddpcShSrJVLhBLgNvLRyD5UbRApQ5q2oOUBN1fAo=";
       requirePassword = false;
-      allowedInterfaces = ["zt*" "enp0s31f6"];
+      allowedInterfaces = ["zt*" "lan0"];
       modifiers.resources = "more"; # 1.5x
       admins = [
         "76561198866784053"

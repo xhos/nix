@@ -85,8 +85,8 @@ in {
     enable = lib.mkEnableOption "baremetal networking";
     interface = lib.mkOption {
       type = lib.types.str;
-      default = "enp0s31f6";
-      description = "Physical NIC";
+      default = "lan0";
+      description = "Stable name given to the onboard ethernet NIC, independent of PCI slot";
     };
     gateway = lib.mkOption {
       type = lib.types.str;
@@ -114,6 +114,15 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    # rename the physical PCI ethernet NIC so firewall/IP config survives a motherboard swap
+    systemd.network.links."10-${cfg.baremetal.interface}" = lib.mkIf cfg.baremetal.enable {
+      matchConfig = {
+        Type = "ether";
+        Path = "pci-*";
+      };
+      linkConfig.Name = cfg.baremetal.interface;
+    };
+
     networking = lib.mkMerge [
       (lib.mkIf cfg.baremetal.enable {
         interfaces.${cfg.baremetal.interface} = {
