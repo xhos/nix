@@ -35,6 +35,10 @@
 
     programs.rofi = {
       enable = true;
+      extraConfig = {
+        matching = "normal";
+        sorting-method = "fzf";
+      };
       theme = let
         inherit (config.lib.formats.rasi) mkLiteral;
         mkl = mkLiteral;
