@@ -1,0 +1,1 @@
+import ../magi/disko.nix

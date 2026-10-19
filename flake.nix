@@ -121,6 +121,9 @@
   in {
     nixosConfigurations = builtins.mapAttrs (hostname: args: mkNixosSystem ({inherit hostname;} // args)) {
       aevon = {};
+      balthasar = {homeUser = null;};
+      casper = {homeUser = null;};
+      melchior = {homeUser = null;};
       mizore = {
         homeUser = null;
       };
