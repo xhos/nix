@@ -13,6 +13,9 @@
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
 
+    # stock btop is built without NVML support, so it shows no gpu box
+    nixpkgs.overlays = [(final: prev: {btop = prev.btop.override {cudaSupport = true;};})];
+
     services.xserver.videoDrivers = ["nvidia"];
     # not in boot.initrd: the module + GSP firmware add ~180MB to every initrd and fill the ESP
     boot.kernelModules = ["nvidia" "nvidia_modeset" "nvidia_uvm" "nvidia_drm"];
