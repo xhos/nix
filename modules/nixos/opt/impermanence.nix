@@ -27,12 +27,21 @@ in {
 
     programs.fuse.userAllowOther = true;
 
+    # read the host key straight from /persist instead of persisting /etc/ssh:
+    # bind-mounting the whole dir hides the sshd_config nixos writes there at boot,
+    # so a fresh install comes up with no sshd. sops reads this same path
+    services.openssh.hostKeys = [
+      {
+        path = "/persist/etc/ssh/ssh_host_ed25519_key";
+        type = "ed25519";
+      }
+    ];
+
     environment.persistence."/persist" = lib.mkMerge [
       {
         hideMounts = true;
         directories =
           [
-            "/etc/ssh"
             "/var/lib/nixos"
             "/var/lib/systemd/"
             "/var/lib/upower"
