@@ -13,7 +13,6 @@
   homelab = {
     enable = true;
     attic.enable = true;
-    config.tailscaleIP = "100.64.0.3";
   };
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./arashi.pub];

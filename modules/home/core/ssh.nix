@@ -6,6 +6,9 @@
     "ssh/mc".mode = "0600";
     "ssh/vyverne".mode = "0600";
     "ssh/enrai".mode = "0600";
+    "ssh/melchior".mode = "0600";
+    "ssh/balthasar".mode = "0600";
+    "ssh/casper".mode = "0600";
     "ssh/github" = {
       path = "${config.home.homeDirectory}/.ssh/github";
       mode = "0600";
@@ -71,6 +74,21 @@
         Port = 22;
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/enrai".path;
+      };
+      "melchior" = {
+        User = "xhos";
+        IdentitiesOnly = true;
+        IdentityFile = config.sops.secrets."ssh/melchior".path;
+      };
+      "balthasar" = {
+        User = "xhos";
+        IdentitiesOnly = true;
+        IdentityFile = config.sops.secrets."ssh/balthasar".path;
+      };
+      "casper" = {
+        User = "xhos";
+        IdentitiesOnly = true;
+        IdentityFile = config.sops.secrets."ssh/casper".path;
       };
     };
   };

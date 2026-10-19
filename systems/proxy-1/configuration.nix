@@ -10,14 +10,12 @@
         name
         != "proxy-1"
         && (cfg.config.homelab.enable or false)
-        && cfg.config.homelab.config.tailscaleIP != ""
     )
     inputs.self.nixosConfigurations;
 
   hostData =
     lib.mapAttrs (hostname: cfg: {
       hostname = hostname;
-      tailscaleIP = cfg.config.homelab.config.tailscaleIP;
       services = cfg.config.homelab.exposedServices;
       tcpForwards = cfg.config.homelab.tcpForwards;
     })
@@ -25,23 +23,29 @@
 
   domain = config.homelab.config.domain;
 
-  # collect all TCP/UDP forwards across hosts -> nftables DNAT rules
+  # collect all TCP/UDP forwards across hosts -> nginx stream relays
   allForwards = lib.flatten (lib.mapAttrsToList (
       _: host:
         lib.mapAttrsToList (
           _: fwd: {
             inherit (fwd) listen port proto;
-            target = host.tailscaleIP;
+            target = "${host.hostname}.ts.${domain}";
           }
         )
         host.tcpForwards
     )
     hostData);
 
-  dnatRules =
-    lib.concatMapStringsSep "\n" (
-      fwd: "${fwd.proto} dport ${toString fwd.listen} dnat to ${fwd.target}:${toString fwd.port}"
-    )
+  # relayed by name instead of dnat so nothing here needs a tailnet ip.
+  # dnat bought nothing anyway, tailscale0 egress was masqueraded
+  streamServers =
+    lib.concatMapStrings (fwd: ''
+      server {
+        listen ${toString fwd.listen}${lib.optionalString (fwd.proto == "udp") " udp"};
+        set $target ${fwd.target}:${toString fwd.port};
+        proxy_pass $target;
+      }
+    '')
     allForwards;
 
   forwardPublicPorts =
@@ -91,7 +95,6 @@ in {
         chain prerouting {
           type nat hook prerouting priority dstnat; policy accept;
           iifname "ens3" udp dport 443 counter redirect to :8443
-          ${dnatRules}
         }
 
         chain postrouting {
@@ -112,6 +115,21 @@ in {
     allowedUDPPorts =
       [443 config.services.tailscale.port 41641]
       ++ (map (f: f.port) (lib.filter (f: f.proto == "udp") forwardPublicPorts));
+  };
+
+  # caddy owns 80/443, nginx is only here for raw tcp/udp
+  services.nginx = {
+    enable = true;
+    virtualHosts = {}; # drop the default localhost vhost, it'd grab :80
+    streamConfig = ''
+      # quad100, re-resolved so a host changing ip doesn't need a reload
+      resolver 100.100.100.100 valid=60s;
+      ${streamServers}
+    '';
+  };
+  systemd.services.nginx = {
+    after = ["tailscaled.service"];
+    wants = ["tailscaled.service"];
   };
 
   sops.secrets."api/cloudflare" = {};

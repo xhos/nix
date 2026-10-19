@@ -54,7 +54,7 @@
             "127.0.0.1"
             config.networking.hostName
             config.homelab.config.homelabLocalIP
-            config.homelab.config.tailscaleIP
+            "${config.networking.hostName}.ts.${config.homelab.config.domain}"
             "radarr.${config.homelab.config.domain}"
           ];
           username = "xhos";

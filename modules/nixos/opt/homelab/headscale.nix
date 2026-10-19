@@ -2,6 +2,7 @@
 {
   config,
   lib,
+  pkgs,
   inputs,
   ...
 }: {
@@ -9,6 +10,30 @@
 
   config = lib.mkIf config.homelab.headscale.enable (let
     domain = config.homelab.config.domain;
+    hs = config.services.headscale;
+    recordsPath = "/var/lib/headscale/extra-records.json";
+
+    homelabHosts =
+      lib.filterAttrs (
+        name: cfg: name != "proxy-1" && (cfg.config.homelab.enable or false)
+      )
+      inputs.self.nixosConfigurations;
+
+    # internal service fqdn -> node name, for every non-exposed service
+    recordHosts = pkgs.writeText "extra-record-hosts.json" (builtins.toJSON (lib.listToAttrs (lib.flatten (
+      lib.mapAttrsToList (
+        _: cfg:
+          lib.mapAttrsToList (svcName: svc:
+            lib.nameValuePair "${
+              if svc.subdomain != ""
+              then svc.subdomain
+              else svcName
+            }.${domain}"
+            cfg.config.networking.hostName)
+          (lib.filterAttrs (_: s: !s.exposed) cfg.config.homelab.exposedServices)
+      )
+      homelabHosts
+    ))));
   in {
     homelab.exposedServices.headscale = {
       port = 8080;
@@ -31,35 +56,50 @@
           base_domain = "ts.${domain}";
           nameservers.global = ["1.1.1.1" "1.0.0.1"];
 
-          extra_records = let
-            homelabHosts =
-              lib.filterAttrs (
-                name: cfg:
-                  name
-                  != "proxy-1"
-                  && (cfg.config.homelab.enable or false)
-                  && cfg.config.homelab.config.tailscaleIP != ""
-              )
-              inputs.self.nixosConfigurations;
-          in
-            lib.flatten (lib.mapAttrsToList (
-                _: cfg: let
-                  localSvcs = lib.filterAttrs (_: s: !s.exposed) cfg.config.homelab.exposedServices;
-                  tailscaleIP = cfg.config.homelab.config.tailscaleIP;
-                in
-                  lib.mapAttrsToList (svcName: svc: {
-                    name = "${
-                      if svc.subdomain != ""
-                      then svc.subdomain
-                      else svcName
-                    }.${domain}";
-                    type = "A";
-                    value = tailscaleIP;
-                  })
-                  localSvcs
-              )
-              homelabHosts);
+          # filled at runtime by headscale-extra-records, ips aren't known at build time
+          extra_records_path = recordsPath;
         };
+      };
+    };
+
+    # headscale refuses to start if the records file is missing
+    systemd.services.headscale.preStart = ''
+      [ -e ${recordsPath} ] || echo '[]' > ${recordsPath}
+    '';
+
+    # join "service -> host" from the flake with headscale's live node ips.
+    # headscale watches the file and only pushes when the contents change
+    systemd.services.headscale-extra-records = {
+      description = "point internal service names at their hosts' tailnet ips";
+      after = ["headscale.service"];
+      requires = ["headscale.service"];
+      wantedBy = ["headscale.service"];
+      path = [hs.package pkgs.jq];
+      serviceConfig = {
+        Type = "oneshot";
+        User = hs.user;
+        Group = hs.group;
+        # socket may not be up yet right after headscale starts
+        Restart = "on-failure";
+        RestartSec = "10s";
+      };
+      script = ''
+        nodes=$(headscale --config ${hs.configFile} nodes list -o json)
+        jq -n --argjson nodes "$nodes" --slurpfile want ${recordHosts} '
+          [ $want[0] | to_entries[] as $r
+            | ($nodes // [])[] | select(.given_name == $r.value)
+            | .ip_addresses[] | select(contains(":") | not)
+            | {Name: $r.key, Type: "A", Value: .} ]
+        ' > ${recordsPath}.tmp
+        mv ${recordsPath}.tmp ${recordsPath}
+      '';
+    };
+
+    systemd.timers.headscale-extra-records = {
+      wantedBy = ["timers.target"];
+      timerConfig = {
+        OnBootSec = "1min";
+        OnUnitActiveSec = "1min";
       };
     };
   });

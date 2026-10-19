@@ -21,8 +21,6 @@
   profile = "full";
 
   homelab = {
-    config.tailscaleIP = "100.64.0.5";
-
     enable = true;
     baremetal = {
       enable = true;
@@ -31,6 +29,7 @@
 
     docker.enable = true;
     tg-notify.enable = true;
+    netboot.enable = true;
     sops-sync.enable = true;
 
     valheim = {
