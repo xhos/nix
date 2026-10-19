@@ -46,7 +46,10 @@
   time.hardwareClockInLocalTime = true;
 
   boot.supportedFilesystems = ["zfs"];
-  boot.kernelParams = ["hid_apple.fnmode=2"]; # fix fn keys on infi75
+  boot.kernelParams = [
+    "hid_apple.fnmode=2" # fix fn keys on infi75
+    "acpi_enforce_resources=lax" # MSI reserves the SuperIO range in ACPI, nct6775 won't bind without this
+  ];
   boot.binfmt.emulatedSystems = ["aarch64-linux"]; # to build the OCI arm image
 
   # ── filesystems ───────────────────────────────────────────────────────
@@ -126,9 +129,26 @@
   services.hardware.openrgb.enable = true;
   programs.kdeconnect.enable = true;
 
+  # case/cpu fan control via the board's NCT6797D (MSI Z390), curves set in the coolercontrol gui
+  programs.coolercontrol.enable = true;
+  # per-file: persisting the whole dir would hide the plugins symlink nixos puts there
+  persist.files = map (f: "/etc/coolercontrol/${f}") [
+    "config.toml"
+    "config-ui.json"
+    "modes.json"
+    "overrides.toml"
+    "alerts.json"
+    "calibrations.json"
+    "coolercontrol.crt"
+    "coolercontrol.key"
+    ".passwd"
+    ".tokens"
+  ];
+  persist.dirs = ["/var/lib/coolercontrol"];
+
   # android phone as a webcam: scrcpy --video-source=camera --v4l2-sink=/dev/video0
   # (adb / scrcpy come from the shared pkgs modules, user is in adbusers)
-  boot.kernelModules = ["v4l2loopback"];
+  boot.kernelModules = ["v4l2loopback" "nct6775"]; # nct6775: motherboard fan headers
   boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=1 video_nr=0 exclusive_caps=1 card_label="Phone Cam"
