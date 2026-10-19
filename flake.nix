@@ -153,6 +153,9 @@
         installer = import ./pkgs/installer.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };
+        remote-install = import ./pkgs/remote-install.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+        };
         pcinfo = import ./pkgs/pcinfo.nix {
           pkgs = nixpkgs.legacyPackages.${system};
         };

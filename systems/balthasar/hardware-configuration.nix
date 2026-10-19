@@ -1,5 +1,4 @@
-# shared by all three optiplex 5040s. the installer regenerates a per-host copy
-# in systems/<host>/, diff it against this one if a node turns out different
+# placeholder, overwritten by remote-install (nixos-anywhere --generate-hardware-config)
 {
   config,
   lib,

@@ -1,7 +1,9 @@
 {
-  imports = [../magi/common.nix];
+  imports = [
+    ../magi/common.nix
+    ./hardware-configuration.nix
+  ];
 
-  # installer greps the host dir for this to put the sops key under /persist
   impermanence.enable = true;
 
   networking.hostName = "balthasar";
