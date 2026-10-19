@@ -1,4 +1,5 @@
-{disk ? "/dev/sda", ...}: {
+# optiplex 5040s boot off a 256G m.2 nvme
+{disk ? "/dev/nvme0n1", ...}: {
   disko.devices = {
     disk.system = {
       type = "disk";

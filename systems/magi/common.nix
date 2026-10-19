@@ -2,7 +2,7 @@
 {inputs, ...}: {
   imports = [
     inputs.disko.nixosModules.disko
-    ./disko.nix
+    (import ./disko.nix {}) # module args ignore defaults, call it so disk ? applies
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
