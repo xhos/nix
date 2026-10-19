@@ -29,6 +29,8 @@ in {
     services.pixiecore = {
       enable = true;
       mode = "boot";
+      # otherwise it silently drops requests it decides not to answer
+      debug = true;
       inherit (cfg) port;
       statusPort = cfg.port;
       kernel = "${nyx.system.build.kernel}/${nyx.system.boot.loader.kernelFile}";
