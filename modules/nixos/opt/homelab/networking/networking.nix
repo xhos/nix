@@ -27,6 +27,11 @@ in {
           default = false;
           description = "Whether to expose publicly via proxy-1";
         };
+        guest = lib.mkOption {
+          type = lib.types.bool;
+          default = false;
+          description = "Whether tag:guest devices may reach this internal service";
+        };
         name = lib.mkOption {
           type = lib.types.str;
           default = "";

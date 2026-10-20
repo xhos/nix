@@ -34,6 +34,36 @@
       )
       homelabHosts
     ))));
+
+    # game server ports guests may reach, collected from every homelab host
+    guestPorts = lib.unique (lib.concatLists (lib.mapAttrsToList (
+        _: cfg: let
+          c = cfg.config.homelab;
+        in
+          lib.optionals c.valheim.enable [c.valheim.port (c.valheim.port + 1)]
+          ++ lib.concatLists (lib.mapAttrsToList (_: i: lib.optionals i.enable [i.port i.httpPort]) c.assetto-server.instances)
+      )
+      homelabHosts));
+
+    tn = config.homelab.config.tailnet;
+
+    # any policy makes headscale deny by default. owner devices and servers keep
+    # full access; guests get caddy (which gates per vhost) and the game ports
+    policy = pkgs.writeText "headscale-policy.json" (builtins.toJSON {
+      tagOwners = lib.genAttrs [tn.serverTag tn.guestTag] (_: ["${tn.owner}@"]);
+      acls = [
+        {
+          action = "accept";
+          src = ["${tn.owner}@" tn.serverTag];
+          dst = ["*:*"];
+        }
+        {
+          action = "accept";
+          src = [tn.guestTag];
+          dst = ["${tn.serverTag}:${lib.concatMapStringsSep "," toString ([443] ++ guestPorts)}"];
+        }
+      ];
+    });
   in {
     homelab.exposedServices.headscale = {
       port = 8080;
@@ -51,6 +81,10 @@
         noise.private_key_path = config.sops.secrets."vpn/headscale-identity".path;
         server_url = "https://hs.${domain}";
         ip_prefixes = ["100.64.0.0/10"];
+        policy = {
+          mode = "file";
+          path = policy;
+        };
         dns = {
           magic_dns = true;
           base_domain = "ts.${domain}";
@@ -92,6 +126,28 @@
             | {Name: $r.key, Type: "A", Value: .} ]
         ' > ${recordsPath}.tmp
         mv ${recordsPath}.tmp ${recordsPath}
+      '';
+    };
+
+    # headscale has no declarative users. the owner is the only one; servers
+    # and guests are tags
+    systemd.services.headscale-users = {
+      description = "create the tailnet owner user";
+      after = ["headscale.service"];
+      requires = ["headscale.service"];
+      wantedBy = ["headscale.service"];
+      path = [hs.package pkgs.jq];
+      serviceConfig = {
+        Type = "oneshot";
+        User = hs.user;
+        Group = hs.group;
+        Restart = "on-failure";
+        RestartSec = "10s";
+      };
+      script = ''
+        headscale --config ${hs.configFile} users list -o json \
+          | jq -e --arg u ${lib.escapeShellArg tn.owner} 'any((. // [])[]; .name == $u)' >/dev/null \
+          || headscale --config ${hs.configFile} users create ${lib.escapeShellArg tn.owner}
       '';
     };
 

@@ -2,14 +2,22 @@
   config,
   lib,
   ...
-}: {
-  sops.secrets."vpn/tailscale" = {};
+}: let
+  # homelab hosts join with a tag:server key, so they
+  # don't belong to the owner user and guest acls can target them
+  server = config.homelab.enable || config.homelab.headscale.enable;
+  key =
+    if server
+    then "vpn/tailscale-server"
+    else "vpn/tailscale";
+in {
+  sops.secrets.${key} = {};
 
   persist.dirs = ["var/lib/tailscale"];
 
   services.tailscale = {
     enable = true;
-    authKeyFile = config.sops.secrets."vpn/tailscale".path;
+    authKeyFile = config.sops.secrets.${key}.path;
     extraUpFlags = ["--login-server" "https://hs.xhos.dev"];
   };
 
