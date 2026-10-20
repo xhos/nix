@@ -5,7 +5,6 @@
 
   profile = "minimal";
   homelab.enable = true;
-  homelab.trek.enable = true;
 
   networking.hostName = "mizore";
   networking.hostId = "d75676d6";

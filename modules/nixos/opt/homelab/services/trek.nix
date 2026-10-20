@@ -10,7 +10,7 @@
     sops.secrets."env/trek" = {};
 
     homelab.exposedServices.trek = {
-      port = 3000;
+      port = 3001;
       exposed = true;
     };
 
@@ -21,10 +21,11 @@
       ];
     };
 
+    persist.dirs = ["/var/lib/trek" "/var/backup/trek"];
+
     virtualisation.podman = {
       enable = true;
       dockerCompat = true;
-      defaultNetwork.settings.dns_enabled = false;
     };
 
     # to update
@@ -35,7 +36,7 @@
       backend = "podman";
       containers.trek = {
         image = "ghcr.io/xhos/trek-with-map-drawing:latest";
-        ports = ["127.0.0.1:3000:3000"];
+        ports = ["127.0.0.1:3001:3000"];
         environment = {
           NODE_ENV = "production";
           PORT = "3000";

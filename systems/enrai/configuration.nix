@@ -135,6 +135,7 @@
     immich.enable = true;
     nagomi.enable = true;
     syncthing.enable = true;
+    trek.enable = true;
     wakapi.enable = true;
     xray.enable = false;
     zipline.enable = true;
