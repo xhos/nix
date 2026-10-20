@@ -108,7 +108,8 @@ in {
 
     systemd.services.tailnet-gate = {
       description = "tailnet identity check for caddy forward_auth";
-      wantedBy = ["caddy.service"];
+      # multi-user so a switch starts it; caddy is only reloaded then
+      wantedBy = ["multi-user.target" "caddy.service"];
       before = ["caddy.service"];
       after = ["tailscaled.service"];
       serviceConfig = {
