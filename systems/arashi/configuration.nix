@@ -10,10 +10,7 @@
 
   profile = "full";
 
-  homelab = {
-    enable = true;
-    attic.enable = true;
-  };
+  homelab.enable = true;
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./arashi.pub];
 

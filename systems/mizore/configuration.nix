@@ -13,11 +13,6 @@
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./mizore.pub];
 
-  nix.settings = {
-    substituters = ["https://cache.xhos.dev/main"];
-    trusted-public-keys = ["main:sD+aH0XOgkp432O05lkkl1x7XipgELXk+1mQmuDch0U="];
-  };
-
   zramSwap = {
     enable = true;
     algorithm = "zstd";
