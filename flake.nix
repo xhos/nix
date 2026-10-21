@@ -98,11 +98,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    vscode-server = {
-      url = "github:nix-community/nixos-vscode-server";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # only nixpkgs follows; attic keeps its own nixpkgs-stable for the client
     attic = {
       url = "github:zhaofengli/attic";
@@ -129,7 +124,6 @@
 
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 

@@ -46,6 +46,7 @@
   time.hardwareClockInLocalTime = true;
 
   boot.supportedFilesystems = ["zfs"];
+  boot.zfs.forceImportRoot = false;
   boot.kernelParams = [
     "hid_apple.fnmode=2" # fix fn keys on infi75
     "acpi_enforce_resources=lax" # MSI reserves the SuperIO range in ACPI, nct6775 won't bind without this

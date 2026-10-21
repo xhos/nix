@@ -10,6 +10,7 @@
   stylix = lib.mkIf (config.headless != true) {
     enable = true;
     polarity = "dark";
+    overlays.enable = false;
 
     cursor = {
       name = "phinger-cursors-dark";

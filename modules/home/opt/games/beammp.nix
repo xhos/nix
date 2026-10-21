@@ -26,7 +26,7 @@
           nss
           at-spi2-atk
           at-spi2-core
-          xorg.libXcomposite
+          libxcomposite
         ];
     }).run;
 

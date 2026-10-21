@@ -6,7 +6,6 @@
   imports = [
     inputs.disko.nixosModules.disko
     inputs.vpn-confinement.nixosModules.default
-    inputs.vscode-server.nixosModules.default
     ./hardware-configuration.nix
     ./disko.nix
     ./kodama.nix
@@ -156,7 +155,6 @@
 
   services.gvfs.enable = true;
   services.udisks2.enable = true;
-  services.vscode-server.enable = true;
 
   users.users.xhos.openssh.authorizedKeys.keyFiles = [./enrai.pub];
 

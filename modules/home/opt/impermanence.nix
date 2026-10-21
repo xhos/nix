@@ -27,6 +27,8 @@ in {
       PATH=$PATH:/run/wrappers/bin
     '';
 
+    systemd.user.tmpfiles.rules = ["e %h/.cache/nix/eval-cache-v6 - - - 14d"];
+
     home.persistence."/persist" = lib.mkIf config.impermanence.enable (lib.mkMerge [
       {
         directories =
@@ -128,6 +130,7 @@ in {
             "Videos"
 
             # big caches
+            ".cache/nix/eval-cache-v6" # aged out by tmpfiles below
             ".cache/go-build"
             ".cache/.bun"
             ".cache/spotify"
@@ -159,7 +162,6 @@ in {
       (persistIf config.headless {
         directories = [
           ".cloudflared"
-          ".vscode-server"
           ".zed_server"
           ".local/share/containers" # podman containers
         ];

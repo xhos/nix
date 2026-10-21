@@ -45,5 +45,14 @@
         smoothProgressBar
       ];
     };
+
+    # spotify rewrites prefs itself, so patch the line instead of symlinking the file
+    home.activation.spotifyCacheCap = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      prefs="${config.xdg.configHome}/spotify/prefs"
+      if [ -f "$prefs" ]; then
+        run sed -i '/^storage.size=/d' "$prefs"
+        run sh -c 'echo storage.size=2048 >> "$1"' _ "$prefs"
+      fi
+    '';
   };
 }

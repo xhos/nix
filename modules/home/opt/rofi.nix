@@ -35,7 +35,7 @@
 
     programs.rofi = {
       enable = true;
-      extraConfig = {
+      settings = {
         matching = "normal";
         sorting-method = "fzf";
       };
