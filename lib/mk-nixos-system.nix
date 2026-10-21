@@ -22,12 +22,16 @@
       prev.makeSetupHook {name = "copyDesktopIcons";}
       "${inputs.erosanix}/hooks/copy-desktop-icons.sh";
   };
+
+  collectFlakeInputs = input:
+    [input] ++ builtins.concatMap collectFlakeInputs (builtins.attrValues (input.inputs or {}));
 in
   {
     hostname,
     homeUser ? "xhos",
     extraSpecialArgs ? {},
     minimal ? false,
+    rootInputs ? homeUser != null,
   }:
     lib.nixosSystem {
       specialArgs = {inherit inputs import-tree;} // extraSpecialArgs;
@@ -36,6 +40,9 @@ in
         ++ [
           ../systems/${hostname}/configuration.nix
           {nixpkgs.overlays = [erosanixOverlay pkgsOverlay];}
+        ]
+        ++ lib.optionals rootInputs [
+          {system.extraDependencies = collectFlakeInputs inputs.self;}
         ]
         ++ lib.optionals (homeUser != null) (
           sharedNixosModules

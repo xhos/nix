@@ -15,8 +15,15 @@
     };
 
     # --- system ---------------------------------------------------------
-    disko.url = "github:nix-community/disko";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     impermanence.url = "github:nix-community/impermanence";
+
+    # deliberately NOT following: proxmox packages are built against its own
+    # pinned nixpkgs, and following would lose their binary cache hits
     proxmox-nixos.url = "github:SaumonNet/proxmox-nixos";
 
     sops-nix = {
@@ -40,8 +47,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    yawn.url = "github:xhos/yawn";
-    logi-hypr.url = "github:xhos/logi-hypr";
+    yawn = {
+      url = "github:xhos/yawn";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    logi-hypr = {
+      url = "github:xhos/logi-hypr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # swissh.url = "github:xhos/swissh";
 
     # --- applications ---------------------------------------------------
@@ -56,9 +71,21 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nixcord.url = "github:kaylorben/nixcord";
-    nxv.url = "github:xhos/nxv";
-    zen-browser.url = "github:0xc000022070/zen-browser-flake";
+    nixcord = {
+      url = "github:kaylorben/nixcord";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nxv = {
+      url = "github:xhos/nxv";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
 
     # --- services -------------------------------------------------------
     declarr = {
@@ -71,13 +98,27 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    vscode-server.url = "github:nix-community/nixos-vscode-server";
-    attic.url = "github:zhaofengli/attic";
-    nagomi.url = "github:xhos/nagomi";
+    vscode-server = {
+      url = "github:nix-community/nixos-vscode-server";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # only nixpkgs follows; attic keeps its own nixpkgs-stable for the client
+    attic = {
+      url = "github:zhaofengli/attic";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nagomi = {
+      url = "github:xhos/nagomi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     wled-album-sync = {
       url = "github:xhos/wled-album-sync";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
     kodama = {
       url = "git+ssh://git@github.com/xhos/kodama?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -85,7 +126,11 @@
 
     # --- utilities ------------------------------------------------------
     import-tree.url = "github:vic/import-tree";
-    vpn-confinement.url = "github:Maroka-chan/VPN-Confinement";
+
+    vpn-confinement = {
+      url = "github:Maroka-chan/VPN-Confinement";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
