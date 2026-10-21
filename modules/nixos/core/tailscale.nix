@@ -13,7 +13,7 @@
 in {
   sops.secrets.${key} = {};
 
-  persist.dirs = ["var/lib/tailscale"];
+  persist.dirs = ["/var/lib/tailscale"];
 
   services.tailscale = {
     enable = true;
