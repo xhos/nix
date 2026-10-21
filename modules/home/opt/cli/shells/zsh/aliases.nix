@@ -123,6 +123,13 @@
           ffmpeg -i "$input" -c:v copy -c:a pcm_s16le "$output"
         done
       }
+
+      resolvefix() {
+        for f in "$@"; do
+          ffmpeg -hide_banner -loglevel warning -stats -i "$f" -map 0:v:0 -map 0:a -c:v copy -c:a pcm_s16le "''${f:r}.tmp.mov" \
+            && rm "$f" && mv "''${f:r}.tmp.mov" "''${f:r}.mov"
+        done
+      }
     '';
   };
 }
