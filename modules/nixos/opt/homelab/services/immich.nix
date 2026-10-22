@@ -16,7 +16,6 @@
     };
     homelab.backup.services.immich = {
       paths = ["${config.services.immich.mediaLocation}"];
-      databases = ["immich"];
       exclude = [
         "${config.services.immich.mediaLocation}/thumbs"
         "${config.services.immich.mediaLocation}/encoded-video"

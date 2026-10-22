@@ -30,6 +30,7 @@
     tg-notify.enable = true;
     netboot.enable = true;
     sops-sync.enable = true;
+    postgres.enable = true;
 
     valheim = {
       enable = true;

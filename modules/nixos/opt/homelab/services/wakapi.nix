@@ -8,12 +8,26 @@
   config = lib.mkIf config.homelab.wakapi.enable {
     sops.secrets."env/wakapi" = {};
 
-    # unset dynamic user stuff which makes it difficult to persist
-    systemd.services.wakapi.serviceConfig = {
-      StateDirectory = lib.mkForce null;
-      DynamicUser = lib.mkForce false;
-      User = "wakapi";
-      Group = "wakapi";
+    systemd.services.wakapi = {
+      requires = ["postgresql.target"];
+      after = ["postgresql.target"];
+      # unset dynamic user stuff which makes it difficult to persist
+      serviceConfig = {
+        StateDirectory = lib.mkForce null;
+        DynamicUser = lib.mkForce false;
+        User = "wakapi";
+        Group = "wakapi";
+      };
+    };
+
+    services.postgresql = {
+      ensureDatabases = ["wakapi"];
+      ensureUsers = [
+        {
+          name = "wakapi";
+          ensureDBOwnership = true;
+        }
+      ];
     };
 
     homelab.exposedServices.wakapi = {
@@ -24,18 +38,15 @@
 
     services.wakapi = {
       enable = true;
-      database.createLocally = true;
       environmentFiles = [config.sops.secrets."env/wakapi".path];
 
       settings = {
         server.port = 3333;
 
+        # createLocally would add a passwordless tcp trust rule; use peer auth instead
         db = {
           dialect = "postgres";
-          host = "127.0.0.1";
-          name = "wakapi";
-          user = "wakapi";
-          port = 5432;
+          DSN = "host=/run/postgresql user=wakapi dbname=wakapi sslmode=disable";
         };
 
         mail.enabled = false;
