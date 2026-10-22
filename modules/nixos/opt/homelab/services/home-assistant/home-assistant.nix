@@ -40,7 +40,15 @@
         "ollama"
       ];
       customComponents = [
-        (pkgs.home-assistant-custom-components.yandex-station.overridePythonAttrs (old: {
+        # 3.22.3 fixes login, yandex.ru/quasar was retired
+        (pkgs.home-assistant-custom-components.yandex-station.overridePythonAttrs (old: rec {
+          version = "3.22.3";
+          src = pkgs.fetchFromGitHub {
+            owner = "AlexxIT";
+            repo = "YandexStation";
+            tag = "v${version}";
+            hash = "sha256-xQRgklLCE18GdMFBNDJjxoiqitBedCbAHhP/v7zD2DM=";
+          };
           doCheck = false;
         }))
       ];
@@ -333,6 +341,7 @@
           show_in_sidebar = true;
         };
         wake_on_lan = {};
+        logger.logs."custom_components.yandex_station" = "debug";
         shopping_list = {};
 
         http = {
@@ -352,7 +361,7 @@
         shell_command = {
           shutdown_vyverne = "${pkgs.openssh}/bin/ssh -i ${
             config.sops.secrets."ssh/vyverne".path
-          } -o StrictHostKeyChecking=no -p 22 xhos@10.0.0.11 sudo shutdown -h now";
+          } -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 22 xhos@10.0.0.11 sudo shutdown -h now";
         };
 
         switch = [
@@ -370,6 +379,7 @@
           {
             platform = "wake_on_lan";
             mac = "c8:fe:0f:d0:3c:68";
+            broadcast_address = "10.0.0.255";
             name = "PC Power";
             host = "10.0.0.11";
             turn_off = {

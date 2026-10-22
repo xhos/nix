@@ -74,7 +74,14 @@
   };
 
   # ── networking ────────────────────────────────────────────────────────
-  networking.interfaces.enp5s0.wakeOnLan.enable = true;
+  # match by mac, the nixos wakeOnLan option matches OriginalName which is still eth0 at boot
+  systemd.network.links."10-enp5s0" = {
+    matchConfig.PermanentMACAddress = "c8:fe:0f:d0:3c:68";
+    linkConfig = {
+      Name = "enp5s0";
+      WakeOnLan = "magic";
+    };
+  };
 
   systemd.network.networks."05-enp5s0" = {
     matchConfig.MACAddress = "c8:fe:0f:d0:3c:68";
