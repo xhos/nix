@@ -16,6 +16,9 @@
         "git@github.com:xhos/" = {
           insteadOf = ["x:"];
         };
+        "ssh://git@enrai.ts.xhos.dev:2222/xhos/" = {
+          insteadOf = ["f:"];
+        };
       };
       status = {
         branch = true;

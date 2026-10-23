@@ -131,6 +131,7 @@
 
     atuin.enable = true;
     dawarich.enable = true;
+    forgejo.enable = true;
     glance.enable = true;
     immich.enable = true;
     nagomi.enable = true;

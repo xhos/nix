@@ -27,6 +27,13 @@
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/github".path;
       };
+      # forgejo's built-in sshd, tailnet only
+      "enrai.ts.xhos.dev" = {
+        Port = 2222;
+        User = "git";
+        IdentitiesOnly = true;
+        IdentityFile = config.sops.secrets."ssh/github".path;
+      };
       # VPS
       "proxy-1" = {
         HostName = "40.233.109.227";

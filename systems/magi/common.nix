@@ -7,6 +7,7 @@
 
   nixpkgs.hostPlatform = "x86_64-linux";
   profile = "minimal";
+  homelab.forgejo-runner.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
