@@ -122,6 +122,11 @@
     # --- utilities ------------------------------------------------------
     import-tree.url = "github:vic/import-tree";
 
+    deploy-rs = {
+      url = "github:serokell/deploy-rs";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vpn-confinement = {
       url = "github:Maroka-chan/VPN-Confinement";
     };
@@ -186,6 +191,16 @@
       vyverne = {};
       zireael = {};
     };
+
+    # hostname is the ssh alias from modules/home/core/ssh.nix, which carries the ip and key
+    deploy.nodes = lib.genAttrs ["melchior" "balthasar" "casper"] (hostname: {
+      inherit hostname;
+      sshUser = "xhos";
+      profiles.system = {
+        user = "root";
+        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
+      };
+    });
 
     packages =
       forEachSystem (system: {

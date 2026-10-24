@@ -83,16 +83,19 @@
         IdentityFile = config.sops.secrets."ssh/enrai".path;
       };
       "melchior" = {
+        HostName = "10.0.0.15";
         User = "xhos";
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/melchior".path;
       };
       "balthasar" = {
+        HostName = "10.0.0.16";
         User = "xhos";
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/balthasar".path;
       };
       "casper" = {
+        HostName = "10.0.0.17";
         User = "xhos";
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/casper".path;
