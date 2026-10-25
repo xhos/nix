@@ -96,6 +96,5 @@
     HibernateDelaySec = "30min";
     SuspendState = "mem";
   };
-  programs.nix-ld.enable = true;
   system.stateVersion = "25.05";
 }

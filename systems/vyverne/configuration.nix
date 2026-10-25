@@ -163,9 +163,6 @@
   '';
   environment.systemPackages = [pkgs.v4l-utils];
 
-  # ── misc ──────────────────────────────────────────────────────────────
-  programs.nix-ld.enable = true;
-
   nixpkgs.overlays = [
     (final: prev: {
       ctranslate2 = prev.ctranslate2.override {
