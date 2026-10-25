@@ -49,6 +49,30 @@
           --exclude "var/lib/systemd/coredump"
       }
 
+      # deploy-rs: no args deploys every node, otherwise just the named ones
+      # on failure, dumps the journal of whatever units failed on that node
+      dep() {
+        local log=$(mktemp)
+        if [[ $# -eq 0 ]]; then
+          nix run --inputs-from "$NH_FLAKE" deploy-rs -- "$NH_FLAKE" 2>&1 | tee "$log"
+        else
+          nix run --inputs-from "$NH_FLAKE" deploy-rs -- --targets "''${@/#/$NH_FLAKE#}" 2>&1 | tee "$log"
+        fi
+        local rc=''${pipestatus[1]}
+
+        if (( rc != 0 )); then
+          local node=$(grep -oP 'Deployment to node \K\S+(?= failed)' "$log" | tail -1)
+          local units=$(grep -oP 'the following units failed: \K.*' "$log" | tail -1 | tr -d ',')
+          for u in ''${=units}; do
+            print -P "\n%F{red}--- $node: $u%f"
+            ssh "$node" journalctl -u "$u" --no-pager -n 25 -o cat
+          done
+        fi
+
+        rm -f "$log"
+        return $rc
+      }
+
       try() {
         nix run nixpkgs#$1 -- "''${@:2}"
       }

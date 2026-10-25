@@ -1423,11 +1423,11 @@
       "flake": false,
       "locked": {
         "allRefs": true,
-        "lastModified": 1792463054,
-        "narHash": "sha256-MO5OVFjQsSnweoN0AQB0fozqpdOyJyVPhKsw5nW2y5w=",
+        "lastModified": 1792893595,
+        "narHash": "sha256-oaFjg1hAulsPBP/qP5nMi3MG+lDZMr46YplRb2L4B7k=",
         "ref": "main",
-        "rev": "4129e6814cfaf308e78dad6a9497d573c7344edc",
-        "revCount": 90,
+        "rev": "8dd84192459da8ca123b54e8491859fac63c2dfd",
+        "revCount": 94,
         "type": "git",
         "url": "ssh://git@github.com/xhos/nix-secrets"
       },
