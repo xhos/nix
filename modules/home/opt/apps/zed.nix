@@ -193,6 +193,10 @@
           provider = "copilot_chat";
           model = "claude-opus-4.6";
         };
+        inline_assistant_model = {
+          provider = "copilot_chat";
+          model = "claude-sonnet-4.6";
+        };
         play_sound_when_agent_done = true;
       };
 
