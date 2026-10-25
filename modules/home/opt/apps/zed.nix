@@ -190,19 +190,18 @@
         dock = "right";
         default_profile = "ask";
         default_model = {
-          provider = "copilot_chat";
-          model = "claude-opus-4.6";
+          provider = "ollama";
+          model = "qwen3.5:9b";
         };
         inline_assistant_model = {
-          provider = "copilot_chat";
-          model = "claude-sonnet-4.6";
+          provider = "ollama";
+          model = "qwen3.5:9b";
         };
         play_sound_when_agent_done = true;
       };
 
       agent_ui_font_size = 14.0;
 
-      # ACP agents, fetched from zed's agent registry into ~/.local/share/zed/external_agents
       agent_servers = {
         claude-acp = {
           type = "registry";
@@ -214,7 +213,7 @@
         };
         antigravity-acp = {
           type = "registry";
-          default_config_options.model = "claude-opus-4-6-thinking";
+          default_config_options.model = "claude-opus-5-5-thinking";
         };
       };
 
