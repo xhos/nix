@@ -69,6 +69,7 @@ in {
     extraFlags = [
       "--node-ip=${ip}"
       "--flannel-iface=lan0"
+      "--tls-san=${config.networking.hostName}.ts.xhos.dev"
     ];
   };
 }

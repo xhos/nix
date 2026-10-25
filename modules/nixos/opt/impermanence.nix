@@ -98,7 +98,6 @@ in {
           "/var/lib/docker"
           "/var/lib/acme"
           "/var/lib/caddy"
-          "/var/lib/zipline"
           "/var/lib/AdGuardHome"
           "/var/lib/dnsmasq"
           "/var/lib/glance"

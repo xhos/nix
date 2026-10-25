@@ -18,24 +18,28 @@
 
     sops.secrets."env/zipline" = {};
 
-    # # unset dynamic user stuff which makes it difficult to persist
-    # systemd.services.zipline.serviceConfig = {
-    #   StateDirectory = lib.mkForce null;
-    #   DynamicUser = lib.mkForce false;
-    #   User = "zipline";
-    #   Group = "zipline";
-    # };
+    # db is covered by the postgres dump; this holds uploads
+    persist.dirs = ["/var/lib/zipline"];
+    homelab.backup.services.zipline = {
+      paths = ["/var/lib/zipline"];
+      exclude = ["/var/lib/zipline/uploads/.tmp"];
+    };
 
-    # users.users.zipline = {
-    #   isSystemUser = true;
-    #   group = "zipline";
-    #   home = "/var/lib/zipline";
-    #   createHome = true;
-    # };
-    # users.groups.zipline = {};
+    # static user so the persisted /var/lib/zipline bind mount works
+    systemd.services.zipline.serviceConfig = {
+      DynamicUser = lib.mkForce false;
+      User = "zipline";
+      Group = "zipline";
+    };
+
+    users.users.zipline = {
+      isSystemUser = true;
+      group = "zipline";
+    };
+    users.groups.zipline = {};
 
     services.zipline = {
-      enable = false;
+      enable = true;
       environmentFiles = [config.sops.secrets."env/zipline".path];
 
       settings = {

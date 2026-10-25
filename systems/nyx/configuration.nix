@@ -80,7 +80,10 @@
     enable = true;
     settings.PermitRootLogin = "yes";
   };
-  users.users.root.password = lib.mkForce "nix";
+  users.users.root = {
+    password = lib.mkForce "nix";
+    initialHashedPassword = lib.mkForce null;
+  };
 
   services.getty.autologinUser = lib.mkForce "root";
 

@@ -117,6 +117,7 @@ in {
 
             ".zen"
             ".ssh"
+            ".kube"
             ".mozilla"
             ".vscode"
             "work" # todo: unemployed, remove once i mover stuff on vyverne out of there

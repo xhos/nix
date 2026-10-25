@@ -28,7 +28,6 @@
 
     docker.enable = true;
     tg-notify.enable = true;
-    netboot.enable = true;
     sops-sync.enable = true;
     postgres.enable = true;
 
