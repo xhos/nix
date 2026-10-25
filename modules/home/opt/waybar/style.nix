@@ -105,12 +105,6 @@
         padding: 6px 0;
       }
 
-      #image.claude,
-      #image.codex {
-        margin: 3px 3px;
-        padding: 2px 0;
-      }
-
       #language {
         color: @muted;
         font-size: 10px;
