@@ -27,6 +27,7 @@
       yandexBase = "yandex_station_xk0000000000000286720000e2296918";
       yandexStationId = "media_player.${yandexBase}";
       thermostat = "climate.thermostat";
+      wakeTemp = 23;
     in {
       enable = true;
       extraComponents = [
@@ -38,6 +39,7 @@
         "google_translate"
         "mcp_server"
         "ollama"
+        "ecobee"
       ];
       customComponents = [
         # 3.22.3 fixes login, yandex.ru/quasar was retired
@@ -126,6 +128,8 @@
                   "select.thermostat_temperature_display_units"
                   "button.thermostat_clear_hold"
                   "button.thermostat_identify"
+                  "sensor.wake_time"
+                  "sensor.wake_preheat_start"
                 ];
               }
               {
@@ -308,7 +312,6 @@
                 title = "Sun";
                 entities = [
                   "sun.sun"
-                  "binary_sensor.sun_solar_rising"
                   "sensor.sun_next_dawn"
                   "sensor.sun_next_rising"
                   "sensor.sun_next_noon"
@@ -342,12 +345,6 @@
         };
         wake_on_lan = {};
         logger.logs."custom_components.yandex_station" = "debug";
-        shopping_list = {};
-
-        http = {
-          use_x_forwarded_for = true;
-          trusted_proxies = ["10.0.0.10" "127.0.0.1"];
-        };
 
         yandex_station = {
           devices = {
@@ -388,86 +385,89 @@
           }
         ];
 
+        template = [
+          {
+            sensor = [
+              {
+                # phone alarm if it's between 3am and noon on the upcoming morning, else 9am
+                name = "Wake time";
+                device_class = "timestamp";
+                state = ''
+                  {% set fallback = today_at('09:00') + timedelta(days=0 if now().hour < 12 else 1) %}
+                  {% set a = states('sensor.pixel_9_pro_next_alarm') | as_datetime(none) %}
+                  {% set a = a | as_local if a is not none else none %}
+                  {% if a is not none and a.date() == fallback.date() and 3 <= a.hour < 12 %}
+                    {{ a.isoformat() }}
+                  {% else %}
+                    {{ fallback.isoformat() }}
+                  {% endif %}
+                '';
+              }
+              {
+                # ~20 min per °C to reach wakeTemp, from thermostat history
+                name = "Wake preheat start";
+                device_class = "timestamp";
+                availability = "{{ states('sensor.wake_time') | as_datetime(none) is not none }}";
+                state = ''
+                  {% set cur = states('sensor.thermostat_current_temperature') | float(19) %}
+                  {% set mins = ([${toString wakeTemp} - cur, 0] | max) * 20 + 10 %}
+                  {{ (states('sensor.wake_time') | as_datetime - timedelta(minutes=mins)).isoformat() }}
+                '';
+              }
+            ];
+          }
+        ];
+
         automation = [
           {
-            alias = "Thermostat - Schedule";
+            alias = "Thermostat - Wake preheat";
             trigger = [
               {
                 platform = "time";
-                at = "05:00:00";
-                id = "morning";
+                at = "sensor.wake_preheat_start";
               }
+            ];
+            action = [
+              {variables.wake = "{{ states('sensor.wake_time') }}";}
               {
-                platform = "time";
-                at = "07:00:00";
-                id = "day";
+                service = "climate.set_temperature";
+                target.entity_id = thermostat;
+                data = {
+                  hvac_mode = "heat";
+                  temperature = wakeTemp;
+                };
               }
+              {wait_template = "{{ now() >= (wake | as_datetime) + timedelta(hours=1) }}";}
+              {
+                service = "climate.set_temperature";
+                target.entity_id = thermostat;
+                data = {
+                  hvac_mode = "heat_cool";
+                  # thermostat enforces a 3°C heat/cool gap
+                  target_temp_low = 19;
+                  target_temp_high = 22;
+                };
+              }
+            ];
+            mode = "single";
+          }
+          {
+            alias = "Thermostat - Evening";
+            trigger = [
               {
                 platform = "time";
                 at = "21:00:00";
-                id = "evening";
               }
             ];
             action = [
               {
-                choose = [
-                  {
-                    conditions = [
-                      {
-                        condition = "trigger";
-                        id = "morning";
-                      }
-                    ];
-                    sequence = [
-                      {
-                        service = "climate.set_temperature";
-                        target.entity_id = thermostat;
-                        data = {
-                          hvac_mode = "heat";
-                          temperature = 23;
-                        };
-                      }
-                    ];
-                  }
-                  {
-                    conditions = [
-                      {
-                        condition = "trigger";
-                        id = "day";
-                      }
-                    ];
-                    sequence = [
-                      {
-                        service = "climate.set_temperature";
-                        target.entity_id = thermostat;
-                        data = {
-                          hvac_mode = "heat_cool";
-                          target_temp_low = 19;
-                          target_temp_high = 21;
-                        };
-                      }
-                    ];
-                  }
-                  {
-                    conditions = [
-                      {
-                        condition = "trigger";
-                        id = "evening";
-                      }
-                    ];
-                    sequence = [
-                      {
-                        service = "climate.set_temperature";
-                        target.entity_id = thermostat;
-                        data = {
-                          hvac_mode = "heat_cool";
-                          target_temp_low = 17;
-                          target_temp_high = 19;
-                        };
-                      }
-                    ];
-                  }
-                ];
+                service = "climate.set_temperature";
+                target.entity_id = thermostat;
+                data = {
+                  hvac_mode = "heat_cool";
+                  target_temp_low = 17;
+                  target_temp_high = 20;
+                };
               }
             ];
             mode = "single";
