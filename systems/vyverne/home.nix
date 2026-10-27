@@ -36,6 +36,7 @@
     appIds = [
       2161700 # Persona 3 Reload
       255710 # Cities: Skylines (native)
+      949230 # Cities: Skylines II
     ];
     additionalLibraryPaths = ["/games/SteamLibrary"];
   };
