@@ -1,5 +1,6 @@
 {
   lib,
+  pkgs,
   config,
   inputs,
   ...
@@ -34,7 +35,10 @@
     };
 
     # External indexers can be temporarily unavailable; avoid rapid retries.
-    systemd.services.declarr.serviceConfig.RestartSec = "60s";
+    systemd.services.declarr = {
+      serviceConfig.RestartSec = "60s";
+      path = [pkgs.git];
+    };
 
     # shared secrets
     sops.secrets."media/password/qbit" = {
