@@ -77,7 +77,6 @@
   # --tpm2-with-pin=yes \
   # /dev/nvme0n1p5
 
-  boot.initrd.systemd.enable = true;
   security.tpm2.enable = true;
 
   # comment out below 2 lines before install then update the offset with

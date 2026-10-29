@@ -99,7 +99,6 @@
     loupe
     swayimg
     darktable
-    rapidraw
     feh
 
     # Wayland/Hyprland utils

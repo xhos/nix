@@ -56,7 +56,7 @@
   llmAgents = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
 
   guiPkgs = with pkgs; [
-    llmAgents.chatgpt
+    # llmAgents.chatgpt
     llmAgents.claude-desktop
 
     kdiskmark

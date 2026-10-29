@@ -97,8 +97,8 @@ in {
             ".config/OpenRGB"
             ".config/claude"
             ".config/Codex"
-            ".config/io.github.CyberTimon.RapidRAW"
-            ".local/share/io.github.CyberTimon.RapidRAW"
+            ".local/share/flatpak" # user flatpak installs (nix-flatpak)
+            ".var/app" # flatpak app data/config
             ".config/Claude"
             ".config/spotify"
             ".config/calibre"
