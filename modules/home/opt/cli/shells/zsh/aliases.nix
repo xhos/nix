@@ -16,7 +16,7 @@
       gc = "git commit -m";
       lg = "lazygit";
       g = "git";
-      s = "nix search nixpkgs";
+      s = "sshs";
       nhs = "nh home switch";
       nos = "nh os switch";
       img = "swayimg";
@@ -43,7 +43,6 @@
           --exclude "home/xhos/.cache" \
           --exclude "home/xhos/.cargo" \
           --exclude "home/xhos/go" \
-          --exclude "home/xhos/.local/share/atuin" \
           --exclude "home/xhos/.config/wakatime" \
           --exclude "var/log" \
           --exclude "var/lib/systemd/coredump"

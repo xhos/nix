@@ -52,6 +52,7 @@ in {
             ".local/share/PrismLauncher"
             ".local/share/direnv"
             ".local/share/zoxide" # zoxide i lv u, plz don't hv amnesia
+            ".atuin"
             ".local/share/nvim"
             ".local/share/DaVinciResolve"
 
