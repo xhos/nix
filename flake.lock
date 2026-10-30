@@ -1079,11 +1079,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793373720,
-        "narHash": "sha256-97UhczVhM2XRntuGgVuJn9RtL6CyK+EH1+Dr3sSG/4c=",
+        "lastModified": 1793375224,
+        "narHash": "sha256-UD1y0YM5woAIfGAKVgHpGItfiGSNAe31ZnKkiE9MetM=",
         "ref": "main",
-        "rev": "a687d5a3280c07871e0be6eb97715dec5961fca7",
-        "revCount": 42,
+        "rev": "53a39e49d6751a742ff045fc5aecdb1d02e810b4",
+        "revCount": 43,
         "type": "git",
         "url": "ssh://git@github.com/xhos/kodama"
       },

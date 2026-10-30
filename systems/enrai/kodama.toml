@@ -2,6 +2,13 @@ listen = "0.0.0.0:7777"
 data_dir = "/var/lib/kodama"
 
 [[ladder]]
+name = "flash"
+base_url = "http://127.0.0.1:8317/v1"
+api_key_env = "CLIPROXY_KEY"
+model = "gemini-3-flash"
+max_tokens = 8192
+
+[[ladder]]
 name = "pro"
 base_url = "http://127.0.0.1:8317/v1"
 api_key_env = "CLIPROXY_KEY"
@@ -20,7 +27,6 @@ name = "ha"
 url = "http://127.0.0.1:8123/api/mcp"
 transport = "http"
 token_env = "HA_TOKEN"
-lazy = true
 about = "Home Assistant: every light, the heating, the apartment's speakers and TV, sensors. Everything in the apartment that is not a computer."
 
 [permissions]
