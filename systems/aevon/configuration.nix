@@ -5,7 +5,7 @@
 
   profile = "full";
 
-  vm.enable = true;
+  virtualisation.docker.enable = true;
 
   wsl.enable = true;
   wsl.defaultUser = "xhos";

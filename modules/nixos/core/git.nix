@@ -1,7 +1,7 @@
 {
   programs.git = {
     enable = true;
-    config = {
+    config = [{
       user = {
         name = "xhos";
         email = "60789741+xhos@users.noreply.github.com";
@@ -26,7 +26,10 @@
         showUntrackedFiles = "all";
       };
       init.defaultBranch = "main";
-    };
+    }
+    {
+      includeIf."gitdir:/home/xhos/work/".path = "/home/xhos/.gitconfig-work";
+    }];
   };
 
   programs.lazygit.enable = true;
