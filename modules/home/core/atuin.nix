@@ -10,7 +10,7 @@
       sync_address = "https://atuin.xhos.dev";
       enter_accept = true;
       update_check = false;
-      filter_mode_shell_up_key_binding = "session";
+      filter_mode_shell_up_key_binding = "global";
       inline_height = 10;
       invert = true;
       show_help = false;
