@@ -4,14 +4,22 @@
   pkgs,
   ...
 }: {
-  imports = [
-    ./hardware-configuration.nix
-    ./disko.nix
-    inputs.disko.nixosModules.disko
-    inputs.sops-nix.nixosModules.sops
-    inputs.kodama.nixosModules.default
-    inputs.self.modules.nixos.desktop
-  ];
+  imports =
+    [
+      ./hardware-configuration.nix
+      ./disko.nix
+      inputs.disko.nixosModules.disko
+      inputs.sops-nix.nixosModules.sops
+      inputs.kodama.nixosModules.default
+    ]
+    ++ (with inputs.self.modules.nixos; [
+      desktop
+      games
+      assetto-corsa
+      beammp
+      kdeconnect
+      sunshine
+    ]);
 
   # ── identity ──────────────────────────────────────────────────────────
   profile = "desktop";
@@ -22,14 +30,12 @@
   # ── feature modules ───────────────────────────────────────────────────
   audio.enable = true;
   bluetooth.enable = true;
-  games.enable = true;
   nvidia.enable = true;
   vm.enable = true;
   ai.enable = true;
   obs.enable = true;
   davinci.enable = true;
   syncthing.enable = true;
-  sunshine.enable = true;
   impermanence.enable = true;
 
   wm = "hyprland";
@@ -133,9 +139,8 @@
     "monitor.bluez.properties"."bluez5.roles" = ["a2dp_source"];
   };
 
-  # ── peripherals & phone ───────────────────────────────────────────────
+  # ── peripherals ───────────────────────────────────────────────────────
   services.hardware.openrgb.enable = true;
-  programs.kdeconnect.enable = true;
 
   # monitor brightness over DDC/CI (ddcutil, driven by brightness-script)
   hardware.i2c.enable = true;

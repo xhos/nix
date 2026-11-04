@@ -1,0 +1,53 @@
+# BeamMP launcher for BeamNG.drive (steam app 284160), run inside steam-run.
+{
+  flake.modules.homeManager.beammp = {pkgs, ...}: let
+    # Steam's library app index can lag behind a newly installed game.
+    launcher = pkgs.beammp-launcher.overrideAttrs (old: {
+      postPatch =
+        (old.postPatch or "")
+        + ''
+          substituteInPlace src/Security/BeamNG.cpp \
+            --replace-fail '(folderInfo.second->childs["apps"]->attribs).contains("284160") && ' ""
+        '';
+    });
+
+    # BeamNG's embedded CEF needs libs the stock steam-run FHS env lacks
+    steam-run =
+      (pkgs.steam.override {
+        extraLibraries = ps:
+          with ps; [
+            nspr
+            nss
+            at-spi2-atk
+            at-spi2-core
+            libxcomposite
+          ];
+      }).run;
+
+    beammp = pkgs.writeShellApplication {
+      name = "beammp";
+      runtimeInputs = [steam-run];
+      text = ''
+        state="''${XDG_DATA_HOME:-$HOME/.local/share}/BeamMP"
+        mkdir -p "$state"
+        cd "$state"
+        exec steam-run ${launcher}/bin/BeamMP-Launcher --no-update "$@"
+      '';
+    };
+  in {
+    home.packages = [beammp];
+
+    xdg.desktopEntries.beammp = {
+      name = "BeamMP";
+      exec = "${beammp}/bin/beammp";
+      icon = "steam_icon_284160";
+      categories = ["Game"];
+      terminal = true;
+    };
+
+    persist.dirs = [
+      ".local/share/BeamMP"
+      ".local/share/BeamNG"
+    ];
+  };
+}

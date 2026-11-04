@@ -76,16 +76,6 @@ in {
         ];
       })
 
-      (persistIf config.games.enable {
-        directories = ["/var/lib/zerotier-one"];
-        # home paths must go through users.<name> so parent dirs (.local, .local/share)
-        # are created owned by xhos, not root
-        users.xhos.directories = [
-          ".steam"
-          ".local/share/Steam"
-        ];
-      })
-
       (persistIf (config.greeter == "regreet") {
         directories = [
           "/var/lib/regreet"

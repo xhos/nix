@@ -1,12 +1,14 @@
 {
-  pkgs,
-  lib,
-  config,
-  ...
-}: {
-  options.modules.kdeconnect.enable = lib.mkEnableOption "kdeconnect daemon (valent)";
+  flake.modules.nixos.kdeconnect = {
+    programs.kdeconnect.enable = true;
+  };
 
-  config = lib.mkIf config.modules.kdeconnect.enable {
+  flake.modules.homeManager.kdeconnect = {
+    config,
+    lib,
+    pkgs,
+    ...
+  }: {
     services.kdeconnect = {
       enable = true;
       package = pkgs.valent;

@@ -25,8 +25,7 @@
 
   mainMonitor = "Microstep MAG 274UPF E2 0x00000001";
 
-  modules.smokeapi = {
-    enable = true;
+  games.smokeapi = {
     appIds = [
       2161700 # Persona 3 Reload
       255710 # Cities: Skylines (native)
@@ -49,7 +48,6 @@
   ];
 
   home.packages = with pkgs; [
-    r2modman
     teams-for-linux
     rustdesk
     whspr

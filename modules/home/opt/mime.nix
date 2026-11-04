@@ -170,7 +170,4 @@ in {
         exec ${handlr-regex}/bin/handlr open "$@"
       '')
     ];
-
-  # remove wine assosciations
-  home.sessionVariables.WINEDLLOVERRIDES = "winemenubuilder.exe=d";
 }

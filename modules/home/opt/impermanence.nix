@@ -49,19 +49,13 @@ in {
 
             ".local/share/nvf"
             ".local/share/zsh"
-            ".local/share/PrismLauncher"
             ".local/share/direnv"
             ".local/share/zoxide" # zoxide i lv u, plz don't hv amnesia
             ".atuin"
             ".local/share/nvim"
             ".local/share/DaVinciResolve"
 
-            # lutris
-            ".local/share/umu" # todo: is this lutris tho
-            ".local/share/lutris"
-
             ".cache/zen"
-            ".wine"
 
             # android fucking studio (i hate it)
             "Android"
@@ -107,11 +101,6 @@ in {
             ".config/sops"
             ".config/nvim"
             ".config/obs-studio"
-
-            # should techically be only enabled when steam is but oh well
-            ".config/r2modmanPlus-local"
-            ".config/r2modman"
-            ".config/unity3d"
 
             ".zen"
             ".ssh"
