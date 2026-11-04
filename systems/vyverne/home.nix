@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   stylix.image = pkgs.fetchurl {
-    url = "http://pics.xhos.dev/u/K5TmAR.jpg";
-    sha256 = "sha256-I/+80mvzUGVm5CIKsBBcyGPwDeO5x4dTLhbZjTDDJjg=";
+    url = "http://pics.xhos.dev/u/SI12IF.png";
+    sha256 = "sha256-qhRiShVq0VBiVQW5pYOWHDn/14o/PTLOlSpju8KTyRk=";
   };
   stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
 
@@ -15,12 +15,6 @@
     telegram.enable = true;
     fonts.enable = true;
     rclone.enable = true;
-    kdeconnect.enable = true;
-  };
-
-  games = {
-    asseta.enable = true;
-    beammp.enable = true;
   };
 
   wm = "hyprland";
@@ -39,6 +33,13 @@
       949230 # Cities: Skylines II
     ];
     additionalLibraryPaths = ["/games/SteamLibrary"];
+  };
+
+  modules.wallpaperEngine = {
+    enable = true;
+    wallpaper = 3068206129; # lunar tear garden
+    screens = ["HDMI-A-1" "HDMI-A-2"];
+    crops."HDMI-A-2" = "608:1080:0:0";
   };
 
   hyprland.execOnce = [
