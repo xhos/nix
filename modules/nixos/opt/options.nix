@@ -28,11 +28,5 @@
       default = "none";
       description = "which wm to use";
     };
-
-    terminal = mkOption {
-      type = types.enum ["wezterm" "foot" "ghostty" "none"];
-      default = "none";
-      description = "default terminal emulator";
-    };
   };
 }

@@ -32,22 +32,10 @@
       };
 
     terminal = {
-      bin = config.terminal;
-      class = config.terminal;
-      class_prefix =
-        {
-          ghostty = "com.mitchellh.ghostty";
-          foot = "foot";
-          wezterm = "org.wezfurlong.wezterm";
-          none = "";
-        }
-        .${
-          config.terminal
-        };
-      launch =
-        if config.terminal == "ghostty"
-        then "ghostty --gtk-single-instance=true"
-        else config.terminal;
+      bin = "ghostty";
+      class = "ghostty";
+      class_prefix = "com.mitchellh.ghostty";
+      launch = "ghostty --gtk-single-instance=true";
     };
 
     features = {
@@ -114,6 +102,11 @@ in {
     };
 
     services.hyprpaper.enable = true;
+
+    # export env vars to DBus for XDG portals
+    hyprland.execOnce = lib.mkBefore [
+      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+    ];
 
     xdg.configFile."hypr/xdph.conf".text = ''
       screencopy {

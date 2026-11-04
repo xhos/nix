@@ -7,7 +7,6 @@
   config,
   ...
 }: let
-  terminal = "com.mitchellh.ghostty.desktop";
   browser = "zen-beta.desktop";
   editor = "dev.zed.Zed.desktop";
   imageViewer = "org.gnome.Loupe.desktop";
@@ -116,7 +115,6 @@ in {
           "x-scheme-handler/https" = browser;
           "x-scheme-handler/about" = browser;
           "x-scheme-handler/unknown" = browser;
-          "x-scheme-handler/terminal" = terminal;
           "application/zip" = archiveManager;
           "application/x-7z-compressed" = archiveManager;
           "application/x-tar" = archiveManager;

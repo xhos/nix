@@ -4,8 +4,6 @@
   ...
 }: {
   # foot is always enabled for binds like clipse to work fast
-  home.sessionVariables.TERMINAL = lib.mkIf (config.terminal == "foot") "foot";
-
   # https://codeberg.org/dnkl/foot/src/branch/master/foot.ini
   programs.foot = lib.mkIf (config.headless != true) {
     enable = true;

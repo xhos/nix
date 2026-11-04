@@ -40,7 +40,6 @@
 
   wm = "hyprland";
   greeter = "yawn";
-  terminal = "ghostty";
 
   # ── boot ──────────────────────────────────────────────────────────────
   bootloader.limine = {

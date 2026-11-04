@@ -30,7 +30,6 @@
   wm = "hyprland";
   greeter = "yawn";
   bootloader.systemd-boot.enable = true;
-  terminal = "ghostty";
 
   # fix spam on boot
   boot.blacklistedKernelModules = ["acpi_fan"];

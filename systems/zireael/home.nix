@@ -29,7 +29,6 @@
   shell = "zsh";
   prompt = "starship";
   browser = "zen";
-  terminal = "ghostty";
 
   home.packages = with pkgs; [
     iio-hyprland

@@ -47,15 +47,6 @@
       ];
       default = "none";
     };
-    terminal = mkOption {
-      type = types.enum [
-        "wezterm"
-        "foot"
-        "ghostty"
-        "none"
-      ];
-      default = osConfig.terminal;
-    };
     prompt = mkOption {
       type = types.enum [
         "starship"
