@@ -8,22 +8,38 @@
 
   id = toString cfg.wallpaper;
   source = "${config.home.homeDirectory}/.local/share/Steam/steamapps/workshop/content/431960/${id}";
-  cropDir = screen: "${config.xdg.cacheHome}/wallpaper-engine/${id}-${screen}-${lib.replaceStrings [":"] ["-"] cfg.crops.${screen}}";
+  crop = screen: cfg.crops.${screen} or "";
+  copyDir = screen: "${config.xdg.cacheHome}/wallpaper-engine/${id}-${
+    if crop screen == ""
+    then "full"
+    else lib.replaceStrings [":"] ["-"] (crop screen)
+  }";
 
-  mkCrop = pkgs.writeShellApplication {
-    name = "wallpaper-engine-crop";
-    runtimeInputs = with pkgs; [ffmpeg jq];
+  # --silent only zeroes the volume, a video with an audio track still shows up in mixers
+  prepare = pkgs.writeShellApplication {
+    name = "wallpaper-engine-prepare";
+    runtimeInputs = with pkgs; [coreutils ffmpeg jq];
     text = ''
-      src=$1 dst=$2 crop=$3
+      src=$1 dst=$2 crop=''${3:-}
       if [[ -f "$dst/project.json" ]]; then exit 0; fi
 
       mkdir -p "$(dirname "$dst")"
+      if [[ $(jq -r '.type | ascii_downcase' "$src/project.json") != video ]]; then
+        ln -sfn "$src" "$dst"
+        exit 0
+      fi
+
+      file=$(jq -r .file "$src/project.json")
+      out="video.''${file##*.}"
+      video=(-c:v copy)
+      if [[ -n $crop ]]; then
+        video=(-vf "crop=$crop" -c:v libx264 -preset veryfast -crf 18)
+      fi
+
       tmp=$(mktemp -d "$dst.XXXXXX")
       trap 'rm -rf "$tmp"' EXIT
-
-      ffmpeg -nostdin -v error -y -i "$src/$(jq -r .file "$src/project.json")" \
-        -vf "crop=$crop" -an -c:v libx264 -preset veryfast -crf 18 "$tmp/video.mp4"
-      jq '.file = "video.mp4"' "$src/project.json" > "$tmp/project.json"
+      ffmpeg -nostdin -v error -y -i "$src/$file" -an "''${video[@]}" "$tmp/$out"
+      jq --arg out "$out" '.file = $out' "$src/project.json" > "$tmp/project.json"
       mv "$tmp" "$dst"
     '';
   };
@@ -32,17 +48,13 @@
     "--screen-root"
     screen
     "--bg"
-    (
-      if cfg.crops ? ${screen}
-      then cropDir screen
-      else id
-    )
+    (copyDir screen)
     "--scaling"
     cfg.scaling
   ])
   cfg.screens;
 
-  args = ["--silent" "--fps" (toString cfg.fps) "--assets-dir" cfg.assetsDir] ++ screens;
+  args = ["--silent" "--no-audio-processing" "--fps" (toString cfg.fps) "--assets-dir" cfg.assetsDir] ++ screens;
 in {
   options.modules.wallpaperEngine = with lib; {
     enable = mkEnableOption "live wallpapers via linux-wallpaperengine";
@@ -91,11 +103,11 @@ in {
         PartOf = ["graphical-session.target"];
       };
       Service = {
-        ExecStartPre =
-          lib.mapAttrsToList (
-            screen: crop: lib.escapeShellArgs [(lib.getExe mkCrop) source (cropDir screen) crop]
-          )
-          cfg.crops;
+        ExecStartPre = map (
+          screen: lib.escapeShellArgs [(lib.getExe prepare) source (copyDir screen) (crop screen)]
+        )
+        cfg.screens;
+        Environment = ["SDL_AUDIODRIVER=dummy" "SDL_AUDIO_DRIVER=dummy"];
         ExecStart = lib.escapeShellArgs ([(lib.getExe pkgs.linux-wallpaperengine)] ++ args);
         Restart = "on-failure";
         RestartSec = "5s";
