@@ -137,6 +137,10 @@
   services.hardware.openrgb.enable = true;
   programs.kdeconnect.enable = true;
 
+  # monitor brightness over DDC/CI (ddcutil, driven by brightness-script)
+  hardware.i2c.enable = true;
+  users.users.xhos.extraGroups = ["i2c"];
+
   # case/cpu fan control via the board's NCT6797D (MSI Z390), curves set in the coolercontrol gui
   programs.coolercontrol.enable = true;
   # per-file: persisting the whole dir would hide the plugins symlink nixos puts there

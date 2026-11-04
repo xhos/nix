@@ -11,8 +11,33 @@
     iDIR="${iconDir}"
     notification_timeout=1000
 
+    # desktops have no kernel backlight, drive the monitors over DDC/CI instead
+    if [ -n "$(ls -A /sys/class/backlight 2>/dev/null)" ]; then
+      ddc=0
+    else
+      ddc=1
+    fi
+
+    # `ddcutil detect` takes seconds, so the display list is cached per session
+    ddc_displays() {
+      cache="''${XDG_RUNTIME_DIR:-/tmp}/ddc-displays"
+      [ -s "$cache" ] || ddcutil detect --brief 2>/dev/null | awk '/^Display/ {print $2}' > "$cache"
+      cat "$cache"
+    }
+
+    # DDC reads/writes take ~1s each, so the level is cached and never re-read per keypress
+    level_file="''${XDG_RUNTIME_DIR:-/tmp}/ddc-level"
+
     get_backlight() {
-      echo $(brightnessctl -m | cut -d, -f4)
+      if [ "$ddc" = 1 ]; then
+        if [ ! -s "$level_file" ]; then
+          d=$(ddc_displays | head -n1)
+          ddcutil getvcp 10 --brief --display "$d" 2>/dev/null | awk '{print int($4 * 100 / $5)}' > "$level_file"
+        fi
+        echo "$(cat "$level_file")%"
+      else
+        brightnessctl -m | cut -d, -f4
+      fi
     }
 
     get_icon() {
@@ -34,8 +59,36 @@
       notify-send -e -h string:x-canonical-private-synchronous:brightness_notif -h int:value:$current -u low -i "$icon" "Brightness : $current%"
     }
 
+    # writes the target level to every display, looping until nothing newer arrived
+    # (held keys fire faster than DDC can apply, so presses coalesce into the last one)
+    apply_ddc() {
+      exec 9>"$level_file.lock"
+      flock -n 9 || return 0 # a running instance will pick up the new target
+      applied=""
+      while [ "$(cat "$level_file")" != "$applied" ]; do
+        applied=$(cat "$level_file")
+        for d in $(ddc_displays); do
+          ddcutil setvcp 10 "$applied" --display "$d" --noverify --sleep-multiplier .1 &
+        done
+        wait
+      done
+    }
+
     change_backlight() {
-      brightnessctl set "$1" && get_icon && notify_user
+      if [ "$ddc" = 1 ]; then
+        cur=$(get_backlight | sed 's/%//')
+        case "$1" in
+          +*) new=$((cur + 10)) ;;
+          *)  new=$((cur - 10)) ;;
+        esac
+        [ "$new" -gt 100 ] && new=100
+        [ "$new" -lt 0 ] && new=0
+        echo "$new" > "$level_file"
+        get_icon && notify_user
+        apply_ddc
+      else
+        brightnessctl set "$1" && get_icon && notify_user
+      fi
     }
 
     case "$1" in
@@ -200,6 +253,7 @@ in {
       # TODO: this.
       autotiling-rs
       brightnessctl
+      ddcutil
       cliphist
       dbus
       glib

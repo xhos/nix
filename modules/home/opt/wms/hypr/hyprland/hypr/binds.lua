@@ -247,3 +247,7 @@ hl.bind("XF86AudioPrev", app("playerctl --player=spotify,%any previous"), media)
 
 hl.bind("XF86MonBrightnessUp", app("brightness-script --inc"), held)
 hl.bind("XF86MonBrightnessDown", app("brightness-script --dec"), held)
+
+-- same thing for keyboards without brightness keys
+hl.bind(mod .. " + F10", app("brightness-script --dec"), held)
+hl.bind(mod .. " + F11", app("brightness-script --inc"), held)
