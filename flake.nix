@@ -122,6 +122,11 @@
     };
 
     # --- utilities ------------------------------------------------------
+    flake-parts = {
+      url = "github:hercules-ci/flake-parts";
+      inputs.nixpkgs-lib.follows = "nixpkgs";
+    };
+
     import-tree.url = "github:vic/import-tree";
 
     deploy-rs = {
@@ -138,6 +143,7 @@
     self,
     nixpkgs,
     home-manager,
+    flake-parts,
     ...
   } @ inputs: let
     lib = nixpkgs.lib;
@@ -164,61 +170,71 @@
 
     systems = ["x86_64-linux" "aarch64-linux"];
     forEachSystem = nixpkgs.lib.genAttrs systems;
-  in {
-    nixosConfigurations = builtins.mapAttrs (hostname: args: mkNixosSystem ({inherit hostname;} // args)) {
-      aevon = {};
-      balthasar = {homeUser = null;};
-      casper = {homeUser = null;};
-      melchior = {homeUser = null;};
-      mizore = {
-        homeUser = null;
+  in
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      inherit systems;
+
+      imports = [
+        flake-parts.flakeModules.modules
+        (inputs.import-tree ./features)
+      ];
+
+      flake = {
+        nixosConfigurations = builtins.mapAttrs (hostname: args: mkNixosSystem ({inherit hostname;} // args)) {
+          aevon = {};
+          balthasar = {homeUser = null;};
+          casper = {homeUser = null;};
+          melchior = {homeUser = null;};
+          mizore = {
+            homeUser = null;
+          };
+          arashi = {};
+          a1-flex = {
+            homeUser = null;
+            minimal = true;
+          };
+          e2-micro = {
+            homeUser = null;
+            minimal = true;
+          };
+          enrai = {};
+          nyx = {
+            homeUser = null;
+            minimal = true;
+          };
+          proxy-1 = {
+            homeUser = null;
+          };
+          vyverne = {};
+          zireael = {};
+        };
+
+        # hostname is the ssh alias from modules/home/core/ssh.nix, which carries the ip and key
+        deploy.nodes = lib.genAttrs ["melchior" "balthasar" "casper"] (hostname: {
+          inherit hostname;
+          sshUser = "xhos";
+          profiles.system = {
+            user = "root";
+            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
+          };
+        });
+
+        packages =
+          forEachSystem (system: {
+            installer = import ./pkgs/installer.nix {
+              pkgs = nixpkgs.legacyPackages.${system};
+            };
+            remote-install = import ./pkgs/remote-install.nix {
+              pkgs = nixpkgs.legacyPackages.${system};
+            };
+            pcinfo = import ./pkgs/pcinfo.nix {
+              pkgs = nixpkgs.legacyPackages.${system};
+            };
+            e2-micro-image = self.nixosConfigurations.e2-micro.config.system.build.OCIImage;
+          })
+          // {
+            aarch64-linux.a1-flex-image = self.nixosConfigurations.a1-flex.config.system.build.OCIImage;
+          };
       };
-      arashi = {};
-      a1-flex = {
-        homeUser = null;
-        minimal = true;
-      };
-      e2-micro = {
-        homeUser = null;
-        minimal = true;
-      };
-      enrai = {};
-      nyx = {
-        homeUser = null;
-        minimal = true;
-      };
-      proxy-1 = {
-        homeUser = null;
-      };
-      vyverne = {};
-      zireael = {};
     };
-
-    # hostname is the ssh alias from modules/home/core/ssh.nix, which carries the ip and key
-    deploy.nodes = lib.genAttrs ["melchior" "balthasar" "casper"] (hostname: {
-      inherit hostname;
-      sshUser = "xhos";
-      profiles.system = {
-        user = "root";
-        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.${hostname};
-      };
-    });
-
-    packages =
-      forEachSystem (system: {
-        installer = import ./pkgs/installer.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-        };
-        remote-install = import ./pkgs/remote-install.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-        };
-        pcinfo = import ./pkgs/pcinfo.nix {
-          pkgs = nixpkgs.legacyPackages.${system};
-        };
-        e2-micro-image = self.nixosConfigurations.e2-micro.config.system.build.OCIImage;
-      })
-      // {
-        aarch64-linux.a1-flex-image = self.nixosConfigurations.a1-flex.config.system.build.OCIImage;
-      };
-  };
 }

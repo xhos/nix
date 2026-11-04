@@ -9,6 +9,7 @@
     ./disko.nix
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
+    inputs.self.modules.nixos.desktop
   ];
 
   profile = "desktop";
@@ -44,7 +45,6 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.fprintd.enable = true;
-  services.gvfs.enable = true;
   services.udisks2.enable = true;
 
   services.udev.extraRules = ''

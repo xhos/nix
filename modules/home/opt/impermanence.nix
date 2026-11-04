@@ -79,9 +79,6 @@ in {
             ".local/share/proton-pass-cli"
             ".local/share/keyrings" # gnome-keyring; without this every reboot wipes it and apps re-prompt to create one
 
-            # nautilus bookmarks
-            ".local/share/nautilus"
-            ".config/gtk-3.0/"
             ".local/state/wireplumber"
 
             # jetbrains

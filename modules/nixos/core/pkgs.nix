@@ -65,9 +65,6 @@
     xdg-utils
     gtk3
     kitty
-    nautilus
-    nautilus-python
-    ffmpegthumbnailer
   ];
 in {
   environment.systemPackages = lib.concatLists [
@@ -82,8 +79,4 @@ in {
     allowUnfreePredicate = _: true;
     android_sdk.accept_license = true;
   };
-
-  # nautilus extension loading — only meaningful on desktop but harmless elsewhere
-  environment.sessionVariables.NAUTILUS_4_EXTENSION_DIR = lib.mkForce "/run/current-system/sw/lib/nautilus/extensions-4";
-  environment.pathsToLink = ["/share/nautilus-python/extensions" "/share/thumbnailers"];
 }

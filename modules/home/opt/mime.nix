@@ -10,7 +10,6 @@
   terminal = "com.mitchellh.ghostty.desktop";
   browser = "zen-beta.desktop";
   editor = "dev.zed.Zed.desktop";
-  fileManager = "org.gnome.Nautilus.desktop";
   imageViewer = "org.gnome.Loupe.desktop";
   pdfViewer = "org.gnome.Evince.desktop";
   videoPlayer = "io.github.celluloid_player.Celluloid.desktop";
@@ -111,7 +110,6 @@ in {
         // assoc videoTypes videoPlayer
         // assoc textTypes editor
         // {
-          "inode/directory" = fileManager;
           "text/html" = browser;
           "application/pdf" = pdfViewer;
           "x-scheme-handler/http" = browser;

@@ -10,6 +10,7 @@
     inputs.disko.nixosModules.disko
     inputs.sops-nix.nixosModules.sops
     inputs.kodama.nixosModules.default
+    inputs.self.modules.nixos.desktop
   ];
 
   # ── identity ──────────────────────────────────────────────────────────
@@ -63,7 +64,6 @@
 
   systemd.tmpfiles.rules = ["d /games 0755 xhos users - -"];
 
-  services.gvfs.enable = true;
   services.udisks2.enable = true;
 
   # downloading ram
