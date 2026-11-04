@@ -69,33 +69,33 @@
       };
       # bare metal
       "vyverne" = {
-        HostName = "10.0.0.11";
+        HostName = "vyverne.ts.xhos.dev";
         User = "xhos";
         Port = 22;
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/vyverne".path;
       };
       "enrai" = {
-        HostName = "10.0.0.10";
+        HostName = "enrai.ts.xhos.dev";
         User = "xhos";
         Port = 22;
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/enrai".path;
       };
       "melchior" = {
-        HostName = "10.0.0.15";
+        HostName = "melchior.ts.xhos.dev";
         User = "xhos";
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/melchior".path;
       };
       "balthasar" = {
-        HostName = "10.0.0.16";
+        HostName = "balthasar.ts.xhos.dev";
         User = "xhos";
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/balthasar".path;
       };
       "casper" = {
-        HostName = "10.0.0.17";
+        HostName = "casper.ts.xhos.dev";
         User = "xhos";
         IdentitiesOnly = true;
         IdentityFile = config.sops.secrets."ssh/casper".path;

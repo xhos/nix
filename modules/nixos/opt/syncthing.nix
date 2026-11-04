@@ -6,6 +6,12 @@
   options.syncthing = {
     enable = lib.mkEnableOption "sync obsidian notes via syncthing";
 
+    notesPath = lib.mkOption {
+      type = lib.types.str;
+      default = "/home/xhos/Documents/notes";
+      description = "where the notes folder lives on this host";
+    };
+
     ignorePatterns = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       description = ''
@@ -50,12 +56,21 @@
 
       settings = {
         options.urAccepted = -1;
-        devices."enrai".id = "VOGYGVF-P53JZY4-C2Q5ITL-VVFV34S-XKCUQTT-3D7BRXM-WGO2C3J-ODKARQT";
+        devices."enrai" = {
+          id = "VOGYGVF-P53JZY4-C2Q5ITL-VVFV34S-XKCUQTT-3D7BRXM-WGO2C3J-ODKARQT";
+          addresses = ["tcp://enrai.ts.xhos.dev:22000"]; # over the tailnet, no discovery/relays
+        };
 
         folders."notes" = {
-          path = "/home/xhos/Documents/notes";
+          path = config.syncthing.notesPath;
           devices = ["enrai"];
           inherit (config.syncthing) ignorePatterns;
+        }
+        # a vault on the windows drive (wsl): inotify never sees edits made
+        # from windows, so lean on frequent rescans, and drvfs modes are noise
+        // lib.optionalAttrs (lib.hasPrefix "/mnt/" config.syncthing.notesPath) {
+          rescanIntervalS = 60;
+          ignorePerms = true;
         };
       };
 

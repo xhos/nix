@@ -47,11 +47,12 @@
         devices."pixel".id = "UC5HVFV-2W5P6UD-SVFPKH2-IYZ6EQ5-C4ZZFNH-HFTWOGB-M7U3RLV-3FJG7QL";
         devices."vyverne".id = "ZKQ5CJE-DITDIVT-26MO4CP-V2QSMQS-JWBGY2T-7DOOHAD-5LVZ2ZF-SGLOPAG";
         devices."zireael".id = "ED6PFOE-52HGHJV-7WM2GQX-676UIGS-7X23A36-WTALXEO-2W76URW-OFTKBQM";
+        devices."aevon".id = "JK7NJXW-DEDGTA7-575HGR6-VTZWAO5-XCJMDXT-CGJTT7K-WZ4ERLN-Q5OEUQI";
 
         folders = {
           "notes" = {
             path = "/home/xhos/Documents/notes";
-            devices = ["pixel" "vyverne" "zireael"];
+            devices = ["pixel" "vyverne" "zireael" "aevon"];
             # shared with the leaf devices, see modules/nixos/opt/syncthing.nix
             inherit (config.syncthing) ignorePatterns;
           };
