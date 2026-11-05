@@ -113,8 +113,6 @@ in {
         custom_picker_binary = ${screensharePicker}/bin/xdph-main-monitor-picker
         allow_token_by_default = true
       ${lib.optionalString osConfig.nvidia.enable ''
-        # avoid failed DMA-BUF negotiation in NVIDIA screenshare sessions
-        force_shm = true
         max_fps = 60
       ''}}
     '';

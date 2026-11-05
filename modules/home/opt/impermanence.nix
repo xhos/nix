@@ -100,7 +100,6 @@ in {
             ".config/github-copilot" # zed stores its copilot auth here
             ".config/sops"
             ".config/nvim"
-            ".config/obs-studio"
 
             ".zen"
             ".ssh"

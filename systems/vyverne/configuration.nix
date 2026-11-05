@@ -17,7 +17,9 @@
       games
       assetto-corsa
       beammp
+      clips
       kdeconnect
+      obs
       sunshine
     ]);
 
@@ -33,7 +35,6 @@
   nvidia.enable = true;
   vm.enable = true;
   ai.enable = true;
-  obs.enable = true;
   davinci.enable = true;
   syncthing.enable = true;
   impermanence.enable = true;
