@@ -13,12 +13,15 @@
 in {
   imports = [
     inputs.disko.nixosModules.disko
+    inputs.self.modules.nixos.garage
+    inputs.self.modules.nixos.niks3-push
     (import ./disko.nix {})
   ];
 
   nixpkgs.hostPlatform = "x86_64-linux";
   profile = "minimal";
   homelab.forgejo-runner.enable = true;
+  services.garage.settings.rpc_public_addr = "${ip}:3901";
 
   # stable nic name
   systemd.network.links."10-lan0" = {

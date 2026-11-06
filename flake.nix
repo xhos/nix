@@ -100,9 +100,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # only nixpkgs follows; attic keeps its own nixpkgs-stable for the client
-    attic = {
-      url = "github:zhaofengli/attic";
+    niks3 = {
+      url = "github:Mic92/niks3";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

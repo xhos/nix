@@ -6,6 +6,8 @@
   imports = [
     inputs.disko.nixosModules.disko
     inputs.vpn-confinement.nixosModules.default
+    inputs.self.modules.nixos.garage
+    inputs.self.modules.nixos.niks3
     ./hardware-configuration.nix
     ./disko.nix
     ./kodama.nix
@@ -18,6 +20,9 @@
 
   impermanence.enable = true;
   profile = "full";
+
+  # gateway node, routes s3 requests to the magi nodes that hold the data
+  services.garage.settings.rpc_public_addr = "10.0.0.10:3901";
 
   homelab = {
     enable = true;
@@ -172,6 +177,7 @@
   persist.dirs = ["/var/lib/zerotier-one"];
   homelab.firewall.extraInputRules = ''
     udp dport 9993 accept
+    iifname "lan0" ip saddr 10.0.0.15-10.0.0.17 tcp dport 3901 accept
   '';
 
   zramSwap = {
