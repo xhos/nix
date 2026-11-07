@@ -25,6 +25,7 @@
         term = "xterm-256color";
 
         # style
+        background-blur = true;
         bold-color = "bright";
         window-padding-x = 10;
         window-padding-y = 10;
