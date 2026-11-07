@@ -1,0 +1,49 @@
+on:
+  push:
+    branches: [main]
+
+# nix-secrets and kodama are private; nix fetches them with the git cli, which honours this
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: url.https://ci:${{ secrets.REPO_READ_TOKEN }}@git.xhos.dev/xhos/.insteadOf
+  GIT_CONFIG_VALUE_0: ssh://git@enrai.ts.xhos.dev:2222/xhos/
+
+jobs:
+  hosts:
+    runs-on: nix
+    outputs:
+      hosts: ${{ steps.list.outputs.hosts }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: list
+        run: |
+          hosts=$(nix eval --json .#nixosConfigurations --apply '
+            cfgs: builtins.filter
+              (name: cfgs.${name}.pkgs.stdenv.hostPlatform.system == "x86_64-linux")
+              (builtins.attrNames cfgs)
+          ')
+          echo "hosts=$hosts" >> "$FORGEJO_OUTPUT"
+
+  build:
+    needs: hosts
+    runs-on: nix
+    strategy:
+      fail-fast: false
+      matrix:
+        host: ${{ fromJSON(needs.hosts.outputs.hosts) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: build
+        run: nix build --no-link --print-out-paths ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel" > toplevel
+
+      - name: push
+        env:
+          NIKS3_SERVER_URL: http://enrai.ts.xhos.dev:5751
+          NIKS3_TOKEN: ${{ secrets.NIKS3_TOKEN }}
+        run: |
+          export NIKS3_AUTH_TOKEN_FILE=$(mktemp)
+          trap 'rm -f "$NIKS3_AUTH_TOKEN_FILE"' EXIT
+          printf '%s' "$NIKS3_TOKEN" > "$NIKS3_AUTH_TOKEN_FILE"
+          nix run --inputs-from . niks3#niks3 -- push "$(cat toplevel)"

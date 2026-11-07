@@ -14,7 +14,6 @@ in {
   imports = [
     inputs.disko.nixosModules.disko
     inputs.self.modules.nixos.garage
-    inputs.self.modules.nixos.niks3-push
     (import ./disko.nix {})
   ];
 
@@ -58,6 +57,12 @@ in {
     enable = true;
     algorithm = "zstd";
     memoryPercent = 25;
+  };
+
+  # /nix is 100G and ci builds every host here
+  nix.settings = {
+    min-free = 5 * 1024 * 1024 * 1024;
+    max-free = 15 * 1024 * 1024 * 1024;
   };
 
   system.stateVersion = "26.11";

@@ -1,7 +1,6 @@
 {inputs, ...}: let
   server = "enrai.ts.xhos.dev";
   niksPort = 5751;
-  tokenSecret = "cache/niks3-token";
 in {
   flake.modules.nixos.garage = {
     config,
@@ -23,16 +22,14 @@ in {
       Group = "garage";
     };
 
-    # separate unit: garage's ReadWritePaths fail every exec, even "+", until these exist
-    systemd.services.garage-dirs = {
-      before = ["garage.service"];
-      requiredBy = ["garage.service"];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStart = "${pkgs.coreutils}/bin/install -d -o garage -g garage -m 0700 /persist/garage /persist/garage/meta /persist/garage/data";
-      };
-    };
+    persist.dirs = [
+      {
+        directory = "/var/lib/garage";
+        user = "garage";
+        group = "garage";
+        mode = "0700";
+      }
+    ];
 
     networking.firewall.interfaces = {
       lan0.allowedTCPPorts = [3901];
@@ -44,9 +41,6 @@ in {
       package = pkgs.garage_2;
       environmentFile = config.sops.secrets."env/garage".path;
       settings = {
-        metadata_dir = "/persist/garage/meta";
-        data_dir = "/persist/garage/data";
-
         replication_factor = 1;
         compression_level = "none"; # nars are already zstd
 
@@ -67,7 +61,7 @@ in {
     imports = [inputs.niks3.nixosModules.niks3];
 
     sops.secrets = {
-      ${tokenSecret}.owner = "niks3";
+      "cache/niks3-token".owner = "niks3";
       "cache/signing-key".owner = "niks3";
       "cache/s3-access-key".owner = "niks3";
       "cache/s3-secret-key".owner = "niks3";
@@ -76,7 +70,7 @@ in {
     services.niks3 = {
       enable = true;
       httpAddr = "0.0.0.0:${toString niksPort}";
-      apiTokenFile = config.sops.secrets.${tokenSecret}.path;
+      apiTokenFile = config.sops.secrets."cache/niks3-token".path;
       signKeyFiles = [config.sops.secrets."cache/signing-key".path];
       s3 = {
         # presigned urls are bound to this host, so every pusher has to reach it
@@ -88,18 +82,6 @@ in {
         accessKeyFile = config.sops.secrets."cache/s3-access-key".path;
         secretKeyFile = config.sops.secrets."cache/s3-secret-key".path;
       };
-    };
-  };
-
-  flake.modules.nixos.niks3-push = {config, ...}: {
-    imports = [inputs.niks3.nixosModules.niks3-auto-upload];
-
-    sops.secrets.${tokenSecret} = {};
-
-    services.niks3-auto-upload = {
-      enable = true;
-      serverUrl = "http://${server}:${toString niksPort}";
-      authTokenFile = config.sops.secrets.${tokenSecret}.path;
     };
   };
 }

@@ -19,7 +19,6 @@
       beammp
       clips
       kdeconnect
-      niks3-push
       obs
       sunshine
     ]);

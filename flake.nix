@@ -32,7 +32,7 @@
     };
 
     nix-secrets = {
-      url = "git+ssh://git@github.com/xhos/nix-secrets?ref=main&allRefs=1";
+      url = "git+ssh://git@enrai.ts.xhos.dev:2222/xhos/nix-secrets?ref=main&allRefs=1";
       flake = false;
     };
 
@@ -116,7 +116,7 @@
     };
 
     kodama = {
-      url = "git+ssh://git@github.com/xhos/kodama?ref=main";
+      url = "git+ssh://git@enrai.ts.xhos.dev:2222/xhos/kodama?ref=main";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

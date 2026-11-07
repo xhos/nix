@@ -1028,12 +1028,12 @@
         "rev": "53a39e49d6751a742ff045fc5aecdb1d02e810b4",
         "revCount": 43,
         "type": "git",
-        "url": "ssh://git@github.com/xhos/kodama"
+        "url": "ssh://git@enrai.ts.xhos.dev:2222/xhos/kodama"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "ssh://git@github.com/xhos/kodama"
+        "url": "ssh://git@enrai.ts.xhos.dev:2222/xhos/kodama"
       }
     },
     "llm-agents": {
@@ -1348,13 +1348,13 @@
         "rev": "ef71874bd00c1816d2135adbb23185b7bf6523ee",
         "revCount": 101,
         "type": "git",
-        "url": "ssh://git@github.com/xhos/nix-secrets"
+        "url": "ssh://git@enrai.ts.xhos.dev:2222/xhos/nix-secrets"
       },
       "original": {
         "allRefs": true,
         "ref": "main",
         "type": "git",
-        "url": "ssh://git@github.com/xhos/nix-secrets"
+        "url": "ssh://git@enrai.ts.xhos.dev:2222/xhos/nix-secrets"
       }
     },
     "nixcord": {

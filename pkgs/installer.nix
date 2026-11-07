@@ -51,6 +51,9 @@ in
       EOF
         chmod 600 ~/.ssh/config
 
+        # private flake inputs live on tailnet-only forgejo, this machine isn't on the tailnet yet
+        git config --global url."ssh://git@github.com/xhos/".insteadOf "ssh://git@enrai.ts.xhos.dev:2222/xhos/"
+
         log "keys ready"
       }
 
