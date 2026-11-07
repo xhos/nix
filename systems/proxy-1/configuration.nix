@@ -23,6 +23,9 @@
 
   domain = config.homelab.config.domain;
 
+  # every k3s node runs servicelb on :80, any of them can take the request
+  k3sHosts = lib.attrNames (lib.filterAttrs (_: cfg: cfg.config.services.k3s.enable or false) inputs.self.nixosConfigurations);
+
   # collect all TCP/UDP forwards across hosts -> nginx stream relays
   allForwards = lib.flatten (lib.mapAttrsToList (
       _: host:
@@ -80,6 +83,7 @@ in {
   profile = "minimal";
   homelab.headscale.enable = true;
   homelab.reality-vpn.enable = true;
+  homelab.web-proxy.enable = true;
 
   nixpkgs.hostPlatform = "x86_64-linux";
   networking.hostName = "proxy-1";
@@ -167,6 +171,15 @@ in {
           useACMEHost = domain;
           extraConfig = ''
             reverse_proxy 127.0.0.1:${toString config.services.headscale.port}
+          '';
+        };
+        "${domain}" = {
+          useACMEHost = domain;
+          extraConfig = ''
+            reverse_proxy ${lib.concatMapStringsSep " " (h: "${h}.ts.${domain}:80") k3sHosts} {
+              lb_try_duration 5s
+              fail_duration 30s
+            }
           '';
         };
         "*.${domain}" = {
