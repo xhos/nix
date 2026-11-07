@@ -7,55 +7,58 @@
 }: {
   imports = [inputs.stylix.homeModules.stylix];
 
-  stylix = lib.mkIf (config.headless != true) {
-    enable = true;
-    polarity = "dark";
-    overlays.enable = false;
-
-    cursor = {
-      name = "phinger-cursors-dark";
-      package = pkgs.phinger-cursors;
-      size = 24;
-    };
-
-    icons = {
+  stylix = lib.mkMerge [
+    # useGlobalPkgs forbids overlays even when stylix itself is off
+    {overlays.enable = false;}
+    (lib.mkIf (config.headless != true) {
       enable = true;
-      dark = "Papirus-Dark";
-      light = "Papirus-Light";
-      package = pkgs.papirus-icon-theme;
-    };
+      polarity = "dark";
 
-    targets = {
-      zed.enable = false;
-      firefox.enable = false;
-      spicetify.enable = false;
-      hyprland.enable = false;
-      hyprland.hyprpaper.enable = true;
-      hyprlock.enable = false;
-      mako.enable = false;
-      rofi.enable = false;
-      nixcord.enable = false;
-      vencord.enable = false;
-      vesktop.enable = false;
-      kde.enable = false;
-      waybar.enable = false;
-    };
-
-    fonts = {
-      monospace = {
-        package = pkgs.nerd-fonts.hack;
-        name = "Hack Nerd Font Mono";
+      cursor = {
+        name = "phinger-cursors-dark";
+        package = pkgs.phinger-cursors;
+        size = 24;
       };
 
-      sansSerif = {
-        package = pkgs.dejavu_fonts;
-        name = "DejaVu Sans";
+      icons = {
+        enable = true;
+        dark = "Papirus-Dark";
+        light = "Papirus-Light";
+        package = pkgs.papirus-icon-theme;
       };
 
-      serif = {
-        package = pkgs.dejavu_fonts;
-        name = "DejaVu Serif";
+      targets = {
+        zed.enable = false;
+        firefox.enable = false;
+        spicetify.enable = false;
+        hyprland.enable = false;
+        hyprland.hyprpaper.enable = true;
+        hyprlock.enable = false;
+        mako.enable = false;
+        rofi.enable = false;
+        nixcord.enable = false;
+        vencord.enable = false;
+        vesktop.enable = false;
+        kde.enable = false;
+        waybar.enable = false;
       };
-    };
-  };
+
+      fonts = {
+        monospace = {
+          package = pkgs.nerd-fonts.hack;
+          name = "Hack Nerd Font Mono";
+        };
+
+        sansSerif = {
+          package = pkgs.dejavu_fonts;
+          name = "DejaVu Sans";
+        };
+
+        serif = {
+          package = pkgs.dejavu_fonts;
+          name = "DejaVu Serif";
+        };
+      };
+    })
+  ];
 }
