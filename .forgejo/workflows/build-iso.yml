@@ -1,0 +1,21 @@
+on:
+  workflow_dispatch:
+
+env:
+  GIT_CONFIG_COUNT: 1
+  GIT_CONFIG_KEY_0: url.https://ci:${{ secrets.REPO_READ_TOKEN }}@git.xhos.dev/xhos/.insteadOf
+  GIT_CONFIG_VALUE_0: ssh://git@enrai.ts.xhos.dev:2222/xhos/
+
+jobs:
+  iso:
+    runs-on: nix
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: nix build .#nixosConfigurations.nyx.config.system.build.isoImage
+
+      - uses: https://code.forgejo.org/forgejo/upload-artifact@v4.3.1
+        with:
+          name: nixos-installer-iso
+          path: result/iso/*.iso
+          retention-days: 7

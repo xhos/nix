@@ -8,10 +8,10 @@ this repo contains... a lot. desktop configs, a homelab running a fully declarat
 ## old setup using [aard](https://github.com/xhos/aard)
 
 <p float="left">
-  <img src="./.github/ss1.png" width="400" />
-  <img src="./.github/ss2.png" width="400" /> 
-  <img src="./.github/ss3.png" width="400" />
-  <img src="./.github/ss4.png" width="400" />
+  <img src="./.forgejo/ss1.png" width="400" />
+  <img src="./.forgejo/ss2.png" width="400" /> 
+  <img src="./.forgejo/ss3.png" width="400" />
+  <img src="./.forgejo/ss4.png" width="400" />
 </p>
 
 </details>
@@ -94,8 +94,8 @@ nixos-rebuild switch --flake .#arashi --target-host root@arashi
 
 | name | preview | sources |
 | :--- | :--- | :--- |
-| **Main (Animated)** | <img src=".github/hyprlock.gif" alt="main Hyprlock Style" width="400" /> | [config](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/hyprlock.conf) <br> [assets](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/assets/) <br> [scripts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/scripts/) <br> [fonts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/core/fonts/font-files) |
-| **Alternative (Static)** | <img src=".github/hyprlock-alt.png" alt="alternative Hyprlock Style" width="400" /> | [config](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/hyprlock-alt.conf) <br> [assets](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/assets/) <br> [scripts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/scripts/) <br> [fonts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/core/fonts/font-files) |
+| **Main (Animated)** | <img src=".forgejo/hyprlock.gif" alt="main Hyprlock Style" width="400" /> | [config](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/hyprlock.conf) <br> [assets](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/assets/) <br> [scripts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/scripts/) <br> [fonts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/core/fonts/font-files) |
+| **Alternative (Static)** | <img src=".forgejo/hyprlock-alt.png" alt="alternative Hyprlock Style" width="400" /> | [config](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/hyprlock-alt.conf) <br> [assets](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/assets/) <br> [scripts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/opt/hypr/hyprlock/scripts/) <br> [fonts](https://github.com/xhos/nix/tree/9692b91df9fa7896a59af807010780d1c9bffad7/modules/home/core/fonts/font-files) |
 
 fonts used are:
 
