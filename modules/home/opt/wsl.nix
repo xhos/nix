@@ -18,7 +18,6 @@
   # windows binaries worth keeping on PATH
   shims = [
     (winBin "explorer.exe" "/mnt/c/Windows/explorer.exe")
-    (winBin "cmd.exe" "/mnt/c/Windows/System32/cmd.exe")
     (winBin "clip.exe" "/mnt/c/Windows/System32/clip.exe")
     (winBin "wsl.exe" "/mnt/c/Windows/System32/wsl.exe")
     (winBin "powershell.exe" "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe")
