@@ -44,17 +44,34 @@
     '';
   };
 
-  screens = lib.concatMap (screen: [
-    "--screen-root"
-    screen
-    "--bg"
-    (copyDir screen)
-    "--scaling"
-    cfg.scaling
-  ])
-  cfg.screens;
+  # connector names change between replugs, so resolve descriptions at start
+  start = pkgs.writeShellApplication {
+    name = "wallpaper-engine-start";
+    runtimeInputs = [pkgs.jq pkgs.hyprland pkgs.coreutils];
+    text = ''
+      if [[ -z ''${HYPRLAND_INSTANCE_SIGNATURE:-} ]]; then
+        newest=""
+        for dir in "$XDG_RUNTIME_DIR"/hypr/*/; do
+          if [[ -z $newest || $dir -nt $newest ]]; then newest=$dir; fi
+        done
+        HYPRLAND_INSTANCE_SIGNATURE=$(basename "$newest")
+        export HYPRLAND_INSTANCE_SIGNATURE
+      fi
 
-  args = ["--silent" "--no-audio-processing" "--fps" (toString cfg.fps) "--assets-dir" cfg.assetsDir] ++ screens;
+      args=(--silent --no-audio-processing --fps ${toString cfg.fps} --assets-dir ${lib.escapeShellArg cfg.assetsDir})
+      resolve() {
+        hyprctl monitors -j | jq -r --arg m "$1" '(map(select(.name == $m or .description == $m))[0].name) // empty'
+      }
+      ${lib.concatMapStringsSep "
+" (screen: ''
+        name=$(resolve ${lib.escapeShellArg screen})
+        if [[ -n $name ]]; then
+          args+=(--screen-root "$name" --bg ${lib.escapeShellArg (copyDir screen)} --scaling ${cfg.scaling})
+        fi
+      '') cfg.screens}
+      exec ${lib.getExe pkgs.linux-wallpaperengine} "''${args[@]}"
+    '';
+  };
 in {
   options.modules.wallpaperEngine = with lib; {
     enable = mkEnableOption "live wallpapers via linux-wallpaperengine";
@@ -66,14 +83,14 @@ in {
 
     screens = mkOption {
       type = types.listOf types.str;
-      description = "output names, one instance of the wallpaper per screen";
+      description = "output names or monitor descriptions, one instance of the wallpaper per screen";
     };
 
     # linux-wallpaperengine can only center, so other framings need a cropped copy
     crops = mkOption {
       type = types.attrsOf types.str;
       default = {};
-      example = {"HDMI-A-2" = "608:1080:0:0";};
+      example = {"Samsung Electric Company LS27AG30x H4PW500403" = "608:1080:0:0";};
       description = "ffmpeg crop (w:h:x:y) per screen, video wallpapers only";
     };
 
@@ -108,7 +125,7 @@ in {
         )
         cfg.screens;
         Environment = ["SDL_AUDIODRIVER=dummy" "SDL_AUDIO_DRIVER=dummy"];
-        ExecStart = lib.escapeShellArgs ([(lib.getExe pkgs.linux-wallpaperengine)] ++ args);
+        ExecStart = lib.getExe start;
         Restart = "on-failure";
         RestartSec = "5s";
       };

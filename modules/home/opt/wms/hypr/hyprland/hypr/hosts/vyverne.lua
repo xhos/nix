@@ -1,6 +1,11 @@
-hl.workspace_rule({ workspace = "1", monitor = "HDMI-A-1", default = true })
-hl.workspace_rule({ workspace = "11", monitor = "HDMI-A-2", default = true })
-hl.workspace_rule({ workspace = "12", monitor = "HDMI-A-2", layout = "dwindle" })
+local nix = require("nix")
+
+local main = "desc:" .. nix.main_monitor
+local side = "desc:Samsung Electric Company LS27AG30x H4PW500403"
+
+hl.workspace_rule({ workspace = "1", monitor = main, default = true })
+hl.workspace_rule({ workspace = "11", monitor = side, default = true })
+hl.workspace_rule({ workspace = "12", monitor = side, layout = "dwindle" })
 
 hl.window_rule({
   match     = { initial_class = "^(spotify)$" },

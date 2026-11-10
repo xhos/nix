@@ -1,4 +1,7 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  main = "Microstep MAG 274UPF E2 0x00000001";
+  side = "Samsung Electric Company LS27AG30x H4PW500403";
+in {
   stylix.image = pkgs.fetchurl {
     url = "http://pics.xhos.dev/u/SI12IF.png";
     sha256 = "sha256-qhRiShVq0VBiVQW5pYOWHDn/14o/PTLOlSpju8KTyRk=";
@@ -23,7 +26,7 @@
   prompt = "starship";
   browser = "zen";
 
-  mainMonitor = "Microstep MAG 274UPF E2 0x00000001";
+  mainMonitor = main;
 
   games.smokeapi = {
     appIds = [
@@ -37,8 +40,8 @@
   modules.wallpaperEngine = {
     enable = true;
     wallpaper = 3068206129; # lunar tear garden
-    screens = ["HDMI-A-1" "HDMI-A-2"];
-    crops."HDMI-A-2" = "608:1080:0:0";
+    screens = [main side];
+    crops.${side} = "608:1080:0:0";
   };
 
   hyprland.execOnce = [
