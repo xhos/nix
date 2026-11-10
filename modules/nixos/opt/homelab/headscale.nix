@@ -41,6 +41,7 @@
           c = cfg.config.homelab;
         in
           lib.optionals c.valheim.enable [c.valheim.port (c.valheim.port + 1)]
+          ++ lib.optional c.minecraft.enable 25565
           ++ lib.concatLists (lib.mapAttrsToList (_: i: lib.optionals i.enable [i.port i.httpPort]) c.assetto-server.instances)
       )
       homelabHosts));

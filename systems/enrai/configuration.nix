@@ -50,6 +50,11 @@
       ];
     };
 
+    minecraft = {
+      enable = true;
+      dataDir = "/storage/minecraft";
+    };
+
     assetto-server.contentOwner = "xhos";
     assetto-server.instances.srp = {
       enable = true;
