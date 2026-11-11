@@ -35,9 +35,18 @@
     };
 
     # External indexers can be temporarily unavailable; avoid rapid retries.
+    # prowlarr validates flaresolverr-tagged indexers through it on every apply
     systemd.services.declarr = {
       serviceConfig.RestartSec = "60s";
       path = [pkgs.git];
+      wants = ["flaresolverr.service"];
+      after = ["flaresolverr.service"];
+      preStart = ''
+        for i in $(seq 1 120); do
+          ${lib.getExe pkgs.curl} -sf http://127.0.0.1:${toString config.services.flaresolverr.port}/ >/dev/null && exit 0
+          sleep 1
+        done
+      '';
     };
 
     # shared secrets

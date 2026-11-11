@@ -86,6 +86,18 @@
       wants = ["jellyfin.service"];
       after = ["jellyfin.service"];
       unitConfig.RequiresMountsFor = ["/media"];
+      # upstream waits on /System/Info/Public, which jellyfin's temporary setup
+      # server already answers before it shuts down for migrations
+      serviceConfig.ExecStartPre = [
+        (pkgs.writeShellScript "jellyfin-healthy" ''
+          for i in $(seq 1 300); do
+            [ "$(${lib.getExe pkgs.curl} -sf http://127.0.0.1:8096/health)" = Healthy ] && exit 0
+            sleep 1
+          done
+          echo "jellyfin not healthy"
+          exit 1
+        '')
+      ];
       # Jellarr 0.1.0 does not expose monitoring or scheduled-task options.
       postStart = let
         libraryMaintenance = pkgs.writeText "jellyfin-library-maintenance.py" ''
