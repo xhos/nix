@@ -139,6 +139,10 @@
     };
 
     atuin.enable = true;
+    cliproxyapi = {
+      enable = true;
+      clients = ["kodama" "nagomi"];
+    };
     dawarich.enable = true;
     forgejo.enable = true;
     glance.enable = true;

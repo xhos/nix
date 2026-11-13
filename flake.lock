@@ -1047,11 +1047,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1794009285,
-        "narHash": "sha256-eheXUFjbw6txzeNpeBA1Cuurqoj+gtGYaeWumq+edOY=",
+        "lastModified": 1794493589,
+        "narHash": "sha256-XeiAGbzjdC0D7ekQZbufWyqeY8x8UItxjCP335lh4Eg=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "2add2fd83bf01a23357d401ba24155e35d9d93d2",
+        "rev": "90011236663d4116738fc2d63de6ab64523387b6",
         "type": "github"
       },
       "original": {
@@ -1109,11 +1109,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793061907,
-        "narHash": "sha256-4RYLWUgftghdAOQ3HcZ+e7yrnpKRe0WiGzGX65jYL34=",
+        "lastModified": 1794371637,
+        "narHash": "sha256-+vrWTLE5MFTKWU3GxWIW3rV5wliCKZZQU5QCbSMuIi8=",
         "owner": "xhos",
         "repo": "nagomi",
-        "rev": "28127092a045426cf91a3508305b2775aca7a426",
+        "rev": "726eae5c420b3e2b68f182e96f2513db3efed2e7",
         "type": "github"
       },
       "original": {
@@ -1220,11 +1220,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791917843,
-        "narHash": "sha256-Ol2uFRcNioll9ZNHoHXKSF3Cpe31yq/xL9bZ+hxQrGo=",
+        "lastModified": 1794371244,
+        "narHash": "sha256-q99D+ITx4H5pRJwpfe2Qk9XjXCyRg6zhNgLXv40OUHg=",
         "owner": "xhos",
         "repo": "nagomi-receipts",
-        "rev": "0f16520893677742bd16d349c178a490c9e5efaa",
+        "rev": "2071cb81f1060cdf535c8e0e69fc4b2560b825e1",
         "type": "github"
       },
       "original": {
@@ -1342,11 +1342,11 @@
       "flake": false,
       "locked": {
         "allRefs": true,
-        "lastModified": 1793991504,
-        "narHash": "sha256-Wn0nAV+vHkkMfg33DGh7IVFIkfhtCcz0ojLYNLlCh3Q=",
+        "lastModified": 1794370888,
+        "narHash": "sha256-dvUr1N5aoTw6cFsXW4mhdgWseGpW/0TxWA4wBZKnpBc=",
         "ref": "main",
-        "rev": "ef71874bd00c1816d2135adbb23185b7bf6523ee",
-        "revCount": 101,
+        "rev": "8ee7b18762ff9d2626a55fdc8014e1873b006467",
+        "revCount": 102,
         "type": "git",
         "url": "ssh://git@enrai.ts.xhos.dev:2222/xhos/nix-secrets"
       },

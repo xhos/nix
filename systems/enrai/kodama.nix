@@ -14,7 +14,7 @@
   sops.templates = {
     "kodama.env".content = ''
       KODAMA_TOKEN=${config.sops.placeholder."api/kodama/token"}
-      CLIPROXY_KEY=${config.sops.placeholder."api/kodama/token"}
+      CLIPROXY_KEY=${config.sops.placeholder."api/cliproxy/kodama"}
       HA_TOKEN=${config.sops.placeholder."api/kodama/ha"}
     '';
     "kodama-telegram.env".content = ''
@@ -32,8 +32,6 @@
   services.kodama = {
     enable = true;
     configFile = ./kodama.toml;
-    # the proxy only listens on localhost, so the kodama token doubles as its key
-    proxy.enable = true;
     environmentFile = config.sops.templates."kodama.env".path;
     telegram = {
       enable = true;

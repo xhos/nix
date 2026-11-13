@@ -26,8 +26,9 @@
       # TLS for SMTP — reuse the ACME wildcard cert
       # emailParser.tls.certFile = "/path/to/fullchain.pem";
       # emailParser.tls.keyFile = "/path/to/privkey.pem";
-      receipts.provider = "gemini";
-      receipts.secretsFile = config.sops.secrets."env/nagomi/receipts".path;
+      receipts.baseUrl = "http://127.0.0.1:${toString config.homelab.cliproxyapi.port}/v1";
+      receipts.model = "gemini-3-flash";
+      receipts.secretsFile = config.sops.templates."nagomi-receipts.env".path;
       monitoring.enable = true;
       monitoring.url = "https://monitor.nagomi.${config.homelab.config.domain}";
       monitoring.secretsFile = config.sops.secrets."env/nagomi/monitoring".path;
@@ -36,7 +37,9 @@
     sops.secrets."env/nagomi/shared" = {}; # API_KEY (loaded by core + email-parser)
     sops.secrets."env/nagomi/core" = {}; # CREDENTIALS_KEY
     sops.secrets."env/nagomi/gateway" = {}; # BETTER_AUTH_SECRET
-    sops.secrets."env/nagomi/receipts" = {}; # GOOGLE_API_KEY
+    sops.templates."nagomi-receipts.env".content = ''
+      OPENAI_API_KEY=${config.sops.placeholder."api/cliproxy/nagomi"}
+    '';
     sops.secrets."env/nagomi/monitoring" = {}; # GF_SECURITY_ADMIN_PASSWORD, GF_SECURITY_SECRET_KEY
 
     # loki and grafana keep their stock nixos state dirs
