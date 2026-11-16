@@ -22,6 +22,7 @@ in {
       home = dir;
     };
     users.groups.minecraft = {};
+    users.users.xhos.extraGroups = ["minecraft"];
 
     systemd.tmpfiles.rules = ["d ${dir} 0750 minecraft minecraft -"];
     homelab.backup.services.minecraft = {
@@ -39,10 +40,35 @@ in {
       fi
     '';
 
+    # server console on a fifo, e.g. `mc whitelist add name`
+    systemd.sockets.minecraft = {
+      bindsTo = ["minecraft.service"];
+      socketConfig = {
+        ListenFIFO = "/run/minecraft.stdin";
+        SocketMode = "0660";
+        SocketUser = "minecraft";
+        SocketGroup = "minecraft";
+        RemoveOnStop = true;
+        FlushPending = true;
+      };
+    };
+
+    environment.systemPackages = [
+      (pkgs.writeShellScriptBin "mc" ''
+        echo "$*" > /run/minecraft.stdin
+        sleep 1
+        journalctl -u minecraft -n 5 --no-pager -o cat
+      '')
+    ];
+
     systemd.services.minecraft = {
       wantedBy = ["multi-user.target"];
-      after = ["network.target"];
+      after = ["network.target" "minecraft.socket"];
+      requires = ["minecraft.socket"];
       serviceConfig = {
+        StandardInput = "socket";
+        StandardOutput = "journal";
+        StandardError = "journal";
         User = "minecraft";
         Group = "minecraft";
         WorkingDirectory = dir;

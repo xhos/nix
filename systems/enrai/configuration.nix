@@ -24,6 +24,10 @@
   # gateway node, routes s3 requests to the magi nodes that hold the data
   services.garage.settings.rpc_public_addr = "10.0.0.10:3901";
 
+  # bbr copes with lossy/reordered remote links far better than cubic
+  boot.kernelModules = ["tcp_bbr"];
+  boot.kernel.sysctl."net.ipv4.tcp_congestion_control" = "bbr";
+
   homelab = {
     enable = true;
     baremetal = {
