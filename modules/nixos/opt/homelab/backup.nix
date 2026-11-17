@@ -20,6 +20,18 @@ in {
             type = lib.types.listOf lib.types.str;
             default = [];
           };
+          timerConfig = lib.mkOption {
+            type = lib.types.attrs;
+            default = {
+              OnCalendar = "daily";
+              Persistent = true;
+              RandomizedDelaySec = "1h";
+            };
+          };
+          keep = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = ["--keep-daily 7" "--keep-weekly 4" "--keep-monthly 6"];
+          };
         };
       });
       default = {};
@@ -44,25 +56,16 @@ in {
 
     services.restic.backups =
       lib.mapAttrs (name: svc: {
-        inherit (svc) paths exclude;
+        inherit (svc) paths exclude timerConfig;
         user = "root";
         repositoryFile = config.sops.templates.restic-repo.path;
         passwordFile = config.sops.secrets."passwords/restic".path;
         environmentFile = config.sops.templates.restic-b2-env.path;
         initialize = true;
         createWrapper = true;
-        timerConfig = {
-          OnCalendar = "daily";
-          Persistent = true;
-          RandomizedDelaySec = "1h";
-        };
         extraBackupArgs = ["--retry-lock 3h"];
-        pruneOpts = [
-          "--keep-daily 7"
-          "--keep-weekly 4"
-          "--keep-monthly 6"
-          "--retry-lock 3h"
-        ];
+        # the repo is shared, so only forget this service's own snapshots
+        pruneOpts = svc.keep ++ map (p: "--path ${p}") svc.paths ++ ["--retry-lock 3h"];
       })
       serviceBackups;
 
