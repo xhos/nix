@@ -48,9 +48,24 @@ in {
           cursor=$(journalctl -u minecraft -n0 --show-cursor -o cat | sed -n 's/^-- cursor: //p')
           console save-off
           console save-all flush
-          timeout 300 sh -c "until journalctl -u minecraft --after-cursor='$cursor' -o cat | grep -q 'Saved the world'; do sleep 1; done"
+          # refuse to snapshot a world that is still being flushed
+          for i in $(seq 300); do
+            journalctl -u minecraft --after-cursor="$cursor" -o cat | grep -q 'Saved the world' && break
+            [ "$i" = 300 ] && { echo "save-all never finished"; exit 1; }
+            sleep 1
+          done
         fi
-        ${pkgs.rsync}/bin/rsync -a --delete --exclude /backups --exclude /logs --exclude /backup-latest ${dir}/ ${snap}/
+        # distant horizons lods are a regenerable multi-gb cache; mods like
+        # cosmetic armor write player files regardless of save-off, so retry
+        for i in 1 2 3; do
+          rc=0
+          ${pkgs.rsync}/bin/rsync -a --delete --delete-excluded \
+            --exclude /backups --exclude /logs --exclude /backup-latest \
+            --exclude 'DistantHorizons.sqlite*' \
+            ${dir}/ ${snap}/ || rc=$?
+          [ "$rc" = 23 ] || [ "$rc" = 24 ] || break
+        done
+        exit "$rc"
       '';
     };
 
