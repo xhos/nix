@@ -225,6 +225,23 @@
       get_volume
     fi
   '';
+
+  screenshot = pkgs.writeShellApplication {
+    name = "screenshot";
+    runtimeInputs = with pkgs; [hyprpicker grim slurp wl-clipboard libnotify];
+    text = ''
+      hyprpicker -r -z &
+      freeze=$!
+      trap 'kill $freeze 2>/dev/null' EXIT
+      sleep 0.1
+      region=$(slurp) || exit 0
+      file=$(mktemp --suffix=.png)
+      grim -g "$region" "$file"
+      kill "$freeze" 2>/dev/null || true
+      wl-copy --type image/png < "$file"
+      notify-send -a screenshot -i "$file" "Screenshot" "Copied to clipboard"
+    '';
+  };
 in {
   config = lib.mkIf (config.wm == "hyprland") {
     hyprland.execOnce = [
@@ -239,6 +256,7 @@ in {
       nwg-displays
       brightness-script
       volume-script
+      screenshot
       # TUI control tools
       wiremix # audio mixer
       bluetui # bluetooth manager

@@ -12,4 +12,7 @@ pkgs.rustPlatform.buildRustPackage rec {
   };
 
   cargoBuildFlags = "--package discord-presence-lsp";
+
+  nativeBuildInputs = [pkgs.pkg-config];
+  buildInputs = [pkgs.libgit2];
 }

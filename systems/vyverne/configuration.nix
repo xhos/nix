@@ -148,20 +148,8 @@
 
   # case/cpu fan control via the board's NCT6797D (MSI Z390), curves set in the coolercontrol gui
   programs.coolercontrol.enable = true;
-  # per-file: persisting the whole dir would hide the plugins symlink nixos puts there
-  persist.files = map (f: "/etc/coolercontrol/${f}") [
-    "config.toml"
-    "config-ui.json"
-    "modes.json"
-    "overrides.toml"
-    "alerts.json"
-    "calibrations.json"
-    "coolercontrol.crt"
-    "coolercontrol.key"
-    ".passwd"
-    ".tokens"
-  ];
-  persist.dirs = ["/var/lib/coolercontrol"];
+  # the plugins symlink nixos puts in /etc/coolercontrol has to exist in /persist too, the bind mount hides the real one
+  persist.dirs = ["/etc/coolercontrol" "/var/lib/coolercontrol"];
 
   # android phone as a webcam: scrcpy --video-source=camera --v4l2-sink=/dev/video0
   # (adb / scrcpy come from the shared pkgs modules, user is in adbusers)
@@ -169,6 +157,7 @@
   boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=1 video_nr=0 exclusive_caps=1 card_label="Phone Cam"
+    options btusb enable_autosuspend=0
   '';
   environment.systemPackages = [pkgs.v4l-utils];
 

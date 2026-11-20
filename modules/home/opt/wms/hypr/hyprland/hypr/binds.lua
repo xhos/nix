@@ -212,7 +212,7 @@ else
   -- on SUPER+Escape, not SUPER+SHIFT+L: that is "move window right" now.
   hl.bind(mod .. " + Escape", app("hyprlock"))
 end
-hl.bind(modshift .. " + S", app("hyprshot -z -m region --clipboard-only"))
+hl.bind(modshift .. " + S", app("screenshot"))
 hl.bind(modshift .. " + E", app("bemoji"))
 
 hl.bind("ALT + code:65", app("rofi -show drun -run-command 'uwsm-app -- {cmd}'"))

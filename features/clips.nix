@@ -13,13 +13,20 @@
     service = "gpu-screen-recorder-replay";
     clipDir = "${config.home.homeDirectory}/Videos/clips";
 
-    # ffmpeg 9 needs nvenc api 13.1, the 595 driver only has 13.0
-    gpu-screen-recorder = pkgs.gpu-screen-recorder.override {ffmpeg = pkgs.ffmpeg_8;};
-
     # runs after the file is written, so this can't report a clip that doesn't exist
     saved = pkgs.writeShellScript "clip-saved" ''
       ${pkgs.libnotify}/bin/notify-send -t 2000 Clips "Clip saved"
     '';
+
+    # connectors move between ports, the monitor description doesn't
+    record = pkgs.writeShellApplication {
+      name = "clip-record";
+      runtimeInputs = [pkgs.hyprland pkgs.jq pkgs.gpu-screen-recorder];
+      text = ''
+        output=$(hyprctl monitors -j | jq -r --arg d ${lib.escapeShellArg config.mainMonitor} '.[] | select(.description == $d) | .name')
+        exec gpu-screen-recorder -w "''${output:-screen}" "$@"
+      '';
+    };
 
     clip = pkgs.writeShellApplication {
       name = "clip";
@@ -39,9 +46,7 @@
       Service = {
         ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p ${clipDir}";
         ExecStart = lib.escapeShellArgs [
-          "${gpu-screen-recorder}/bin/gpu-screen-recorder"
-          "-w"
-          "HDMI-A-1"
+          (lib.getExe record)
           "-s"
           "1920x1080"
           "-f"
