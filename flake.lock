@@ -1109,11 +1109,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794371637,
-        "narHash": "sha256-+vrWTLE5MFTKWU3GxWIW3rV5wliCKZZQU5QCbSMuIi8=",
+        "lastModified": 1795225887,
+        "narHash": "sha256-EaElGDtekxDRtmlYAGRIdyBNqzGR2Cb4ICGr+aNVlLg=",
         "owner": "xhos",
         "repo": "nagomi",
-        "rev": "726eae5c420b3e2b68f182e96f2513db3efed2e7",
+        "rev": "7be097673edc0ebb5c940aeb93b84528b793cecd",
         "type": "github"
       },
       "original": {
@@ -1243,11 +1243,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791917845,
-        "narHash": "sha256-PId3+b+DpUyGqYm7hcgO0blykzaJLYc5dkYERwIbvO8=",
+        "lastModified": 1795224343,
+        "narHash": "sha256-PFXWB0TWDNnRRSOlafmLBHKcOnhhkwVN6H0QhwyWZvc=",
         "owner": "xhos",
         "repo": "nagomi-statements",
-        "rev": "a2da4f11a69172570a7310b637cb5687d3e5bfa2",
+        "rev": "6c9b375d164be18a4392caa63f2ead3871899d7a",
         "type": "github"
       },
       "original": {
