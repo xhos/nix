@@ -92,7 +92,6 @@ in {
         group = config.services.caddy.group;
         dnsProvider = "cloudflare";
         dnsResolver = "1.1.1.1:53";
-        dnsPropagationCheck = true;
         domain = "*.${domain}";
         extraDomainNames = [domain] ++ extraDomains domain;
         environmentFile = config.sops.secrets."api/cloudflare".path;

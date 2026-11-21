@@ -28,6 +28,10 @@
   boot.kernelModules = ["tcp_bbr"];
   boot.kernel.sysctl."net.ipv4.tcp_congestion_control" = "bbr";
 
+  # long builds (cef) only get cpu and disk the services leave idle
+  nix.daemonCPUSchedPolicy = "idle";
+  nix.daemonIOSchedClass = "idle";
+
   homelab = {
     enable = true;
     baremetal = {
