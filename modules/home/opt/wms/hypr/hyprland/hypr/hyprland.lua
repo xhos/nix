@@ -85,6 +85,8 @@ hl.config({
 
   ecosystem  = { no_update_news = true },
   cursor     = { no_hardware_cursors = true },
+  -- fullscreen colour-managed clients (spotify/CEF) flipped the monitor into HDR, blanking it
+  render     = { cm_auto_hdr = 0 },
   xwayland   = { force_zero_scaling = true },
 })
 
