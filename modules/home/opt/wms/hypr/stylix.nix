@@ -20,6 +20,8 @@
       /* Transparent Sidebar */
       window {
         background: transparent;
+        /* gtk 4.24 sends ext-background-effect, hyprland then only blurs what the app asks for */
+        backdrop-filter: blur(10px);
       }
 
       .sidebar-pane,
