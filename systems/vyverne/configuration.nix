@@ -1,192 +1,245 @@
-{
-  inputs,
-  config,
-  pkgs,
-  ...
-}: {
-  imports =
-    [
-      ./hardware-configuration.nix
-      ./disko.nix
-      inputs.disko.nixosModules.disko
-      inputs.sops-nix.nixosModules.sops
-      inputs.kodama.nixosModules.default
-    ]
-    ++ (with inputs.self.modules.nixos; [
-      desktop
-      games
-      assetto-corsa
-      beammp
-      clips
-      kdeconnect
-      obs
-      sunshine
-    ]);
+{inputs, ...}: {
+  hosts.vyverne = {
+    features = with inputs.self.modules.nixos; [tailnet kodama desktop games assetto-corsa beammp clips kdeconnect obs sunshine];
 
-  # ── identity ──────────────────────────────────────────────────────────
-  profile = "desktop";
-  networking.hostName = "vyverne";
-  networking.hostId = "9a7bef04";
-  system.stateVersion = "25.05";
+    nixos = {
+      inputs,
+      config,
+      pkgs,
+      ...
+    }: {
+      imports = [
+        ./hardware-configuration.nix
+        ./disko.nix
+        inputs.disko.nixosModules.disko
+        inputs.sops-nix.nixosModules.sops
+      ];
 
-  # ── feature modules ───────────────────────────────────────────────────
-  audio.enable = true;
-  bluetooth.enable = true;
-  nvidia.enable = true;
-  vm.enable = true;
-  ai.enable = true;
-  davinci.enable = true;
-  syncthing.enable = true;
-  impermanence.enable = true;
+      # ── identity ──────────────────────────────────────────────────────────
+      profile = "desktop";
+      networking.hostName = "vyverne";
+      networking.hostId = "9a7bef04";
+      system.stateVersion = "25.05";
 
-  wm = "hyprland";
-  greeter = "yawn";
+      # ── feature modules ───────────────────────────────────────────────────
+      audio.enable = true;
+      bluetooth.enable = true;
+      nvidia.enable = true;
+      vm.enable = true;
+      ai.enable = true;
+      davinci.enable = true;
+      syncthing.enable = true;
+      impermanence.enable = true;
 
-  # ── boot ──────────────────────────────────────────────────────────────
-  bootloader.limine = {
-    enable = true;
-    dualboot = true;
-    secureboot = true;
-  };
-  bootvine.enable = true;
+      wm = "hyprland";
+      greeter = "yawn";
 
-  # dual-boots Windows, which wants the RTC in local time
-  time.hardwareClockInLocalTime = true;
-
-  boot.supportedFilesystems = ["zfs"];
-  boot.zfs.forceImportRoot = false;
-  boot.kernelParams = [
-    "hid_apple.fnmode=2" # fix fn keys on infi75
-    "acpi_enforce_resources=lax" # MSI reserves the SuperIO range in ACPI, nct6775 won't bind without this
-  ];
-  boot.binfmt.emulatedSystems = ["aarch64-linux"]; # to build the OCI arm image
-
-  # ── filesystems ───────────────────────────────────────────────────────
-  # TODO: use disko nodev on next install
-  fileSystems."/" = {
-    device = "none";
-    fsType = "tmpfs";
-    options = ["defaults" "size=25%" "mode=755"];
-  };
-
-  systemd.tmpfiles.rules = ["d /games 0755 xhos users - -"];
-
-  services.udisks2.enable = true;
-
-  # downloading ram
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50; # up to 50% of RAM as compressed swap
-  };
-
-  # ── networking ────────────────────────────────────────────────────────
-  # match by mac, the nixos wakeOnLan option matches OriginalName which is still eth0 at boot
-  systemd.network.links."10-enp5s0" = {
-    matchConfig.PermanentMACAddress = "c8:fe:0f:d0:3c:68";
-    linkConfig = {
-      Name = "enp5s0";
-      WakeOnLan = "magic";
-    };
-  };
-
-  systemd.network.networks."05-enp5s0" = {
-    matchConfig.MACAddress = "c8:fe:0f:d0:3c:68";
-    address = ["10.0.0.11/24"];
-    gateway = ["10.0.0.1"];
-    networkConfig = {
-      DHCP = "no";
-      IPv6AcceptRA = true;
-    };
-    linkConfig.RequiredForOnline = "no";
-  };
-
-  # ── access ────────────────────────────────────────────────────────────
-  users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
-
-  # allow poweroff/reboot over ssh without sudo
-  security.polkit.extraConfig = ''
-    polkit.addRule(function(action, subject) {
-      if ((action.id == "org.freedesktop.login1.power-off" ||
-           action.id == "org.freedesktop.login1.reboot") &&
-          subject.user == "xhos") {
-        return polkit.Result.YES;
-      }
-    });
-  '';
-
-  # ── audio routing ─────────────────────────────────────────────────────
-  services.pipewire.wireplumber.extraConfig."51-disable-unused" = {
-    "monitor.alsa.rules" = [
-      # whole cards: no output or input wanted
-      {
-        matches = [
-          {"device.name" = "alsa_card.pci-0000_02_00.1";} # HDA NVidia
-          {"device.name" = "alsa_card.pci-0000_00_1f.3";} # HDA Intel PCH
-          {"device.name" = "~alsa_card.usb-Sony_Interactive_Entertainment_DualSense.*";}
-        ];
-        actions.update-props."device.disabled" = true;
-      }
-      # single nodes: USB PnP is mic-only, Arctis 7 is output-only
-      {
-        matches = [
-          {"node.name" = "~alsa_output.usb-0c76_USB_PnP_Audio_Device-00.*";}
-          {"node.name" = "~alsa_input.usb-SteelSeries_SteelSeries_Arctis_7-00.*";}
-        ];
-        actions.update-props."node.disabled" = true;
-      }
-    ];
-    # no HFP/HSP, so the XM5 never exposes a mic and never drops out of LDAC
-    "monitor.bluez.properties"."bluez5.roles" = ["a2dp_source"];
-  };
-
-  # ── peripherals ───────────────────────────────────────────────────────
-  services.hardware.openrgb.enable = true;
-
-  # monitor brightness over DDC/CI (ddcutil, driven by brightness-script)
-  hardware.i2c.enable = true;
-  users.users.xhos.extraGroups = ["i2c"];
-
-  # case/cpu fan control via the board's NCT6797D (MSI Z390), curves set in the coolercontrol gui
-  programs.coolercontrol.enable = true;
-  # the plugins symlink nixos puts in /etc/coolercontrol has to exist in /persist too, the bind mount hides the real one
-  persist.dirs = ["/etc/coolercontrol" "/var/lib/coolercontrol"];
-
-  # android phone as a webcam: scrcpy --video-source=camera --v4l2-sink=/dev/video0
-  # (adb / scrcpy come from the shared pkgs modules, user is in adbusers)
-  boot.kernelModules = ["v4l2loopback" "nct6775"]; # nct6775: motherboard fan headers
-  boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
-  boot.extraModprobeConfig = ''
-    options v4l2loopback devices=1 video_nr=0 exclusive_caps=1 card_label="Phone Cam"
-    options btusb enable_autosuspend=0
-  '';
-  environment.systemPackages = [pkgs.v4l-utils];
-
-  nixpkgs.overlays = [
-    (final: prev: {
-      ctranslate2 = prev.ctranslate2.override {
-        withCUDA = true;
-        withCuDNN = true;
+      # ── boot ──────────────────────────────────────────────────────────────
+      bootloader.limine = {
+        enable = true;
+        dualboot = true;
+        secureboot = true;
       };
-    })
-  ];
+      bootvine.enable = true;
 
-  # ── kodama agent ──────────────────────────────────────────────────────
-  sops.secrets."api/kodama/token" = {};
-  sops.templates."kodama-agent.env" = {
-    owner = "xhos";
-    mode = "0400";
-    content = ''
-      KODAMA_TOKEN=${config.sops.placeholder."api/kodama/token"}
-    '';
-  };
-  services.kodama.agent = {
-    enable = true;
-    url = "ws://enrai.ts.xhos.dev:7777/ws";
-    environmentFile = config.sops.templates."kodama-agent.env".path;
-    user = "xhos";
-    description = ''
-      Desk PC. The Schiit sink is the headphones; HDMI is the speakers.
-    '';
+      # dual-boots Windows, which wants the RTC in local time
+      time.hardwareClockInLocalTime = true;
+
+      boot.supportedFilesystems = ["zfs"];
+      boot.zfs.forceImportRoot = false;
+      boot.kernelParams = [
+        "hid_apple.fnmode=2" # fix fn keys on infi75
+        "acpi_enforce_resources=lax" # MSI reserves the SuperIO range in ACPI, nct6775 won't bind without this
+      ];
+      boot.binfmt.emulatedSystems = ["aarch64-linux"]; # to build the OCI arm image
+
+      # ── filesystems ───────────────────────────────────────────────────────
+      # TODO: use disko nodev on next install
+      fileSystems."/" = {
+        device = "none";
+        fsType = "tmpfs";
+        options = ["defaults" "size=25%" "mode=755"];
+      };
+
+      systemd.tmpfiles.rules = ["d /games 0755 xhos users - -"];
+
+      services.udisks2.enable = true;
+
+      # downloading ram
+      zramSwap = {
+        enable = true;
+        algorithm = "zstd";
+        memoryPercent = 50; # up to 50% of RAM as compressed swap
+      };
+
+      # ── networking ────────────────────────────────────────────────────────
+      # match by mac, the nixos wakeOnLan option matches OriginalName which is still eth0 at boot
+      systemd.network.links."10-enp5s0" = {
+        matchConfig.PermanentMACAddress = "c8:fe:0f:d0:3c:68";
+        linkConfig = {
+          Name = "enp5s0";
+          WakeOnLan = "magic";
+        };
+      };
+
+      systemd.network.networks."05-enp5s0" = {
+        matchConfig.MACAddress = "c8:fe:0f:d0:3c:68";
+        address = ["10.0.0.11/24"];
+        gateway = ["10.0.0.1"];
+        networkConfig = {
+          DHCP = "no";
+          IPv6AcceptRA = true;
+        };
+        linkConfig.RequiredForOnline = "no";
+      };
+
+      # ── access ────────────────────────────────────────────────────────────
+      users.users.xhos.openssh.authorizedKeys.keyFiles = [./vyverne.pub];
+
+      # allow poweroff/reboot over ssh without sudo
+      security.polkit.extraConfig = ''
+        polkit.addRule(function(action, subject) {
+          if ((action.id == "org.freedesktop.login1.power-off" ||
+               action.id == "org.freedesktop.login1.reboot") &&
+              subject.user == "xhos") {
+            return polkit.Result.YES;
+          }
+        });
+      '';
+
+      # ── audio routing ─────────────────────────────────────────────────────
+      services.pipewire.wireplumber.extraConfig."51-disable-unused" = {
+        "monitor.alsa.rules" = [
+          # whole cards: no output or input wanted
+          {
+            matches = [
+              {"device.name" = "alsa_card.pci-0000_02_00.1";} # HDA NVidia
+              {"device.name" = "alsa_card.pci-0000_00_1f.3";} # HDA Intel PCH
+              {"device.name" = "~alsa_card.usb-Sony_Interactive_Entertainment_DualSense.*";}
+            ];
+            actions.update-props."device.disabled" = true;
+          }
+          # single nodes: USB PnP is mic-only, Arctis 7 is output-only
+          {
+            matches = [
+              {"node.name" = "~alsa_output.usb-0c76_USB_PnP_Audio_Device-00.*";}
+              {"node.name" = "~alsa_input.usb-SteelSeries_SteelSeries_Arctis_7-00.*";}
+            ];
+            actions.update-props."node.disabled" = true;
+          }
+        ];
+        # no HFP/HSP, so the XM5 never exposes a mic and never drops out of LDAC
+        "monitor.bluez.properties"."bluez5.roles" = ["a2dp_source"];
+      };
+
+      # ── peripherals ───────────────────────────────────────────────────────
+      services.hardware.openrgb.enable = true;
+
+      # monitor brightness over DDC/CI (ddcutil, driven by brightness-script)
+      hardware.i2c.enable = true;
+      users.users.xhos.extraGroups = ["i2c"];
+
+      # case/cpu fan control via the board's NCT6797D (MSI Z390), curves set in the coolercontrol gui
+      programs.coolercontrol.enable = true;
+      # the plugins symlink nixos puts in /etc/coolercontrol has to exist in /persist too, the bind mount hides the real one
+      persist.dirs = ["/etc/coolercontrol" "/var/lib/coolercontrol"];
+
+      # android phone as a webcam: scrcpy --video-source=camera --v4l2-sink=/dev/video0
+      # (adb / scrcpy come from the shared pkgs modules, user is in adbusers)
+      boot.kernelModules = ["v4l2loopback" "nct6775"]; # nct6775: motherboard fan headers
+      boot.extraModulePackages = with config.boot.kernelPackages; [v4l2loopback];
+      boot.extraModprobeConfig = ''
+        options v4l2loopback devices=1 video_nr=0 exclusive_caps=1 card_label="Phone Cam"
+        options btusb enable_autosuspend=0
+      '';
+      environment.systemPackages = [pkgs.v4l-utils];
+
+      nixpkgs.overlays = [
+        (final: prev: {
+          ctranslate2 = prev.ctranslate2.override {
+            withCUDA = true;
+            withCuDNN = true;
+          };
+        })
+      ];
+
+      # ── kodama agent ──────────────────────────────────────────────────────
+      sops.secrets."api/kodama/token" = {};
+      sops.templates."kodama-agent.env" = {
+        owner = "xhos";
+        mode = "0400";
+        content = ''
+          KODAMA_TOKEN=${config.sops.placeholder."api/kodama/token"}
+        '';
+      };
+      services.kodama.agent = {
+        enable = true;
+        url = "ws://enrai.ts.xhos.dev:7777/ws";
+        environmentFile = config.sops.templates."kodama-agent.env".path;
+        user = "xhos";
+        description = ''
+          Desk PC. The Schiit sink is the headphones; HDMI is the speakers.
+        '';
+      };
+    };
+
+    home = {pkgs, ...}: let
+      main = "Microstep MAG 274UPF E2 0x00000001";
+      side = "Samsung Electric Company LS27AG30x H4PW500403";
+    in {
+      stylix.image = pkgs.fetchurl {
+        url = "http://pics.xhos.dev/u/SI12IF.png";
+        sha256 = "sha256-qhRiShVq0VBiVQW5pYOWHDn/14o/PTLOlSpju8KTyRk=";
+      };
+      stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/material-darker.yaml";
+
+      impermanence.enable = true;
+
+      modules = {
+        rofi.enable = true;
+        spicetify.enable = true;
+        discord.enable = true;
+        secrets.enable = true;
+        telegram.enable = true;
+        fonts.enable = true;
+        rclone.enable = true;
+      };
+
+      wm = "hyprland";
+      bar = "waybar";
+      shell = "zsh";
+      prompt = "starship";
+      browser = "zen";
+
+      mainMonitor = main;
+
+      games.smokeapi = {
+        appIds = [
+          2161700 # Persona 3 Reload
+          255710 # Cities: Skylines (native)
+          949230 # Cities: Skylines II
+        ];
+        additionalLibraryPaths = ["/games/SteamLibrary"];
+      };
+
+      modules.wallpaperEngine = {
+        enable = true;
+        wallpaper = 3068206129; # lunar tear garden
+        screens = [main side];
+        crops.${side} = "608:1080:0:0";
+      };
+
+      hyprland.execOnce = [
+        "spotify"
+        "materialgram"
+        "vesktop"
+      ];
+
+      home.packages = with pkgs; [
+        teams-for-linux
+        rustdesk
+        whspr
+      ];
+    };
   };
 }

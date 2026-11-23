@@ -151,31 +151,10 @@
   outputs = {
     self,
     nixpkgs,
-    home-manager,
     flake-parts,
     ...
   } @ inputs: let
     lib = nixpkgs.lib;
-
-    # custom functions
-    import-tree = import ./lib/import-tree.nix {inherit inputs;};
-
-    # shared modules across all hosts with home-manager
-    sharedNixosModules = [
-      home-manager.nixosModules.home-manager
-      inputs.stylix.nixosModules.stylix
-      inputs.impermanence.nixosModules.impermanence
-      inputs.vpn-confinement.nixosModules.default
-    ];
-
-    mkNixosSystem = import ./lib/mk-nixos-system.nix {
-      inherit
-        lib
-        inputs
-        import-tree
-        sharedNixosModules
-        ;
-    };
 
     systems = ["x86_64-linux" "aarch64-linux"];
     forEachSystem = nixpkgs.lib.genAttrs systems;
@@ -185,39 +164,12 @@
 
       imports = [
         flake-parts.flakeModules.modules
+        ./lib/hosts.nix
         (inputs.import-tree ./features)
+        (inputs.import-tree.match ".*/configuration\\.nix" ./systems)
       ];
 
       flake = {
-        nixosConfigurations = builtins.mapAttrs (hostname: args: mkNixosSystem ({inherit hostname;} // args)) {
-          aevon = {};
-          balthasar = {homeUser = null;};
-          casper = {homeUser = null;};
-          melchior = {homeUser = null;};
-          mizore = {
-            homeUser = null;
-          };
-          arashi = {};
-          a1-flex = {
-            homeUser = null;
-            minimal = true;
-          };
-          e2-micro = {
-            homeUser = null;
-            minimal = true;
-          };
-          enrai = {};
-          nyx = {
-            homeUser = null;
-            minimal = true;
-          };
-          proxy-1 = {
-            homeUser = null;
-          };
-          vyverne = {};
-          zireael = {};
-        };
-
         # hostname is the ssh alias from modules/home/core/ssh.nix, which carries the ip and key
         deploy.nodes = lib.genAttrs ["melchior" "balthasar" "casper"] (hostname: {
           inherit hostname;

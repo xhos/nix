@@ -1,25 +1,32 @@
-{
-  inputs,
-  lib,
-  ...
-}: {
-  imports = [
-    "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
-  ];
+{inputs, ...}: {
+  hosts.e2-micro = {
+    homeUser = null;
+    minimal = true;
 
-  networking.hostName = "e2-micro";
-  nixpkgs.hostPlatform = "x86_64-linux";
+    nixos = {
+      inputs,
+      lib,
+      ...
+    }: {
+      imports = [
+        "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
+      ];
 
-  virtualisation.diskSize = 20480;
+      networking.hostName = "e2-micro";
+      nixpkgs.hostPlatform = "x86_64-linux";
 
-  users.users.root.openssh.authorizedKeys.keyFiles = [../mizore/mizore.pub];
-  services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
+      virtualisation.diskSize = 20480;
 
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50;
+      users.users.root.openssh.authorizedKeys.keyFiles = [../mizore/mizore.pub];
+      services.openssh.settings.PermitRootLogin = lib.mkForce "yes";
+
+      zramSwap = {
+        enable = true;
+        algorithm = "zstd";
+        memoryPercent = 50;
+      };
+
+      system.stateVersion = "25.11";
+    };
   };
-
-  system.stateVersion = "25.11";
 }

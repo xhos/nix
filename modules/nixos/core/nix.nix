@@ -3,10 +3,8 @@
     nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
     settings = {
+      # the magi cache is added by features/tailnet.nix
       substituters = [
-        "http://melchior.ts.xhos.dev:3902"
-        "http://balthasar.ts.xhos.dev:3902"
-        "http://casper.ts.xhos.dev:3902"
         "https://cache.nixos.org"
         "https://hyprland.cachix.org"
         "https://nix-community.cachix.org"

@@ -1,98 +1,150 @@
-{
-  pkgs,
-  inputs,
-  lib,
-  ...
-}: {
-  imports = [
-    ./hardware-configuration.nix
-    ./disko.nix
-    inputs.disko.nixosModules.disko
-    inputs.sops-nix.nixosModules.sops
-    inputs.self.modules.nixos.desktop
-  ];
+{inputs, ...}: {
+  hosts.zireael = {
+    features = with inputs.self.modules.nixos; [tailnet desktop];
 
-  profile = "desktop";
+    nixos = {
+      pkgs,
+      inputs,
+      lib,
+      ...
+    }: {
+      imports = [
+        ./hardware-configuration.nix
+        ./disko.nix
+        inputs.disko.nixosModules.disko
+        inputs.sops-nix.nixosModules.sops
+      ];
 
-  networking.hostName = "zireael";
-  networking.hostId = "5ca416d5";
+      profile = "desktop";
 
-  users.users.xhos.openssh.authorizedKeys.keyFiles = [./zireael.pub];
+      networking.hostName = "zireael";
+      networking.hostId = "5ca416d5";
 
-  impermanence.enable = true;
-  bluetooth   .enable = true;
-  audio       .enable = true;
-  syncthing   .enable = true;
-  intel       .enable = true;
-  davinci     .enable = true;
-  reality-vpn-client.enable = true;
+      users.users.xhos.openssh.authorizedKeys.keyFiles = [./zireael.pub];
 
-  wm = "hyprland";
-  greeter = "yawn";
-  bootloader.systemd-boot.enable = true;
-  bootvine.enable = true;
+      impermanence.enable = true;
+      bluetooth   .enable = true;
+      audio       .enable = true;
+      syncthing   .enable = true;
+      intel       .enable = true;
+      davinci     .enable = true;
+      reality-vpn-client.enable = true;
 
-  # fix spam on boot
-  boot.blacklistedKernelModules = ["acpi_fan"];
+      wm = "hyprland";
+      greeter = "yawn";
+      bootloader.systemd-boot.enable = true;
+      bootvine.enable = true;
 
-  systemd.tmpfiles.rules = [
-    "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
-  ];
+      # fix spam on boot
+      boot.blacklistedKernelModules = ["acpi_fan"];
 
-  hardware.sensor.iio.enable = true; # screen rotation sensor
+      systemd.tmpfiles.rules = [
+        "z /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value 0660 xhos users -"
+      ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+      hardware.sensor.iio.enable = true; # screen rotation sensor
 
-  services.fprintd.enable = true;
-  services.udisks2.enable = true;
+      boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  services.udev.extraRules = ''
-    SUBSYSTEM=="block", ENV{ID_SERIAL_SHORT}=="575839324443354C59555255", ENV{UDISKS_IGNORE}="1"
-  '';
+      services.fprintd.enable = true;
+      services.udisks2.enable = true;
 
-  fileSystems."/mnt/elements" = {
-    device = "/dev/mapper/elements";
-    fsType = "btrfs";
-    options = [
-      "noatime"
-      "subvol=data"
-      "nofail"
-      "noauto"
-      "x-systemd.automount"
-      "x-systemd.device-timeout=5s"
-      "x-systemd.idle-timeout=60s" # auto-unmount after 60s idle, optional
-    ];
+      services.udev.extraRules = ''
+        SUBSYSTEM=="block", ENV{ID_SERIAL_SHORT}=="575839324443354C59555255", ENV{UDISKS_IGNORE}="1"
+      '';
+
+      fileSystems."/mnt/elements" = {
+        device = "/dev/mapper/elements";
+        fsType = "btrfs";
+        options = [
+          "noatime"
+          "subvol=data"
+          "nofail"
+          "noauto"
+          "x-systemd.automount"
+          "x-systemd.device-timeout=5s"
+          "x-systemd.idle-timeout=60s" # auto-unmount after 60s idle, optional
+        ];
+      };
+
+      # hyprlock does fingerprint over dbus itself; pam_fprintd here just blocks password entry
+      security.pam.services.hyprlock.fprintAuth = false;
+
+      # LUKS auto decryption via TPM
+
+      # after install:
+      # systemd-cryptenroll \
+      # --tpm2-device=auto \
+      # --tpm2-pcrs=11 \
+      # --tpm2-with-pin=yes \
+      # /dev/nvme0n1p5
+
+      security.tpm2.enable = true;
+
+      # comment out below 2 lines before install then update the offset with
+      #
+      # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
+      boot.resumeDevice = "/dev/mapper/crypted";
+      boot.kernelParams = ["resume_offset=34700103"];
+
+      services.logind.settings.Login = {
+        HandleLidSwitch = lib.mkForce "suspend-then-hibernate";
+        HandleLidSwitchDocked = lib.mkForce "ignore";
+        HandlePowerKey = lib.mkForce "hibernate";
+      };
+
+      systemd.sleep.settings.Sleep = {
+        HibernateDelaySec = "30min";
+        SuspendState = "mem";
+      };
+      system.stateVersion = "25.05";
+    };
+
+    home = {
+      lib,
+      pkgs,
+      osConfig,
+      ...
+    }: {
+      stylix.image = pkgs.fetchurl {
+        url = "https://i.imgur.com/w65iDl5.jpeg";
+        sha256 = "sha256-WvuZoZ6OBGa1R+zZAl6/YQAazpe8k2quJSWamTZl2Tc=";
+      };
+
+      stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-terminal-dark.yaml";
+
+      impermanence.enable = true;
+
+      modules = {
+        rofi.enable = true;
+        secrets.enable = true;
+        discord.enable = true;
+        spicetify.enable = true;
+        telegram.enable = true;
+        fonts.enable = true;
+        rclone.enable = true;
+      };
+
+      wm = osConfig.wm;
+      bar = "waybar";
+      programs.waybar.settings.main."modules-right" = lib.mkAfter ["battery"];
+      shell = "zsh";
+      prompt = "starship";
+      browser = "zen";
+
+      home.packages = with pkgs; [
+        iio-hyprland
+        proton-vpn
+      ];
+
+      services.hypridle.enable = true;
+
+      mainMonitor = "eDP-1";
+
+      hyprland.execOnce = [
+        "iio-hyprland" # start the rotation thingy
+        "echo 1 > /sys/class/firmware-attributes/samsung-galaxybook/attributes/block_recording/current_value" # close camera shut on boot
+      ];
+    };
   };
-
-  # hyprlock does fingerprint over dbus itself; pam_fprintd here just blocks password entry
-  security.pam.services.hyprlock.fprintAuth = false;
-
-  # LUKS auto decryption via TPM
-
-  # after install:
-  # systemd-cryptenroll \
-  # --tpm2-device=auto \
-  # --tpm2-pcrs=11 \
-  # --tpm2-with-pin=yes \
-  # /dev/nvme0n1p5
-
-  security.tpm2.enable = true;
-
-  # comment out below 2 lines before install then update the offset with
-  #
-  # sudo btrfs inspect-internal map-swapfile -r /swap/swapfile
-  boot.resumeDevice = "/dev/mapper/crypted";
-  boot.kernelParams = ["resume_offset=34700103"];
-
-  services.logind.settings.Login = {
-    HandleLidSwitch = lib.mkForce "suspend-then-hibernate";
-    HandleLidSwitchDocked = lib.mkForce "ignore";
-    HandlePowerKey = lib.mkForce "hibernate";
-  };
-
-  systemd.sleep.settings.Sleep = {
-    HibernateDelaySec = "30min";
-    SuspendState = "mem";
-  };
-  system.stateVersion = "25.05";
 }

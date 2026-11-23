@@ -23,13 +23,19 @@
       "${inputs.erosanix}/hooks/copy-desktop-icons.sh";
   };
 
+  # pinning forces a fetch, so host-specific private inputs are pinned
+  # by their feature module (features/kodama.nix) rather than everywhere
+  unpinned = ["kodama"];
   collectFlakeInputs = input:
-    [input] ++ builtins.concatMap collectFlakeInputs (builtins.attrValues (input.inputs or {}));
+    [input] ++ builtins.concatMap collectFlakeInputs (builtins.attrValues (removeAttrs (input.inputs or {}) unpinned));
 in
   {
     hostname,
     homeUser ? "xhos",
     extraSpecialArgs ? {},
+    nixos ? {},
+    home ? {},
+    features ? [],
     minimal ? false,
     rootInputs ? homeUser != null,
   }:
@@ -38,9 +44,10 @@ in
       modules =
         lib.optionals (!minimal) [../modules/nixos/default.nix]
         ++ [
-          ../systems/${hostname}/configuration.nix
+          nixos
           {nixpkgs.overlays = [erosanixOverlay pkgsOverlay];}
         ]
+        ++ features
         ++ lib.optionals rootInputs [
           {system.extraDependencies = collectFlakeInputs inputs.self;}
         ]
@@ -54,7 +61,7 @@ in
                 backupFileExtension = ".b";
                 users.${homeUser}.imports = [
                   ../modules/home/default.nix
-                  ../systems/${hostname}/home.nix
+                  home
                 ];
               };
             }

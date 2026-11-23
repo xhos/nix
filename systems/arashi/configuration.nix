@@ -1,26 +1,41 @@
 {inputs, ...}: {
-  imports = [
-    "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
-  ];
+  hosts.arashi = {
+    features = with inputs.self.modules.nixos; [tailnet];
 
-  networking.hostName = "arashi";
-  networking.hostId = "3891dea5";
+    nixos = {inputs, ...}: {
+      imports = [
+        "${inputs.nixpkgs}/nixos/modules/virtualisation/oci-image.nix"
+      ];
 
-  nixpkgs.hostPlatform = "aarch64-linux";
+      networking.hostName = "arashi";
+      networking.hostId = "3891dea5";
 
-  profile = "full";
+      nixpkgs.hostPlatform = "aarch64-linux";
 
-  homelab.enable = true;
+      profile = "full";
 
-  users.users.xhos.openssh.authorizedKeys.keyFiles = [./arashi.pub];
+      homelab.enable = true;
 
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 25;
+      users.users.xhos.openssh.authorizedKeys.keyFiles = [./arashi.pub];
+
+      zramSwap = {
+        enable = true;
+        algorithm = "zstd";
+        memoryPercent = 25;
+      };
+
+      boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
+
+      system.stateVersion = "25.11";
+    };
+
+    home = {pkgs, ...}: {
+      headless = true;
+      modules.secrets.enable = true;
+
+      shell = "zsh";
+      prompt = "starship";
+      stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-storm.yaml";
+    };
   };
-
-  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
-
-  system.stateVersion = "25.11";
 }

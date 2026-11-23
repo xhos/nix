@@ -1,10 +1,4 @@
-{
-  config,
-  inputs,
-  ...
-}: {
-  imports = [inputs.kodama.nixosModules.default];
-
+{config, ...}: {
   sops.secrets = {
     "api/kodama/token" = {};
     "api/kodama/ha" = {};
