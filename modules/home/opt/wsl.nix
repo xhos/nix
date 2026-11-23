@@ -22,6 +22,10 @@
     (winBin "wsl.exe" "/mnt/c/Windows/System32/wsl.exe")
     (winBin "powershell.exe" "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe")
     (winBin "code" "${win}/AppData/Local/Programs/Microsoft VS Code/bin/code")
+    # bare names (no .exe) since eiad execs them that way
+    (winBin "cmdkey" "/mnt/c/Windows/System32/cmdkey.exe")
+    (winBin "mstsc" "/mnt/c/Windows/System32/mstsc.exe")
+    (winBin "rundll32" "/mnt/c/Windows/System32/rundll32.exe")
   ];
 
   # wslg's wayland socket isn't reliably reachable from the login session, so
