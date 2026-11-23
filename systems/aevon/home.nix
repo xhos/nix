@@ -15,9 +15,6 @@
     terminalProfileGuid = "{41ae03f2-5542-51cf-a1c0-3a444db570ec}";
   };
 
-  # the real vault is on the windows side, see syncthing in configuration.nix
-  home.file."Documents/notes".source = config.lib.file.mkOutOfStoreSymlink "/mnt/c/Users/KudriaMa/notes";
-
   # eiad's own `build` devshell script compiles into .build/
   home.sessionPath = ["${config.home.homeDirectory}/work/eiad/.build"];
 

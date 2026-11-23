@@ -60,14 +60,6 @@
     fi
   '';
 
-  # obsidian notes, synced with enrai. the vault lives on the
-  # windows drive because obsidian can't watch \\wsl.localhost paths (EISDIR),
-  # and outside Documents since that's redirected to the work onedrive
-  syncthing = {
-    enable = true;
-    notesPath = "/mnt/c/Users/KudriaMa/notes";
-  };
-
   networking.hostName = "aevon";
   nixpkgs.hostPlatform = "x86_64-linux";
 
