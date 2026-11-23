@@ -1,6 +1,5 @@
-{inputs, ...}: {
+{
   hosts.aevon = {
-
     nixos = {
       inputs,
       config,
