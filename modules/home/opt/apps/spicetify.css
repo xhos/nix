@@ -1,0 +1,122 @@
+/* frame and sidebar backgrounds */
+html,
+body,
+#main,
+.Root,
+.Root__top-container,
+.Root__nav-bar,
+.Root__right-sidebar,
+.main-yourLibraryX-entryPoints {
+  background: transparent !important;
+}
+
+/* top bar: out of the layout, shown on hover */
+.body-drag-top {
+  display: none !important;
+}
+.Root__globalNav {
+  position: absolute !important;
+  top: 0;
+  margin-top: -8px !important;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 12px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.2s ease, max-height 0.2s ease;
+}
+.Root__globalNav:hover,
+.Root__globalNav:focus-within {
+  max-height: 80px;
+  opacity: 1;
+}
+
+/* spotify draws its menu dots natively over the top-left corner */
+.main-yourLibraryX-collapseButton {
+  margin-left: 56px;
+}
+
+/* with the top bar hidden, the main view carries dribbblish's rounded top */
+.Root.global-nav .Root__main-view {
+  border-top-left-radius: 10px !important;
+}
+.Root.global-nav [data-right-sidebar-hidden="true"] .Root__main-view {
+  border-top-right-radius: 10px !important;
+}
+
+/* no scrollbars, scrolling still works */
+.os-scrollbar {
+  display: none !important;
+}
+* {
+  scrollbar-width: none !important;
+}
+::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* translucent card so the blur tints it */
+.Root__main-view,
+.Root__now-playing-bar,
+.Root__globalNav {
+  background-color: rgba(var(--spice-rgb-main), 0.8) !important;
+}
+.main-card-card,
+.view-homeShortcutsGrid-shortcut {
+  background-color: rgba(var(--spice-rgb-text), 0.04) !important;
+}
+.main-card-card:hover,
+.view-homeShortcutsGrid-shortcut:hover,
+.main-trackList-trackListRow:hover {
+  background-color: rgba(var(--spice-rgb-text), 0.08) !important;
+}
+
+/* spotify's hover green in its accent sets */
+.encore-dark-theme .encore-bright-accent-set,
+.encore-dark-theme .encore-positive-set {
+  --background-highlight: var(--spice-button-active) !important;
+  --background-elevated-base: var(--spice-button) !important;
+  --background-elevated-highlight: var(--spice-button-active) !important;
+}
+
+/* dark icon on the light accent */
+[class*="button-primary__inner"] svg {
+  color: var(--spice-main) !important;
+  fill: var(--spice-main) !important;
+}
+
+/* page headers paint their own solid layers over the card */
+.main-entityHeader-backgroundColor,
+.main-entityHeader-overlay,
+.main-actionBarBackground-background,
+.playlist-playlist-actionBarBackground-background,
+.playlist-playlist-playlistContent,
+.main-topBar-overlay {
+  background: transparent !important;
+}
+
+/* nothing sticks over the scrolling content */
+.main-trackList-trackListHeader {
+  position: static !important;
+  background: transparent !important;
+}
+.main-topBar-background,
+.main-topBar-topbarContentWrapper {
+  display: none !important;
+}
+
+/* spicy lyrics has its own */
+button[data-testid="lyrics-button"] {
+  display: none !important;
+}
+
+/* library hover play button is 48px over a 40px cover */
+#Desktop_LeftSidebar_Id .main-playButton-PlayButton button {
+  padding: 8px !important;
+}
+
+/* dribbblish rounds the library covers, round the hover overlay too */
+#Desktop_LeftSidebar_Id :has(> .main-playButton-PlayButton) {
+  border-radius: 50% !important;
+}

@@ -14,22 +14,38 @@
       spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
     in {
       enable = true;
+
+      spotifyPackage = inputs.transparent-spotify.packages.${pkgs.stdenv.hostPlatform.system}.spotify-transparent;
+
       theme = spicePkgs.themes.dribbblish;
+
       customColorScheme = with config.lib.stylix.colors; {
-        accent = "${green}";
-        accent-active = "${green}";
-        accent-inactive = "${base00}";
-        banner = "${green}";
-        border-active = "${green}";
-        border-inactive = "${base01}";
-        header = "${base03}";
-        highlight = "${base03}";
-        main = "${base00}";
-        notification = "${cyan}";
-        notification-error = "${red}";
-        subtext = "${base04}";
-        text = "${base07}";
+        text = base05;
+        subtext = base04;
+        main = base00;
+        main-elevated = base01;
+        sidebar = base00;
+        player = base00;
+        card = base01;
+        highlight = base02;
+        highlight-elevated = base02;
+        tab-active = base02;
+        header = base03;
+        misc = base03;
+        selected-row = base05;
+        button = base0D;
+        button-active = base0C;
+        button-disabled = base03;
+        accent = base0D;
+        accent-active = base0C;
+        accent-inactive = base00;
+        banner = base0D;
+        border-active = base0D;
+        border-inactive = base01;
+        notification = base0C;
+        notification-error = base08;
       };
+
       enabledExtensions = with spicePkgs.extensions; [
         shuffle
         hidePodcasts
@@ -38,15 +54,16 @@
         coverAmbience
         spicyLyrics
       ];
+
       enabledSnippets = with spicePkgs.snippets; [
-        hideSidebarScrollbar
         smallVideoButton
         removeTopSpacing
         smoothProgressBar
+        (builtins.readFile ./spicetify.css)
       ];
     };
 
-    # spotify rewrites prefs itself, so patch the line instead of symlinking the file
+    # spotify is evil so we have to set the cache max size like this
     home.activation.spotifyCacheCap = lib.hm.dag.entryAfter ["writeBoundary"] ''
       prefs="${config.xdg.configHome}/spotify/prefs"
       if [ -f "$prefs" ]; then

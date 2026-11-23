@@ -1420,6 +1420,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-chromium146": {
+      "locked": {
+        "lastModified": 1775679752,
+        "narHash": "sha256-ApIkOZX16vJGXoW8ww3xPuflVDySwyXvlRfMPO1aNXg=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f1d835085edfefde6dd88c28e8a78fcb1b919bf7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f1d835085edfefde6dd88c28e8a78fcb1b919bf7",
+        "type": "github"
+      }
+    },
     "nixpkgs-ci": {
       "locked": {
         "lastModified": 1793795574,
@@ -1652,6 +1668,7 @@
         "sops-nix": "sops-nix",
         "spicetify-nix": "spicetify-nix",
         "stylix": "stylix",
+        "transparent-spotify": "transparent-spotify",
         "vpn-confinement": "vpn-confinement",
         "wled-album-sync": "wled-album-sync",
         "yawn": "yawn",
@@ -1944,6 +1961,27 @@
       "original": {
         "owner": "tinted-theming",
         "repo": "base16-zed",
+        "type": "github"
+      }
+    },
+    "transparent-spotify": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "nixpkgs-chromium146": "nixpkgs-chromium146"
+      },
+      "locked": {
+        "lastModified": 1795314571,
+        "narHash": "sha256-gk8Q7QehpOGvdLD4oc63Alb5bguW4ycPmTaBsrQMWiE=",
+        "owner": "xhos",
+        "repo": "transparent-spotify",
+        "rev": "1d8f3b420ae5383c3139d67d5ccc2c964a3d3e0c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "xhos",
+        "repo": "transparent-spotify",
         "type": "github"
       }
     },

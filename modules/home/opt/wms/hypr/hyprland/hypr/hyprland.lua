@@ -3,14 +3,16 @@ local nix = require("nix")
 -- to safely pull stuff like nwg-displays
 local function require_optional(name)
   local dir = os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")
-  local f = io.open(dir .. "/hypr/" .. name .. ".lua", "r")
+  local path = dir .. "/hypr/" .. name .. ".lua"
+  local f = io.open(path, "r")
 
   if not f then
     return
   end
 
   f:close()
-  require(name)
+  -- not require(): the lua state survives reloads, so require would cache
+  dofile(path)
 end
 
 --------------------------------------------------------------------------
@@ -40,6 +42,7 @@ hl.config({
   decoration = {
     rounding         = nix.rounding,
     inactive_opacity = 1,
+    dim_special      = 0,
 
     shadow           = {
       enabled      = true,
@@ -51,7 +54,7 @@ hl.config({
     blur             = {
       size       = nix.blur.size,
       passes     = nix.blur.passes,
-      special    = true,
+      special    = false,
       popups     = true,
       noise      = 0.0117,
       contrast   = 1,

@@ -47,6 +47,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    transparent-spotify = {
+      url = "github:xhos/transparent-spotify";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     yawn = {
       url = "github:xhos/yawn";
       inputs.nixpkgs.follows = "nixpkgs";
