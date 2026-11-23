@@ -11,7 +11,7 @@
     consoleLogLevel = 0;
 
     plymouth = {
-      enable = true;
+      enable = !config.bootvine.enable;
       theme = "hexagon";
       themePackages = [
         (pkgs.adi1090x-plymouth-themes.override {

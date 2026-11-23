@@ -57,6 +57,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    bootvine = {
+      url = "git+https://codeberg.org/wvhulle/bootvine";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     logi-hypr = {
       url = "github:xhos/logi-hypr";
       inputs.nixpkgs.follows = "nixpkgs";

@@ -12,7 +12,7 @@
   config = lib.mkIf config.bootloader.limine.enable {
     persist.dirs = ["/var/lib/sbctl"];
     boot = {
-      plymouth.enable = true;
+      plymouth.enable = !config.bootvine.enable;
       loader = {
         efi.canTouchEfiVariables = true;
         limine = {

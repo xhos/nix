@@ -48,6 +48,7 @@
     dualboot = true;
     secureboot = true;
   };
+  bootvine.enable = true;
 
   # dual-boots Windows, which wants the RTC in local time
   time.hardwareClockInLocalTime = true;

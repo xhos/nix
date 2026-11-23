@@ -7,7 +7,7 @@
   options.bootloader.grub.enable = lib.mkEnableOption "enable grub";
 
   config.boot = lib.mkIf config.bootloader.grub.enable {
-    plymouth.enable = true;
+    plymouth.enable = !config.bootvine.enable;
     loader = {
       efi.canTouchEfiVariables = true;
       grub = {
