@@ -375,7 +375,7 @@
           }
           {
             platform = "wake_on_lan";
-            mac = "c8:fe:0f:d0:3c:68";
+            mac = "3c:8c:f8:61:df:78";
             broadcast_address = "10.0.0.255";
             name = "PC Power";
             host = "10.0.0.11";
