@@ -43,3 +43,9 @@ max_iters = 12
 max_tool_errors = 3
 top_retries = 4
 top_retry_delay_seconds = 15
+
+# an inbox, not the vault: kodama-journal in kodama.nix moves entries into
+# the daily notes as xhos, so kodama itself never gets to see the notes
+[journal]
+dir = "/var/lib/kodama-journal"
+at = "22:00"

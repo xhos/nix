@@ -38,7 +38,35 @@
     };
   };
 
-  # enrai uses its own nftables firewall, which already accepts tailscale0.
-  # Its physical LAN interface does not accept port 7777.
   persist.dirs = ["/var/lib/kodama"];
+
+  systemd.tmpfiles.rules = ["d /var/lib/kodama-journal 2770 kodama users -"];
+  systemd.services.kodama.serviceConfig.ReadWritePaths = ["/var/lib/kodama-journal"];
+
+  systemd.paths.kodama-journal = {
+    wantedBy = ["paths.target"];
+    pathConfig.DirectoryNotEmpty = "/var/lib/kodama-journal";
+  };
+  systemd.services.kodama-journal = {
+    description = "move kodama journal entries into the daily notes";
+    serviceConfig = {
+      Type = "oneshot";
+      User = "xhos";
+      Group = "users";
+    };
+    script = ''
+      set -eu
+      inbox=/var/lib/kodama-journal
+      notes="/home/xhos/Documents/notes/personal/notes/Daily notes"
+      shopt -s nullglob
+      for f in "$inbox"/*.md; do mv "$f" "$f.taking"; done
+      sleep 1
+      for t in "$inbox"/*.md.taking; do
+        dest="$notes/$(basename "$t" .taking)"
+        if [ -s "$dest" ]; then printf '\n\n' >> "$dest"; fi
+        cat "$t" >> "$dest"
+        rm "$t"
+      done
+    '';
+  };
 }
